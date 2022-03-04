@@ -1,8 +1,6 @@
-from re import X
 from dotenv import load_dotenv
 import os
 import mysql.connector
-import json
 from flask import *
 # !/usr/bin/python
 # -*- coding: utf-8 - *-
