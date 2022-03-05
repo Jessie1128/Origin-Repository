@@ -12,7 +12,7 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 mydb = mysql.connector.connect(
     host="127.0.0.1", user=os.getenv("user"), password=os.getenv("password"), database="OriginRepository")
 mycursor = mydb.cursor()
-
+# host="127.0.0.1", user=os.getenv("user"), password=os.getenv("password"), database="OriginRepository"
 # Pages
 
 
@@ -46,7 +46,7 @@ def attraction(id):
             print(values)
             response = {}
             response["data"] = values
-            return response
+            return response, url_for('index')
     except:
         error = {}
         error["error"] = True
