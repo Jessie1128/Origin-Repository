@@ -7,7 +7,7 @@ load_dotenv("mydb.evn")
 # -----------
 
 mydb = mysql.connector.connect(
-    host="127.0.0.1", user=os.getenv("user"), password=os.getenv("password"), database="OriginRepository")
+    host="127.0.0.1", user='root', password='q4352698', database="OriginRepository")
 # if mydb.is_connected():
 #     print("ok!")
 mycursor = mydb.cursor()

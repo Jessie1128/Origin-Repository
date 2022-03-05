@@ -1,3 +1,4 @@
+from ssl import SSLSocket
 from dotenv import load_dotenv
 import os
 import mysql.connector
@@ -23,7 +24,6 @@ def index():
 
 @ app.route("/attraction/<id>")
 def attraction(id):
-    # val = (id,)
     sqlSelect = "SELECT * FROM `ATTRACTIONS` WHERE `NUM`= %s;"
     mycursor.execute(sqlSelect, (id,))
     myresult = mycursor.fetchone()
@@ -43,7 +43,7 @@ def attraction(id):
             valuesImagesSplitHTTP = values['images'].split(",")
             values["images"] = valuesImagesSplitHTTP
         # --------
-            print(values)
+            # print(values)
             response = {}
             response["data"] = values
             return response, url_for('index')
@@ -89,7 +89,7 @@ def attractions():
     # -----------
     try:
         if keyword == None:
-            sqlCount = "SELECT CIUNT(NUM) FROM `ATTRACTIONS`"
+            sqlCount = "SELECT COUNT(NUM) FROM `ATTRACTIONS`"
             count = howMany(sqlCount)
             print("成功", count)
             # --------
@@ -112,14 +112,14 @@ def attractions():
             sqlCount = "SELECT COUNT(NUM) FROM `ATTRACTIONS` WHERE `STITLE` LIKE '%" + \
                 keyword+"%';"
             count = howMany(sqlCount)
-            print("關鍵字比數成功", count)
+            # print("關鍵字比數成功", count)
             # -------------
             sqlSelect = "SELECT * FROM `ATTRACTIONS` WHERE `STITLE` like '%"+keyword+"%';"
             mycursor.execute(sqlSelect,)
             myresult = mycursor.fetchall()
             myresult = list(myresult)
             finialData = howManyData(myresult)
-            print("執行完韓式", finialData)
+            # print("執行完函式", finialData)
             # --------------
             response = {}
             if page*pagiN < count and count-(page*pagiN) > pagiN:
@@ -132,7 +132,6 @@ def attractions():
                 return response
             else:
                 page = str((count//pagiN)+1)
-                print(page)
                 error = {}
                 error["error"] = True
                 error["message"] = "最多只到第"+page+"頁"
@@ -156,5 +155,9 @@ def thankyou():
     return render_template("thankyou.html")
 
 
+app.add_url_rule('/api/attraction/<id>',
+                 endpoint="attractions/<id>", view_func=attraction)
+app.add_url_rule('/api/attractions', endpoint="attractions",
+                 view_func=attractions)
 if __name__ == "__main__":
-    app.run(port=3000)
+    app.run(port=3000, debug=True)
