@@ -160,4 +160,4 @@ app.add_url_rule('/api/attraction/<id>',
 app.add_url_rule('/api/attractions', endpoint="attractions",
                  view_func=attractions)
 if __name__ == "__main__":
-    app.run(host='3.228.79.76', port=3000)
+    app.run(port=3000)
