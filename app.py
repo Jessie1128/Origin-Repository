@@ -12,8 +12,6 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 mydb = mysql.connector.connect(
     host="127.0.0.1", user=os.getenv("user"), password=os.getenv("password"), database="OriginRepository")
 mycursor = mydb.cursor()
-# host="127.0.0.1", user=os.getenv("user"), password=os.getenv("password"), database="OriginRepository"
-# Pages
 
 
 @ app.route("/")
@@ -23,36 +21,34 @@ def index():
 
 @ app.route("/attraction/<id>")
 def attraction(id):
-    print("attraction成功")
     sqlSelect = "SELECT * FROM Attractions WHERE NUM= %s;"
     mycursor.execute(sqlSelect, (id,))
     myresult = mycursor.fetchone()
-    print("sqlSelect 指令 for attraction", sqlSelect, len(myresult))
     # ---------
-    # try:
-    if myresult == None:
+    try:
+        if myresult == None:
+            error = {}
+            error["error"] = True
+            error["message"] = "自訂的錯誤訊息"
+            return (error, 400)
+        else:
+            values = {}
+            for num in range(len(myresult)):
+                columnName = mycursor.description[num][0]
+                columnValue = myresult[num]
+                values[columnName] = columnValue
+            valuesImagesSplitHTTP = values['images'].split(",")
+            values["images"] = valuesImagesSplitHTTP
+        # --------
+            # print(values)
+            response = {}
+            response["data"] = values
+            return response
+    except:
         error = {}
         error["error"] = True
         error["message"] = "自訂的錯誤訊息"
-        return (error, 400)
-    else:
-        values = {}
-        for num in range(len(myresult)):
-            columnName = mycursor.description[num][0]
-            columnValue = myresult[num]
-            values[columnName] = columnValue
-        valuesImagesSplitHTTP = values['images'].split(",")
-        values["images"] = valuesImagesSplitHTTP
-    # --------
-        # print(values)
-        response = {}
-        response["data"] = values
-        return response
-    # except:
-    #     error = {}
-    #     error["error"] = True
-    #     error["message"] = "自訂的錯誤訊息"
-    #     return (error, 500)
+        return (error, 500)
     return render_template("attraction.html")
 
 
@@ -81,71 +77,65 @@ def attractions():
             valuesList.append(values)
         return valuesList
     # ----------------
-    print("attractionsssssss成功")
     page = request.args.get("page", 0)
     page = int(page)
     pagiN = 12
     keyword = request.args.get("keyword", None)
 
     # -----------
-    # try:
-    if keyword == None:
-        sqlCount = "SELECT COUNT(NUM) FROM Attractions"
-        count = howMany(sqlCount)
-        print("成功", count)
-        # --------
-        sqlSelect = "SELECT * FROM Attractions LIMIT %s,%s;"
-        mycursor.execute(sqlSelect, (page*pagiN, pagiN))
-        myresult = mycursor.fetchall()
-        myresult = list(myresult)
-        finialData = howManyData(myresult)
-        # --------
-        response = {}
-        if count-(page*pagiN) > pagiN:
-            response["nextPage"] = page+1
-            response["data"] = finialData
-            return response
+    try:
+        if keyword == None:
+            sqlCount = "SELECT COUNT(NUM) FROM Attractions"
+            count = howMany(sqlCount)
+            # --------
+            sqlSelect = "SELECT * FROM Attractions LIMIT %s,%s;"
+            mycursor.execute(sqlSelect, (page*pagiN, pagiN))
+            myresult = mycursor.fetchall()
+            myresult = list(myresult)
+            finialData = howManyData(myresult)
+            # --------
+            response = {}
+            if count-(page*pagiN) > pagiN:
+                response["nextPage"] = page+1
+                response["data"] = finialData
+                return response
+            else:
+                response["nextPage"] = "null"
+                response["data"] = finialData
+                return response
         else:
-            response["nextPage"] = "null"
-            response["data"] = finialData
-            return response
-    else:
-        sqlCount = "SELECT COUNT(NUM) FROM Attractions WHERE STITLE LIKE '%" + \
-            keyword+"%';"
-        count = howMany(sqlCount)
-        print("sqlCount for attractions command", sqlCount)
-        # print("關鍵字比數成功", count)
-        # -------------
-        sqlSelect = "SELECT * FROM Attractions WHERE STITLE like '%"+keyword+"%';"
-        print("sqlSelect for attractions command", sqlSelect)
-        mycursor.execute(sqlSelect,)
-        myresult = mycursor.fetchall()
-        myresult = list(myresult)
-        finialData = howManyData(myresult)
-        # print("執行完函式", finialData)
-        # --------------
-        response = {}
-        if page*pagiN < count and count-(page*pagiN) > pagiN:
-            response["nextPage"] = page+1
-            response["data"] = finialData
-            return response
-        elif page*pagiN < count and count-(page*pagiN) < pagiN:
-            response["nextPage"] = "null"
-            response["data"] = finialData
-            return response
-        else:
-            page = str((count//pagiN)+1)
-            error = {}
-            error["error"] = True
-            error["message"] = "最多只到第"+page+"頁"
-            return (error, 400)
+            sqlCount = "SELECT COUNT(NUM) FROM Attractions WHERE STITLE LIKE '%" + \
+                keyword+"%';"
+            count = howMany(sqlCount)
+            # -------------
+            sqlSelect = "SELECT * FROM Attractions WHERE STITLE like '%"+keyword+"%';"
+            mycursor.execute(sqlSelect,)
+            myresult = mycursor.fetchall()
+            myresult = list(myresult)
+            finialData = howManyData(myresult)
+            # --------------
+            response = {}
+            if page*pagiN < count and count-(page*pagiN) > pagiN:
+                response["nextPage"] = page+1
+                response["data"] = finialData
+                return response
+            elif page*pagiN < count and count-(page*pagiN) < pagiN:
+                response["nextPage"] = "null"
+                response["data"] = finialData
+                return response
+            else:
+                page = str((count//pagiN)+1)
+                error = {}
+                error["error"] = True
+                error["message"] = "最多只到第"+page+"頁"
+                return (error, 400)
         # -------------
 
-    # except:
-    #     error = {}
-    #     error["error"] = True
-    #     error["message"] = "自訂的錯誤訊息"
-    #     return (error, 500)
+    except:
+        error = {}
+        error["error"] = True
+        error["message"] = "自訂的錯誤訊息"
+        return (error, 500)
 
 
 @ app.route("/booking")
