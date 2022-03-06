@@ -20,8 +20,7 @@ mycursor.execute("SHOW TABLES LIKE 'ATTRACTIONS';")
 result = mycursor.fetchall()
 
 if result == []:
-    dataRead = open('data/taipei-attractions.json',
-                    mode='r', encoding='utf8').read()
+    dataRead = open('data/taipei-attractions.json', mode='r').read()
     dataLoads = json.loads(dataRead)
     data = dataLoads['result']['results']
 

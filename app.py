@@ -2,11 +2,9 @@ from dotenv import load_dotenv
 import os
 import mysql.connector
 from flask import *
-# !/usr/bin/python
-# -*- coding: utf-8 - *-
 load_dotenv("mydb.evn")
 app = Flask(__name__)
-app.config["JSON_AS_ASCII"] = False
+# app.config["JSON_AS_ASCII"] = False
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
 mydb = mysql.connector.connect(
