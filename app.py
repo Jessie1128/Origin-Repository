@@ -21,10 +21,13 @@ def index():
     return render_template("index.html")
 
 
+ß
+
+
 @ app.route("/attraction/<id>")
 def attraction(id):
     print("attraction成功")
-    sqlSelect = "SELECT * FROM ATTRACTIONS WHERE NUM= %s;"
+    sqlSelect = "SELECT * FROM Attractions WHERE NUM= %s;"
     mycursor.execute(sqlSelect, (id,))
     myresult = mycursor.fetchone()
     print("sqlSelect 指令 for attraction", sqlSelect, len(myresult))
@@ -90,11 +93,11 @@ def attractions():
     # -----------
     # try:
     if keyword == None:
-        sqlCount = "SELECT COUNT(NUM) FROM ATTRACTIONS"
+        sqlCount = "SELECT COUNT(NUM) FROM Attractions"
         count = howMany(sqlCount)
         print("成功", count)
         # --------
-        sqlSelect = "SELECT * FROM ATTRACTIONS LIMIT %s,%s;"
+        sqlSelect = "SELECT * FROM Attractions LIMIT %s,%s;"
         mycursor.execute(sqlSelect, (page*pagiN, pagiN))
         myresult = mycursor.fetchall()
         myresult = list(myresult)
@@ -110,13 +113,13 @@ def attractions():
             response["data"] = finialData
             return response
     else:
-        sqlCount = "SELECT COUNT(NUM) FROM ATTRACTIONS WHERE STITLE LIKE '%" + \
+        sqlCount = "SELECT COUNT(NUM) FROM Attractions WHERE STITLE LIKE '%" + \
             keyword+"%';"
         count = howMany(sqlCount)
         print("sqlCount for attractions command", sqlCount)
         # print("關鍵字比數成功", count)
         # -------------
-        sqlSelect = "SELECT * FROM ATTRACTIONS WHERE STITLE like '%"+keyword+"%';"
+        sqlSelect = "SELECT * FROM Attractions WHERE STITLE like '%"+keyword+"%';"
         print("sqlSelect for attractions command", sqlSelect)
         mycursor.execute(sqlSelect,)
         myresult = mycursor.fetchall()
