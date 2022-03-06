@@ -21,9 +21,6 @@ def index():
     return render_template("index.html")
 
 
-ß
-
-
 @ app.route("/attraction/<id>")
 def attraction(id):
     print("attraction成功")
