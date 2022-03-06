@@ -24,6 +24,7 @@ def index():
 
 @ app.route("/attraction/<id>")
 def attraction(id):
+    print("attraction成功")
     sqlSelect = "SELECT * FROM `ATTRACTIONS` WHERE `NUM`= %s;"
     mycursor.execute(sqlSelect, (id,))
     myresult = mycursor.fetchone()
@@ -80,7 +81,7 @@ def attractions():
             valuesList.append(values)
         return valuesList
     # ----------------
-
+    print("attractionsssssss成功")
     page = request.args.get("page", 0)
     page = int(page)
     pagiN = 12
