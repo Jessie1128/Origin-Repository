@@ -47,7 +47,7 @@ def attraction(id):
             # print(values)
             response = {}
             response["data"] = values
-            return response, url_for('index')
+            return response
     except:
         error = {}
         error["error"] = True
