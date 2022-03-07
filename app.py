@@ -82,11 +82,11 @@ def attractions():
         # --------
             response = {}
             if len(myresult) > 12:
+                values.pop(12)
                 response["nextPage"] = page+1
                 response["data"] = values
                 return response
             else:
-                values.pop(12)
                 response["nextPage"] = "null"
                 response["data"] = values
                 return response

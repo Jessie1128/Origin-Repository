@@ -31,7 +31,7 @@ if result == []:
         for x in range(len(dataUrl)):
             if dataUrl[x].endswith('jpg') == True:
                 Url.append("https"+dataUrl[x])
-        newUrl = str(Url).replace("'", " ").strip('[]')
+        newUrl = str(Url).replace("'", "").replace("[", "").replace("]", "")
         imagesValues = {'images': newUrl}
         data[num].update(imagesValues)
         del data[num]["file"]
