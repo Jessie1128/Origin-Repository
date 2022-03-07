@@ -11,6 +11,8 @@ mydb = mysql.connector.connect(
     host="127.0.0.1", user=os.getenv("user"), password=os.getenv("password"), database="OriginRepository")
 mycursor = mydb.cursor()
 
+print("ok")
+
 
 @ app.route("/")
 def index():
@@ -19,7 +21,8 @@ def index():
 
 @ app.route("/attraction/<id>")
 def attraction(id):
-    sqlSelect = "SELECT * FROM Attractions WHERE NUM= %s;"
+    ValuesKeys = "ID, NAME, CATEGORY, DESCRIPTION, ADDRESS, TRANSPORT, MRT, LATITUDE, LONGITUDE, IMAGES"
+    sqlSelect = "SELECT "+ValuesKeys+" FROM Attractions WHERE NUM= %s;"
     mycursor.execute(sqlSelect, (id,))
     myresult = mycursor.fetchone()
     # ---------
@@ -27,7 +30,7 @@ def attraction(id):
         if myresult == None:
             error = {}
             error["error"] = True
-            error["message"] = "自訂的錯誤訊息"
+            error["message"] = "景點編號錯誤"
             return (error, 400)
         else:
             values = {}
@@ -35,36 +38,31 @@ def attraction(id):
                 columnName = mycursor.description[num][0]
                 columnValue = myresult[num]
                 values[columnName] = columnValue
-            valuesImagesSplitHTTP = values['images'].split(",")
-            values["images"] = valuesImagesSplitHTTP
+            valuesImagesSplitHTTP = values["IMAGES"].split(",")
+            values["IMAGES"] = valuesImagesSplitHTTP
         # --------
-            # print(values)
             response = {}
             response["data"] = values
             return response
     except:
         error = {}
         error["error"] = True
-        error["message"] = "自訂的錯誤訊息"
+        error["message"] = "伺服器內部錯誤"
         return (error, 500)
     return render_template("attraction.html")
 
 
 @ app.route("/attractions")
 def attractions():
-    # ---------------- 計算筆數的函式
-    def howMany(string):
-        mycursor.execute(string)
-        count = mycursor.fetchone()
-        count = str(count)
-        count = int(count.replace(",", "").replace("(", "").replace(")", ""))
-        return count
-    # ---------------- 取出資料的函式
+    page = request.args.get("page", 0, type=int)
+    keyword = request.args.get("keyword", None)
+    ValuesKeys = "ID, NAME, CATEGORY, DESCRIPTION, ADDRESS, TRANSPORT, MRT, LATITUDE, LONGITUDE, IMAGES"
+    # -------------
 
     def howManyData(myresult):
         # values = {}
         valuesList = []
-        for infoNum in range(len(myresult)):  # len is 12
+        for infoNum in range(len(myresult)):
             info = myresult[infoNum]
             values = {}
             for num in range(len(info)):
@@ -74,61 +72,51 @@ def attractions():
                 values[columnName] = columnValue
             valuesList.append(values)
         return valuesList
-    # ----------------
-    page = request.args.get("page", 0)
-    page = int(page)
-    pagiN = 12
-    keyword = request.args.get("keyword", None)
-
     # -----------
     try:
         if keyword == None:
-            sqlCount = "SELECT COUNT(NUM) FROM Attractions"
-            count = howMany(sqlCount)
-            # --------
-            sqlSelect = "SELECT * FROM Attractions LIMIT %s,%s;"
-            mycursor.execute(sqlSelect, (page*pagiN, pagiN))
+            sqlSelect = "SELECT "+ValuesKeys+" FROM Attractions LIMIT %s,%s;"
+            mycursor.execute(sqlSelect, (page*12, 13))
             myresult = mycursor.fetchall()
-            myresult = list(myresult)
-            finialData = howManyData(myresult)
-            # --------
+            values = howManyData(myresult)
+        # --------
             response = {}
-            if count-(page*pagiN) > pagiN:
+            if len(myresult) > 12:
                 response["nextPage"] = page+1
-                response["data"] = finialData
+                response["data"] = values
                 return response
             else:
+                values.pop(12)
                 response["nextPage"] = "null"
-                response["data"] = finialData
+                response["data"] = values
                 return response
         else:
-            sqlCount = "SELECT COUNT(NUM) FROM Attractions WHERE STITLE LIKE '%" + \
-                keyword+"%';"
-            count = howMany(sqlCount)
-            # -------------
-            sqlSelect = "SELECT * FROM Attractions WHERE STITLE like '%"+keyword+"%';"
-            mycursor.execute(sqlSelect,)
+            sqlSelect = "SELECT "+ValuesKeys + \
+                " FROM Attractions WHERE NAME LIKE '%" + keyword+"%' LIMIT %s,%s;"
+            print(sqlSelect)
+            mycursor.execute(sqlSelect, (page*12, (page+1)*13))
             myresult = mycursor.fetchall()
             myresult = list(myresult)
-            finialData = howManyData(myresult)
+            print(myresult)
+            values = howManyData(myresult)
+            print("values", values)
             # --------------
             response = {}
-            if page*pagiN < count and count-(page*pagiN) > pagiN:
-                response["nextPage"] = page+1
-                response["data"] = finialData
-                return response
-            elif page*pagiN < count and count-(page*pagiN) < pagiN:
-                response["nextPage"] = "null"
-                response["data"] = finialData
-                return response
-            else:
-                page = str((count//pagiN)+1)
+            if myresult == []:
                 error = {}
                 error["error"] = True
-                error["message"] = "最多只到第"+page+"頁"
+                error["message"] = "超過總頁數"
                 return (error, 400)
+            elif len(myresult) < 13:
+                response["nextPage"] = "null"
+                response["data"] = values
+                return response
+            else:
+                values.pop(12)
+                response["nextPage"] = page+1
+                response["data"] = values
+                return response
         # -------------
-
     except:
         error = {}
         error["error"] = True
@@ -151,4 +139,4 @@ app.add_url_rule('/api/attraction/<id>',
 app.add_url_rule('/api/attractions', endpoint="attractions",
                  view_func=attractions)
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=3000)
+    app.run(host='0.0.0.0', port=3000, debug=True)
