@@ -3,15 +3,12 @@ import os
 import mysql.connector
 from flask import *
 load_dotenv("mydb.evn")
-app = Flask(__name__)
-# app.config["JSON_AS_ASCII"] = False
+app = Flask(__name__, static_folder="static", static_url_path="/")
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
 mydb = mysql.connector.connect(
     host="127.0.0.1", user=os.getenv("user"), password=os.getenv("password"), database="OriginRepository")
 mycursor = mydb.cursor()
-
-print("ok")
 
 
 @ app.route("/")
@@ -21,7 +18,7 @@ def index():
 
 @ app.route("/attraction/<id>")
 def attraction(id):
-    ValuesKeys = "ID, NAME, CATEGORY, DESCRIPTION, ADDRESS, TRANSPORT, MRT, LATITUDE, LONGITUDE, IMAGES"
+    ValuesKeys = "id, name, category, description, address, transport, mrt, latitude, longitude, images"
     sqlSelect = "SELECT "+ValuesKeys+" FROM Attractions WHERE NUM= %s;"
     mycursor.execute(sqlSelect, (id,))
     myresult = mycursor.fetchone()
@@ -38,8 +35,8 @@ def attraction(id):
                 columnName = mycursor.description[num][0]
                 columnValue = myresult[num]
                 values[columnName] = columnValue
-            valuesImagesSplitHTTP = values["IMAGES"].split(",")
-            values["IMAGES"] = valuesImagesSplitHTTP
+            valuesImagesSplitHTTP = values["images"].split(",")
+            values["images"] = valuesImagesSplitHTTP
         # --------
             response = {}
             response["data"] = values
@@ -56,7 +53,7 @@ def attraction(id):
 def attractions():
     page = request.args.get("page", 0, type=int)
     keyword = request.args.get("keyword", None)
-    ValuesKeys = "ID, NAME, CATEGORY, DESCRIPTION, ADDRESS, TRANSPORT, MRT, LATITUDE, LONGITUDE, IMAGES"
+    ValuesKeys = "id, name, category, description, address, transport, mrt, latitude, longitude, images"
     # -------------
 
     def howManyData(myresult):
@@ -70,6 +67,8 @@ def attractions():
                 columnName = mycursor.description[num][0]
                 columnValue = info[num]
                 values[columnName] = columnValue
+            valuesImagesSplitHTTP = values["images"].split(",")
+            values["images"] = valuesImagesSplitHTTP
             valuesList.append(values)
         return valuesList
     # -----------
@@ -139,4 +138,4 @@ app.add_url_rule('/api/attraction/<id>',
 app.add_url_rule('/api/attractions', endpoint="attractions",
                  view_func=attractions)
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=3000, debug=True)
+    app.run(host='0.0.0.0', port=3000)
