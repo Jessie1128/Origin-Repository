@@ -74,10 +74,12 @@ def attractions():
     # -----------
     try:
         if keyword == None:
+            print("執行這邊")
             sqlSelect = "SELECT "+ValuesKeys+" FROM Attractions LIMIT %s,%s;"
             mycursor.execute(sqlSelect, (page*12, 13))
             myresult = mycursor.fetchall()
             values = howManyData(myresult)
+            # print("執行這邊")
         # --------
             response = {}
             if len(myresult) > 12:
@@ -90,15 +92,16 @@ def attractions():
                 response["data"] = values
                 return response
         else:
+            print("執行這邊")
             sqlSelect = "SELECT "+ValuesKeys + \
                 " FROM Attractions WHERE NAME LIKE '%" + keyword+"%' LIMIT %s,%s;"
-            print(sqlSelect)
+            # print(sqlSelect)
             mycursor.execute(sqlSelect, (page*12, (page+1)*13))
             myresult = mycursor.fetchall()
             myresult = list(myresult)
-            print(myresult)
+            # print(myresult)
             values = howManyData(myresult)
-            print("values", values)
+            # print("values", values)
             # --------------
             response = {}
             if myresult == []:
@@ -115,7 +118,7 @@ def attractions():
                 response["nextPage"] = page+1
                 response["data"] = values
                 return response
-        # -------------
+    # -------------
     except:
         error = {}
         error["error"] = True
