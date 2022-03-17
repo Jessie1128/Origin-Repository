@@ -1,0 +1,250 @@
+html {
+  min-height: 100%;
+  position: relative;
+}
+body {
+  margin: 0;
+  margin-bottom: 159px;
+  font-family: 微軟正黑體 !important;
+  display: grid;
+  grid-auto-rows: auto;
+  grid-auto-columns: auto;
+  height: 100%;
+}
+/* -------------- */
+.nav {
+  border: #e8e8e8 1px solid;
+  position: sticky;
+  z-index: 30;
+  top: 0px;
+  background-color: #ffffff;
+  left: -50%;
+  right: -50%;
+  width: 100%;
+}
+
+.nav_bar {
+  display: grid;
+  align-items: center;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.nav_left {
+  color: #448899;
+  grid-row: 1/2;
+  grid-column: 1/2;
+  width: 200px;
+  font-size: 30px;
+  padding: 5px;
+}
+
+.nav_left:hover {
+  font-weight: bold;
+}
+
+.nav_right {
+  display: grid;
+  color: #666666;
+  grid-row: 1/2;
+  grid-column: 2 / -1;
+  padding: 10px;
+  grid-gap: 10px;
+  justify-self: end;
+  grid-auto-flow: column;
+}
+
+.nav_right_item {
+  font-size: 16px;
+  padding: 5px;
+  text-align: center;
+}
+
+/* -------------- */
+.section {
+  /* background-color: #0d41eb; */
+  display: grid;
+  height: 406px;
+  grid-gap: 30px;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  margin-top: 40px;
+  grid-auto-flow: column;
+}
+
+.section_left {
+  height: 406px;
+  width: 540px;
+  display: grid;
+  margin: 0 auto;
+  min-width: 100%;
+  max-width: 100%;
+  min-width: 100%;
+  object-fit: cover;
+  padding-left: 10px;
+}
+
+.section_right {
+  /* grid-row: 1/2;
+  grid-column: 2 / -1; */
+  /* background-color: #dd4747; */
+  width: 600px;
+}
+
+.attraction_name {
+  /* background-color: aquamarine; */
+  color: #666666;
+  font-weight: bold;
+  font-size: 24px;
+  /* width: 600px; */
+  margin-top: 0px;
+}
+
+.attraction_loca {
+  font-size: 16px;
+}
+
+.section_right_bottom {
+  background: #e8e8e8;
+  color: #666666;
+  border-radius: 5px;
+  height: 302px;
+  padding-left: 20px;
+  padding-top: 5px;
+  font-weight: bold;
+}
+
+.section_right_bottom :nth-child(2) {
+  font-weight: 400;
+}
+
+.section_right_bottom :nth-child(5) {
+  padding-top: 15px;
+}
+
+.section_right_bottom :nth-child(6) {
+  margin-top: 35px;
+  width: 154px;
+  height: 36px;
+  font-size: 19px;
+  border-radius: 5px;
+  background-color: #448899;
+  display: grid;
+  align-items: center;
+  justify-items: center;
+}
+
+.right_bottom_sapn1 {
+  font-weight: bold;
+}
+
+.right_bottom_botton {
+  color: #ffffff;
+  width: 114px;
+  font-weight: bold;
+}
+
+.choose_time {
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: flex-start;
+}
+
+.choose_time_click {
+  display: grid;
+  grid-auto-flow: column;
+}
+
+.choose_time :nth-child(1) {
+  width: 80px;
+}
+
+.choose_time :nth-child(2) {
+  display: grid;
+  grid-auto-flow: column;
+  width: 100px;
+}
+
+.choose_time :nth-child(3) {
+  display: grid;
+  grid-auto-flow: column;
+  width: 100px;
+}
+
+.circle {
+  background-color: #ffffff;
+  max-width: 22px;
+  height: 22px;
+  border-radius: 100%;
+}
+
+.blue_circle {
+  background-color: #ffffff;
+  position: relative;
+  bottom: -2px;
+  left: -126px;
+  z-index: 10;
+  max-width: 18px;
+  height: 18px;
+  border-radius: 100%;
+}
+
+.blue_circle:hover {
+  background-color: #448899;
+}
+
+.circle_word {
+  padding-left: 6px;
+}
+
+/* -------------- */
+.hr {
+  width: 1200px;
+  border: 1px solid #e8e8e8;
+  margin: 0 auto;
+  margin-top: 37px;
+}
+
+.infors {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  margin-top: 50px;
+  color: #666666;
+  padding-left: 10px;
+  padding-right: 10px;
+  /* white-space: pre-line;
+  word-break: break-all;
+  word-wrap: break-word; */
+}
+
+.infors :nth-child(3) {
+  font-weight: bold;
+  margin-top: 5px;
+}
+.infors :nth-child(2n) {
+  position: relative;
+  bottom: -10px;
+  font-weight: bold;
+  padding-top: 30px;
+}
+
+/* -------------- */
+.footer {
+  position: absolute;
+  margin-top: 55px;
+  font-size: 14px;
+  height: 104px;
+  display: grid;
+  grid-column: 1/-1;
+  align-items: center;
+  justify-items: center;
+  width: 100%;
+  background-color: #757575;
+  color: #ffffff;
+  /* position: sticky; */
+  /* position: relative; */
+  bottom: 0;
+}
