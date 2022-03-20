@@ -59,12 +59,22 @@ eventListener = () =>{
     circle_second.addEventListener("click",circle_click,false); 
 } 
 
+el = (className,num=0) => { 
+    return document.getElementsByClassName(className)[num];
+}
+
 circle_click = (click) => {
-    let right_bottom_sapn2=document.getElementsByClassName("right_bottom_sapn2")[0];
-    if(click.target==document.getElementsByClassName("blue_circle")[0]){
-        right_bottom_sapn2.textContent="新台幣 2000 元";
+    first=el("blue_circle");
+    second=el("blue_circle",1);
+    right_botton=el("right_bottom_sapn2");
+    first.style.backgroundColor="#ffffff";
+    second.style.backgroundColor="#ffffff";
+    if(click.target==first){
+        right_botton.textContent="新台幣 2000 元";
+        first.style.backgroundColor="#448899";
     }else{
-        right_bottom_sapn2.textContent="新台幣 2500 元";
+        right_botton.textContent="新台幣 2500 元";
+        second.style.backgroundColor="#448899";
     }
 }
 
