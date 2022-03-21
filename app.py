@@ -16,10 +16,10 @@ def index():
     return render_template("index.html")
 
 
-@ app.route("/attraction/<id>")
-def attraction(id):
+@ app.route("/api/attraction/<id>")
+def attraction_id(id):
     ValuesKeys = "id, name, category, description, address, transport, mrt, latitude, longitude, images"
-    sqlSelect = "SELECT "+ValuesKeys+" FROM Attractions WHERE NUM= %s;"
+    sqlSelect = "SELECT "+ValuesKeys+" FROM Attractions WHERE id= %s;"
     mycursor.execute(sqlSelect, (id,))
     myresult = mycursor.fetchone()
     # ---------
@@ -46,10 +46,14 @@ def attraction(id):
         error["error"] = True
         error["message"] = "伺服器內部錯誤"
         return (error, 500)
+
+
+@ app.route("/attraction/<id>")
+def attraction(id):
     return render_template("attraction.html")
 
 
-@ app.route("/attractions")
+@ app.route("/api/attractions")
 def attractions():
     page = request.args.get("page", 0, type=int)
     keyword = request.args.get("keyword", None)
@@ -74,12 +78,10 @@ def attractions():
     # -----------
     try:
         if keyword == None:
-            print("執行這邊")
             sqlSelect = "SELECT "+ValuesKeys+" FROM Attractions LIMIT %s,%s;"
             mycursor.execute(sqlSelect, (page*12, 13))
             myresult = mycursor.fetchall()
             values = howManyData(myresult)
-            # print("執行這邊")
         # --------
             response = {}
             if len(myresult) > 12:
@@ -92,7 +94,6 @@ def attractions():
                 response["data"] = values
                 return response
         else:
-            print("執行這邊")
             sqlSelect = "SELECT "+ValuesKeys + \
                 " FROM Attractions WHERE NAME LIKE '%" + keyword+"%' LIMIT %s,%s;"
             # print(sqlSelect)
@@ -136,9 +137,9 @@ def thankyou():
     return render_template("thankyou.html")
 
 
-app.add_url_rule('/api/attraction/<id>',
-                 endpoint="attractions/<id>", view_func=attraction)
-app.add_url_rule('/api/attractions', endpoint="attractions",
-                 view_func=attractions)
+# app.add_url_rule('/api/attraction/<id>',
+#                  endpoint="attractions/<id>", view_func=attraction)
+# app.add_url_rule('/api/attractions', endpoint="attractions",
+#                  view_func=attractions)
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=3000)
