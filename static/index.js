@@ -235,7 +235,6 @@ login_system = (name,email,password,message) => {
             }else{
                 message.textContent=data.message;
             }
-            console.log("PATCH 成功");
         }else if(methods="POST"){               // ============================== fetch POST
             if(data["ok"]){
                 message.textContent="註冊成功";
@@ -248,7 +247,6 @@ login_system = (name,email,password,message) => {
             }else{
                 message.textContent=data.message;
             }
-            console.log("POST 成功");
         }
     })
 }

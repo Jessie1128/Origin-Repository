@@ -34,21 +34,21 @@ def loginPage():
         if cookie_token == None:
             return jsonify({"data": None}), 200
         else:
-            # try:
-            cookie_token = cookie_token.replace('"user_token"=', "")
-            print(cookie_token)
-            jwt_decode = jwt.decode(
-                cookie_token, os.getenv("key"), algorithms=["HS256"])
-            print(jwt_decode)
-            email = jwt_decode["email"]
-            sqlSelect = "SELECT ID,NAME,EMAIL FROM member WHERE `EMAIL`=%s"
-            mycursor.execute(sqlSelect, (email,))
-            myresult = mycursor.fetchone()
-            return jsonify({"data": {"id": myresult[0], "name": myresult[1], "email": myresult[2]}}), 200
-            # except Exception as e:
-            #     print("error message", e)
-            #     error_message = '{}'.format(e)
-            #     return jsonify({"data": None}), 400
+            try:
+                cookie_token = cookie_token.replace('"user_token"=', "")
+                print(cookie_token)
+                jwt_decode = jwt.decode(
+                    cookie_token, os.getenv("key"), algorithms=["HS256"])
+                print(jwt_decode)
+                email = jwt_decode["email"]
+                sqlSelect = "SELECT ID,NAME,EMAIL FROM member WHERE `EMAIL`=%s"
+                mycursor.execute(sqlSelect, (email,))
+                myresult = mycursor.fetchone()
+                return jsonify({"data": {"id": myresult[0], "name": myresult[1], "email": myresult[2]}}), 200
+            except Exception as e:
+                print("error message", e)
+                error_message = '{}'.format(e)
+                return jsonify({"data": None}), 400
     # ================================================================================= POST
     if request.method == 'POST':
         req = request.get_json()
@@ -73,7 +73,6 @@ def loginPage():
                 jsonify({"ok": True, "user_token": user_token}), 200)
             res.set_cookie('user_token', value=user_token, samesite="Lax")
             return res
-            return res
         else:
             return jsonify({"error": True, "message": "註冊失敗，重複的 Email 或其他原因"}), 400
     # ================================================================================= PATCH
@@ -95,10 +94,14 @@ def loginPage():
             }
             user_token = jwt.encode(
                 payload, os.getenv("key"), algorithm="HS256")
+            print("'user_token'", user_token)
+            print("'user_token'type", type(user_token))
             # ==============
             res = make_response(
                 jsonify({"ok": True, "user_token": user_token}), 200)
             res.set_cookie('user_token', value=user_token, samesite="Lax")
+            print("res", res)
+            print("restype", type(res))
             return res
     # ================================================================================= DELETE
     if request.method == 'DELETE':
