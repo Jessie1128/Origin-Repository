@@ -98,8 +98,8 @@ def loginPage():
             print("'user_token'type", type(user_token))
             # ==============
             res = make_response(
-                jsonify({"ok": True, "user_token": user_token}), 200)
-            # res.set_cookie('user_token', value=user_token, samesite="Lax")
+                jsonify({"ok": True}), 200)
+            res.set_cookie('user_token', value=user_token, samesite="Lax")
             print("res", res)
             # print("restype", type(res))
 
