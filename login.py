@@ -73,6 +73,7 @@ def loginPage():
                 jsonify({"ok": True, "user_token": user_token}), 200)
             res.set_cookie('user_token', value=user_token, samesite="Lax")
             return res
+            return res
         else:
             return jsonify({"error": True, "message": "註冊失敗，重複的 Email 或其他原因"}), 400
     # ================================================================================= PATCH
