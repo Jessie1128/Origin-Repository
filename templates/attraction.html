@@ -5,11 +5,31 @@
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
         <link rel="stylesheet" href="{{ url_for('static', filename='attraction.css')}}">
-        <a href="attraction.html"></a>
-        <!-- <meta http-equiv="refresh" content="url=/api/attraction"/> -->
         <script type="text/javascript" src="{{url_for('static', filename='index.js')}}"></script> 
+        <!-- <a href="attraction.html"></a> -->
+        <!-- <meta http-equiv="refresh" content="url=/api/attraction"/> -->
     </head>
-    <body  onload="attractionPage()">
+    <body  onload="attractionPage();">
+         <!-- ========================================================= body cover-->
+        <div class="body_cover"></div>
+         <!-- ========================================================= login box-->
+         <div class="login_box">
+            <form>
+                <div class="inner_border"></div>
+                <div class="login_box_inner">
+                    <div>
+                        <div class="login_box_inner_stitle">登入會員帳號</div><img id="close_login_box" src="/icon_close.png"/>
+                    </div>
+                    <input id="login_1" type="test" placeholder="輸入姓名" name="login_name">
+                    <input id="login_2" type="test" placeholder="輸入電子信箱" name="login_mail">
+                    <input id="login_3" type="test" placeholder="輸入密碼" name="login_password">
+                    <botton id="login_botton">登入帳戶</botton>
+                    <div id="message"></div>
+                    <div id="register_member">還沒有帳戶？點此註冊</div>
+                </div>
+            </form>    
+        </div>
+         <!-- ========================================================= nav-->
         <div class="nav">
             <div class="nav_bar">
                 <div class="nav_left">台北一日遊</div>
@@ -19,8 +39,7 @@
                 </div>
             </div>
         </div>
-
-
+         <!-- ========================================================= section-->
         <div class="section">
             <div id="section_left"></div>
             <div class="section_right">
@@ -32,7 +51,7 @@
                     <p>訂購導覽行程</p>
                     <p>以此景點為中心的一日行程，帶您探索城市角落故事</p>
                     <p>選擇日期 :
-                        <input type="date"> 
+                        <input type="date" id="date"> 
                     </p>
                     <div class="choose_time">
                         <div class="choose_time_click">選擇時間 :</div>
@@ -57,6 +76,7 @@
                 </div>
             </div>
         </div>
+         <!-- ========================================================= infors-->
         <div class="infors">
             <p></p>
             <p>景點地址 :</p>
@@ -64,6 +84,7 @@
             <p>交通方式 :</p>
             <p></p>
         </div>
+         <!-- ========================================================= footer-->
         <div class="footer">COPYRIGHT © 2021台北一日遊</div>
     </body>
 </html>

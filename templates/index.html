@@ -8,6 +8,26 @@
         <script type="text/javascript" src="{{url_for('static', filename='index.js')}}"></script> 
     </head>
     <body onload="indexPage(0)">
+         <!-- ========================================================= body cover-->
+        <div class="body_cover"></div>
+         <!-- ========================================================= login box-->
+        <div class="login_box">
+            <form>
+                <div class="inner_border"></div>
+                <div class="login_box_inner">
+                    <div>
+                        <div class="login_box_inner_stitle">登入會員帳號</div><img id="close_login_box" src="icon_close.png"/>
+                    </div>
+                    <input id="login_1" type="test" placeholder="輸入姓名" name="login_name">
+                    <input id="login_2" type="test" placeholder="輸入電子信箱" name="login_mail">
+                    <input id="login_3" type="test" placeholder="輸入密碼" name="login_password">
+                    <botton id="login_botton">登入帳戶</botton>
+                    <div id="message"></div>
+                    <div id="register_member">還沒有帳戶？點此註冊</div>
+                </div>
+            </form>    
+        </div>
+         <!-- ========================================================= nav-->
         <div class="nav">
             <div class="nav_bar">
                 <div class="nav_left">台北一日遊</div>
@@ -17,20 +37,22 @@
                 </div>
             </div>
         </div>
-            <div class="header">
-                <p class="header_inner">輕鬆享受台北一日悠閒</p>
-                <p class="header_inner">探索每個角落，體驗城市的深度旅遊行程</p>
-                <p class="header_inner">
-                    <input id="header_input" placeholder="輸入景點名稱查詢" type="text" name="keyword">
-                        <button id="search" type="submit">
-                            <img src="icon_search.png"/>
-                        </button>
-                    </input>
-                </p>
-                <p class="header_inner">
-                    <img class="header_img" src="welcome1.png"/>
-                </p>
-            </div>
+         <!-- ========================================================= header-->
+        <div class="header">
+            <p class="header_inner">輕鬆享受台北一日悠閒</p>
+            <p class="header_inner">探索每個角落，體驗城市的深度旅遊行程</p>
+            <p class="header_inner">
+                <input id="header_input" placeholder="輸入景點名稱查詢" type="text" name="keyword">
+                    <button id="search" type="submit">
+                        <img src="icon_search.png"/>
+                    </button>
+                </input>
+            </p>
+            <p class="header_inner">
+                <img class="header_img" src="welcome1.png"/>
+            </p>
+        </div>
+         <!-- ========================================================= footer-->
         <div class="footer">COPYRIGHT © 2021台北一日遊</div>
         <script src="index.js"></script> 
     </body>
