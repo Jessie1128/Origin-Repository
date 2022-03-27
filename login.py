@@ -25,7 +25,6 @@ mycursor = mydb.cursor()
 
 @login.route("/user", methods=['GET', 'POST', 'PATCH', 'DELETE'])
 def loginPage():
-    # info = {}
     # try:
     # ================================================================================= GET
     if request.method == 'GET':
@@ -70,7 +69,7 @@ def loginPage():
                 payload, os.getenv("key"), algorithm="HS256")
             # ==============
             res = make_response(
-                jsonify({"ok": True, "user_token": user_token}), 200)
+                jsonify({"ok": True}), 200)
             res.set_cookie('user_token', value=user_token, samesite="Lax")
             return res
         else:
@@ -100,26 +99,14 @@ def loginPage():
             res = make_response(
                 jsonify({"ok": True}), 200)
             res.set_cookie('user_token', value=user_token, samesite="Lax")
-            print("res", res)
-            # print("restype", type(res))
-
             return res
     # ================================================================================= DELETE
     if request.method == 'DELETE':
         cookie_token = request.headers.get("cookie")
-
-        # res = make_response(
-        #     jsonify({"ok": True}), 200)
-        # res.set_cookie('user_token', value='', max_age=0)
         resp = make_response(
             jsonify({"ok": True}), 200)
-        # resp = Response('delete cookies',)
         resp.delete_cookie('user_token', path='/')
-        # resp.set_cookie('user_token', expires=0)
-        print("cookie_token", cookie_token)
-        print("登出")
         return resp
-        # return jsonify({"ok": True}), 200
     # ================================================================================= except
     # except:
     #     return jsonify({"error": True, "message": "伺服器內部錯誤"}), 500
