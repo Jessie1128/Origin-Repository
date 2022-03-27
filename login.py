@@ -27,6 +27,7 @@ mycursor = mydb.cursor()
 def loginPage():
     # try:
     # ================================================================================= GET
+    # ================================================================================= GET
     if request.method == 'GET':
         cookie_token = request.cookies.get("user_token")
         print("cookie_token", cookie_token)
