@@ -101,6 +101,33 @@ LOCK TABLES `backup` WRITE;
 /*!40000 ALTER TABLE `backup` DISABLE KEYS */;
 /*!40000 ALTER TABLE `backup` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `member`
+--
+
+DROP TABLE IF EXISTS `member`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `member` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `member`
+--
+
+LOCK TABLES `member` WRITE;
+/*!40000 ALTER TABLE `member` DISABLE KEYS */;
+INSERT INTO `member` VALUES (1,'abc','abc@gmail','abc','2022-03-23 11:34:52'),(2,'jessie','jessie@gmail.com','jessie','2022-03-23 12:42:21'),(3,'amy','amy@gmail.com','amy','2022-03-23 12:42:56'),(4,'cindy','cindy@gmail.com','cindy','2022-03-23 12:58:58'),(5,'jason','jason@gmail.com','jason','2022-03-23 13:00:04'),(6,'alex','alex@gmail.com','alex','2022-03-23 13:46:37'),(7,'alex','alex@gmail.co','alex','2022-03-23 14:02:38'),(8,'hi','hi@gmail.com','hi','2022-03-25 22:09:00'),(9,'hihi','hihi@gmail.com','hihi','2022-03-25 22:10:58'),(10,'hello','hello@gmail.com','hello','2022-03-25 22:17:07'),(11,'aaa','aaa@gmail.com','aaa','2022-03-25 22:30:11'),(12,'ddd','ddd','ddd','2022-03-25 22:41:12'),(13,'ccc','ccc','ccc','2022-03-25 22:42:01'),(14,'aaaaaa','aaaaaa','aaaaaa','2022-03-26 12:29:06'),(15,'d','d','d','2022-03-26 12:32:38'),(16,'qq','qq','qq','2022-03-26 12:33:11'),(17,'tt','tt','tt','2022-03-26 12:33:35'),(18,'j','do','f','2022-03-26 12:34:18'),(19,'r','r','r','2022-03-27 17:43:09');
+/*!40000 ALTER TABLE `member` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -111,4 +138,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-03-08  2:20:58
+-- Dump completed on 2022-03-27 20:50:54

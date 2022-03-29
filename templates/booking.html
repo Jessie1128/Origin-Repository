@@ -1,12 +1,99 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Origin-Repository</title> 
+        <title>台北一日遊</title> 
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-        <!-- <link rel="stylesheet" href="{{ url_for('static', filename='week-6.css') }}"> -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='booking.css')}}">
+        <a href="attraction.html"></a>
+        <script type="text/javascript" src="{{url_for('static', filename='index.js')}}"></script> 
     </head>
-    <body>
-        <div >Not Yet</div>
+    <body  onload="bookingPage()">
+        <!-- ========================================================= body cover-->
+        <div class="body_cover"></div>
+        <!-- ========================================================= login box-->
+        <div class="login_box">
+            <form>
+                <div class="inner_border"></div>
+                <div class="login_box_inner">
+                    <div>
+                        <div class="login_box_inner_stitle">登入會員帳號</div><img id="close_login_box" src="icon_close.png"/>
+                    </div>
+                    <input id="login_1" type="test" placeholder="輸入姓名" name="login_name">
+                    <input id="login_2" type="test" placeholder="輸入電子信箱" name="login_mail">
+                    <input id="login_3" type="password" placeholder="輸入密碼" name="login_password">
+                    <botton id="login_botton">登入帳戶</botton>
+                    <div id="message"></div>
+                    <div id="register_member">還沒有帳戶？點此註冊</div>
+                </div>
+            </form>    
+        </div>
+        <!-- ========================================================= nav-->
+        <div class="nav">
+            <div class="nav_bar">
+                <div class="nav_left">台北一日遊</div>
+                <div class="nav_right">
+                    <span class="nav_right_item">預定行程</span>
+                    <span class="nav_right_item">登陸/註冊</span>
+                </div>
+            </div>
+        </div>
+        <!-- ========================================================= headline-->
+        <div class="headline">
+            <p class="headline_top">您好，{{name}}，待預定的行程如下：</p>
+            <div class="headline_bottom">
+                <img class="headline_bottom_left"></img>
+                <div class="headline_bottom_right">
+                    <div>
+                        <div class="bottom_right_first">台北一日遊： <span></span></div>
+                        <img src="icon_delete.png"/>
+                    </div>
+                    <div>日期：<span></span></div>
+                    <div>時間：<span></span></div>
+                    <div>費用：<span></span></div>
+                    <div>地點：<span></span></div>
+                </div>
+            </div>
+        </div>
+        <hr class="hr"/>
+        <!-- ========================================================= contact-->
+        <div class="contact">
+            <div>您的聯絡資訊</div>
+            <div>聯絡姓名：
+                <input class="contact_input" type="text" name="contact_name">
+            </div>
+            <div>聯絡信箱：
+                <input class="contact_input" type="text" name="contact_mail">
+            </div>
+            <div>手機號碼：
+                <input class="contact_input" type="text" name="contact_phone">
+            </div>
+            <div>請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。</div>
+        </div>
+        <hr class="hr"/>
+        <!-- ========================================================= payment-->
+        <div class="payment">
+            <div>信用卡付款資訊</div>
+            <div>卡片號碼：
+                <input class="payment_input" placeholder="**** **** **** ****" type="text" name="contact_name">
+            </div>
+            <div>過期時間：
+                <input class="payment_input" placeholder="MM / YY" type="text" name="contact_mail">
+            </div>
+            <div>驗證密碼：
+                <input class="payment_input" placeholder="CVV" type="text" name="contact_phone">
+            </div>
+        </div>
+        <hr class="hr"/>
+        <!-- ========================================================= confirm-->
+        <div class="confirm">
+            <div class="confirm_price">總價：
+                <div class="confirm_price_inner">新台幣 2000 元</div>
+            </div>
+            <botton class="confirm_botton">確認訂購並付款</botton>
+        </div>
+        <!-- ========================================================= footer-->
+        <div class="footer">COPYRIGHT © 2021台北一日遊</div>
     </body>
 </html>
+        
