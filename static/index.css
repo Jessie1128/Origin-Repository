@@ -79,6 +79,7 @@ body {
 
 .login_box_inner img:hover {
   width: 5%;
+  cursor: pointer;
 }
 
 .login_box_inner input {
@@ -103,6 +104,7 @@ body {
 .login_box_inner botton:hover {
   font-weight: bold;
   font-size: 18px;
+  cursor: pointer;
 }
 
 #message {
@@ -171,6 +173,7 @@ body {
 
 .nav_right_item:hover:nth-child(2) {
   font-weight: bold;
+  cursor: pointer;
 }
 
 /* .booking {
@@ -184,6 +187,7 @@ body {
 } */
 .booking:hover {
   font-weight: bold;
+  cursor: pointer;
 }
 
 /* -------------- */
@@ -281,6 +285,10 @@ body {
   border-bottom-right-radius: 0.5em;
   justify-items: center;
   align-items: center;
+}
+
+#search:hover {
+  cursor: pointer;
 }
 
 /* -------------- */
@@ -457,5 +465,6 @@ body {
 
   .login_box_inner botton:hover {
     font-size: 16px;
+    cursor: pointer;
   }
 }

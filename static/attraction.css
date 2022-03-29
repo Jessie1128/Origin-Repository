@@ -79,6 +79,7 @@ body {
 
 .login_box_inner img:hover {
   width: 5%;
+  cursor: pointer;
 }
 
 .login_box_inner input {
@@ -103,6 +104,7 @@ body {
 .login_box_inner botton:hover {
   font-weight: bold;
   font-size: 18px;
+  cursor: pointer;
 }
 
 #message {
@@ -116,6 +118,7 @@ body {
 
 #register_member:hover {
   font-weight: bold;
+  cursor: pointer;
 }
 
 #login_1 {
@@ -172,6 +175,7 @@ body {
 .nav_right_item:hover:nth-child(2),
 .nav_left:hover {
   font-weight: bold;
+  cursor: pointer;
 }
 
 /* .booking {
@@ -182,6 +186,7 @@ body {
 
 .booking:hover {
   font-weight: bold;
+  cursor: pointer;
 }
 
 /* -------------- */
@@ -281,6 +286,7 @@ body {
 
 .arrow_left:hover {
   opacity: 1;
+  cursor: pointer;
 }
 
 .arrow_right {
@@ -297,6 +303,7 @@ body {
 
 .arrow_right:hover {
   opacity: 1;
+  cursor: pointer;
 }
 
 .manual_label:not(:last-child) {
@@ -306,6 +313,7 @@ body {
 .manual_label:hover {
   background-color: #ffffff !important;
   opacity: 0.7;
+  cursor: pointer;
 }
 
 /* -------------- */
@@ -364,6 +372,7 @@ body {
 .right_bottom_botton:hover {
   font-size: 20px;
   width: 120px;
+  cursor: pointer;
 }
 
 #date {
@@ -418,7 +427,8 @@ body {
 }
 
 .blue_circle:hover {
-  background-color: #448899;
+  /* background-color: #448899; */
+  cursor: pointer;
 }
 
 .circle_word {
@@ -564,5 +574,6 @@ body {
 
   .login_box_inner botton:hover {
     font-size: 16px;
+    cursor: pointer;
   }
 }

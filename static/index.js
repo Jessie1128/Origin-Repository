@@ -13,6 +13,7 @@ indexPage = (page) => {
     register_member();
     close_login_box();
     check_user_status();
+    mouse_over_out();
     let url=`/api/attractions?page=${page}`;
     fetchUrl(url);
 };
@@ -74,6 +75,11 @@ nav_eventListener = () =>{
     nav_login.addEventListener("click",login_show);
     login_botton.addEventListener("click",dircet_to_login_system);
 } 
+
+// ===========================================================  mouseover & mouseout 的 eventlistener 
+mouse_over_out = () => {
+
+}
 
 // =========================================================== 景點的預定行程的 eventlistener & 跳轉到booking頁面
 
@@ -297,6 +303,7 @@ back_to_og_page = () => {
 price_click_eventListener = () => {
     let circle_first=el("blue_circle");
     let circle_second=el("blue_circle",1);
+    circle_first.style.background="#448899";
     circle_first.addEventListener("click",circle_click,false);
     circle_second.addEventListener("click",circle_click,false); 
 }
