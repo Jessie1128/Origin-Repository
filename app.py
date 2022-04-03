@@ -4,10 +4,12 @@ import mysql.connector
 from flask import *
 import jwt
 from login import login
+from booking import booking
 load_dotenv("mydb.evn")
 # ========================================================================== blue print
 app = Flask(__name__, static_folder="static", static_url_path="/")
 app.register_blueprint(login, url_prefix="/api")
+app.register_blueprint(booking, url_prefix="/api")
 # ========================================================================== mydb connection
 mydb = mysql.connector.connect(
     host="127.0.0.1", user=os.getenv("user"), password=os.getenv("password"), database="OriginRepository")
@@ -53,10 +55,7 @@ def attraction_id(id):
     # ---------
     try:
         if myresult == None:
-            error = {}
-            error["error"] = True
-            error["message"] = "景點編號錯誤"
-            return (error, 400)
+            return jsonify({"error": True, "message": "景點編號錯誤"}), 400
         else:
             values = {}
             for num in range(len(myresult)):
@@ -66,14 +65,9 @@ def attraction_id(id):
             valuesImagesSplitHTTP = values["images"].split(",")
             values["images"] = valuesImagesSplitHTTP
         # --------
-            response = {}
-            response["data"] = values
-            return response
+            return jsonify({"data": values}), 200
     except:
-        error = {}
-        error["error"] = True
-        error["message"] = "伺服器內部錯誤"
-        return (error, 500)
+        return jsonify({"error": True, "message": "伺服器內部錯誤"}), 500
 
 
 @ app.route("/api/attractions")
@@ -144,10 +138,7 @@ def attractions():
                 return response
     # -------------
     except:
-        error = {}
-        error["error"] = True
-        error["message"] = "自訂的錯誤訊息"
-        return (error, 500)
+        return jsonify({"error": True, "message": "伺服器內部錯誤"}), 500
 
 
 # ==========================================================================app.run
@@ -156,4 +147,4 @@ def attractions():
     # app.add_url_rule('/api/attractions', endpoint="attractions",
     #                  view_func=attractions)
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=3000)
+    app.run(host='0.0.0.0', port=3000, debug=True)

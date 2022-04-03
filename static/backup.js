@@ -638,13 +638,11 @@ get_data_by_id = (data) =>{
 appendElements = (data,url) => {
     let attraction=document.createElement("div");
     attraction.className="attraction";
-    let footer=el("footer");
+    let footer=document.getElementsByClassName("footer")[0];
     // ---------------------------------
     if(url.includes("keyword")&url.includes("page")){
-        if(0<el("attraction",["length"])){
+        if(0<document.getElementsByClassName("attraction")["length"]){
             attraction.style.marginTop="-25px";
-            // console.log("測試測試2");
-            // console.log(el("attraction",["length"]));
         }
         append(data,attraction);
         document.body.insertBefore(attraction,footer);
@@ -662,7 +660,7 @@ appendElements = (data,url) => {
                 document.body.insertBefore(attraction,footer);
             }
     }else{
-        if(0<el("attraction",["length"])){
+        if(0<document.getElementsByClassName("attraction")["length"]){
             attraction.style.marginTop="-25px";
         }
         append(data,attraction);

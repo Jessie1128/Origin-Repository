@@ -118,6 +118,7 @@ body {
 
 #register_member:hover {
   font-weight: bold;
+  cursor: pointer;
 }
 
 #login_1 {
@@ -171,24 +172,15 @@ body {
   text-align: center;
 }
 
-.nav_right_item:hover:nth-child(2) {
+.nav_right_item:hover {
   font-weight: bold;
   cursor: pointer;
 }
 
-/* .booking {
-  font-size: 16px;
-  padding: 5px;
-  text-align: center;
-} */
-
-/* #booking {
-  font-weight: bold;
-} */
-.booking:hover {
+/* .booking:hover {
   font-weight: bold;
   cursor: pointer;
-}
+} */
 
 /* -------------- */
 
@@ -367,7 +359,7 @@ body {
   height: 104px;
   display: grid;
   grid-column: 1/-1;
-  align-items: center;
+  /* align-items: center; */
   justify-items: center;
   width: 100%;
   background-color: #757575;
@@ -375,6 +367,10 @@ body {
   /* position: sticky; */
   /* position: relative; */
   bottom: 0;
+}
+
+.footer span {
+  padding-top: 45px;
 }
 
 @media screen and (max-width: 1200px) {

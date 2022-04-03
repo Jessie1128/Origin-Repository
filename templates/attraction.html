@@ -10,10 +10,10 @@
         <!-- <meta http-equiv="refresh" content="url=/api/attraction"/> -->
     </head>
     <body  onload="attractionPage();">
-         <!-- ========================================================= body cover-->
+        <!-- ========================================================= body cover-->
         <div class="body_cover"></div>
-         <!-- ========================================================= login box-->
-         <div class="login_box">
+        <!-- ========================================================= login box-->
+        <div class="login_box">
             <form>
                 <div class="inner_border"></div>
                 <div class="login_box_inner">
@@ -29,7 +29,18 @@
                 </div>
             </form>    
         </div>
-         <!-- ========================================================= nav-->
+        <!-- ========================================================= error_message-->
+        <div class="error_box">
+            <div class="error_box_border">
+                <div class="error_box_inner">
+                    <div>
+                        <div class="error_box_inner_stitle"></div><img id="close_error_box" src="/icon_close.png"/>
+                    </div>
+                    <div class="error_box_inner_text"></div>
+                </div> 
+            </div>
+        </div>
+        <!-- ========================================================= nav-->
         <div class="nav">
             <div class="nav_bar">
                 <div class="nav_left">台北一日遊</div>
@@ -67,8 +78,8 @@
                         </div>
                     </div>
                     <div>
-                        <span class="right_bottom_sapn1">導覽費用 :</span>
-                        <span class="right_bottom_sapn2">新台幣 2000 元</span>
+                        <span class="right_bottom_span1">導覽費用 :</span>
+                        <span class="right_bottom_span2">新台幣 2000 元</span>
                     </div>
                     <div>
                         <botton class="right_bottom_botton">開始預定行程</botton>
@@ -80,11 +91,11 @@
         <div class="infors">
             <p></p>
             <p>景點地址 :</p>
-            <p></p>
+            <p id="address"></p>
             <p>交通方式 :</p>
             <p></p>
         </div>
          <!-- ========================================================= footer-->
-        <div class="footer">COPYRIGHT © 2021台北一日遊</div>
+        <div class="footer"><span>COPYRIGHT © 2021台北一日遊<span></div>
     </body>
 </html>

@@ -39,19 +39,28 @@
             </div>
         </div>
         <!-- ========================================================= headline-->
-        <div class="headline">
-            <p class="headline_top">您好，{{name}}，待預定的行程如下：</p>
-            <div class="headline_bottom">
-                <img class="headline_bottom_left"></img>
-                <div class="headline_bottom_right">
-                    <div>
-                        <div class="bottom_right_first">台北一日遊： <span></span></div>
-                        <img src="icon_delete.png"/>
+        <div class="headline_main">
+            <div class="headline_main_top">您好，<span class="headline_main_name"></span>，待預定的行程如下：</div>
+        </div>
+        <div class="headline_1">
+            <div class="headline_1_inner">目前沒有任何待預訂的行程</div>
+        </div>
+        <div class="headline_2">
+            <!-- <p class="headline_top">您好，<span class="headline_top_name"></span>，待預定的行程如下：</p> -->
+            <div class="headline_2_inner">
+                <img class="headline_2_left"></img>
+                <div class="headline_2_right">
+                    <div class="headline_2_right_first">
+                        <div class="headline_2_right_stitle">台北一日遊：</div>
+                        <div id="headline_2_name"></div> 
+                        <div class="remove"><img class="remove_booking" src="icon_delete.png"/></div>
+                        <!-- <span id="headline_2_name"></span> -->
                     </div>
-                    <div>日期：<span></span></div>
-                    <div>時間：<span></span></div>
-                    <div>費用：<span></span></div>
-                    <div>地點：<span></span></div>
+                    <!-- <img class="remove_booking" src="icon_delete.png"/> -->
+                    <div>日期：<span id="headline_2_date"></span></div>
+                    <div>時間：<span id="headline_2_time"></span></div>
+                    <div>費用：<span id="headline_2_price"></span></div>
+                    <div>地點：<span id="headline_2_address"></span></div>
                 </div>
             </div>
         </div>
@@ -88,12 +97,12 @@
         <!-- ========================================================= confirm-->
         <div class="confirm">
             <div class="confirm_price">總價：
-                <div class="confirm_price_inner">新台幣 2000 元</div>
+                <div class="confirm_price_inner"></div>
             </div>
             <botton class="confirm_botton">確認訂購並付款</botton>
         </div>
         <!-- ========================================================= footer-->
-        <div class="footer">COPYRIGHT © 2021台北一日遊</div>
+        <div class="footer"><span>COPYRIGHT © 2021台北一日遊<span></div>
     </body>
 </html>
         
