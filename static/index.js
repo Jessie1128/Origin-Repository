@@ -213,14 +213,6 @@ booking_page_create_info = (data,time) => {
         el("headline_2_left").remove();
         console.log("刪掉img");
     }
-    // if(el("headline_2") != undefined){
-    //     el("headline_2").remove();
-    //     el("contact").remove();
-    //     el("payment").remove();
-    //     el("confirm").remove();
-    //     hr=document.querySelectorAll(".hr");
-    //     hr.forEach(elem=>elem.remove());
-    // }
     console.log(data["data"]["date"]);
     // =========================================================== create headline_2
     img=document.createElement("img");
@@ -237,6 +229,30 @@ booking_page_create_info = (data,time) => {
     hr=document.createElement("hr");
     hr.className="hr";
     document.body.insertBefore(hr,el("contact"));
+    // =========================================================== create contact
+    el_id("contact_stitle").textContent="您的聯絡資訊";
+    el_id("contact_name").innerHTML="聯絡姓名：<input class='contact_input' type='text' name='contact_name'>";
+    el_id("contact_email").innerHTML="聯絡信箱：<input class='contact_input' type='text' name='contact_mail'>";
+    el_id("contact_phone").innerHTML="手機號碼：<input class='contact_input' type='text' name='contact_phone'>";
+    el_id("contact_notice").textContent="請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。";
+    hr=document.createElement("hr");
+    hr.className="hr";
+    document.body.insertBefore(hr,el("payment"));
+    // =========================================================== create payment
+    el_id("payment_stitle").textContent="信用卡付款資訊";
+    el_id("payment_num").innerHTML="卡片號碼：<input class='payment_input' placeholder='**** **** **** ****' type='text' name='contact_name'>";
+    el_id("payment_expire_date").innerHTML="過期時間：<input class='payment_input' placeholder='MM / YY' type='text' name='contact_mail'>";
+    el_id("payment_cvv").innerHTML="驗證密碼：<input class='payment_input' placeholder='CVV' type='text' name='contact_phone'>";
+    hr=document.createElement("hr");
+    hr.className="hr";
+    document.body.insertBefore(hr,el("confirm"));
+    // =========================================================== create confirm
+    el("confirm_price").innerHTML="總價：<div class='confirm_price_inner'></div>";
+    el("confirm_price_inner").textContent="新台幣 "+data["data"]["price"]+" 元";
+    botton=document.createElement("botton");
+    botton.className="confirm_botton";
+    botton.textContent="確認訂購並付款";
+    el("confirm").appendChild(botton);
 }
 // =========================================================== 檢查使用者是否登陸 和 登出系統標示 和 nav的預定行程的 eventlistener
 // var user;

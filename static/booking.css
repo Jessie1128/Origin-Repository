@@ -308,6 +308,7 @@ body {
   border: #e8e8e8 2px solid;
   border-radius: 5px;
   padding: 8px 10px 8px;
+  margin-left: 5px;
 }
 
 /* ===================================payment */
@@ -336,6 +337,7 @@ body {
   border: #e8e8e8 2px solid;
   border-radius: 5px;
   padding: 8px 10px 8px;
+  margin-left: 5px;
 }
 
 /* ===================================confirm */
@@ -356,7 +358,8 @@ body {
 }
 
 .confirm_price_inner {
-  margin-left: 5px;
+  display: flex;
+  justify-content: end;
 }
 
 .confirm_botton {
@@ -478,6 +481,6 @@ body {
   }
 
   .remove {
-    top: 586px;
+    top: 576px;
   }
 }
