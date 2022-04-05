@@ -219,7 +219,7 @@ booking_page_create_info = (data,time) => {
     // }
     console.log(data["data"]["date"]);
     // =========================================================== create headline_2
-    el("headline_2_left").setAttribute("src",data["data"]["attraction"]["image"])
+    el("headline_2_left").setAttribute("src",data["data"]["attraction"]["image"]);
     el("headline_2_right_stitle").textContent="台北一日遊：";
     el_id("headline_2_name").textContent=data["data"]["attraction"]["name"];
     el("remove_booking").setAttribute("src","icon_delete.png")
