@@ -209,6 +209,10 @@ booking_page_create_info = (data,time) => {
     if (el("headline_1") != undefined){
         el("headline_1").remove();
     }
+    if (el("headline_2_left")!= undefined){
+        el("headline_2_left").remove();
+        console.log("刪掉img");
+    }
     // if(el("headline_2") != undefined){
     //     el("headline_2").remove();
     //     el("contact").remove();
@@ -219,7 +223,10 @@ booking_page_create_info = (data,time) => {
     // }
     console.log(data["data"]["date"]);
     // =========================================================== create headline_2
-    el("headline_2_left").setAttribute("src",data["data"]["attraction"]["image"]);
+    img=document.createElement("img");
+    img.className="headline_2_left";
+    img.setAttribute("src",data["data"]["attraction"]["image"]);
+    el("headline_2_inner").insertBefore(img,el("headline_2_right"));
     el("headline_2_right_stitle").textContent="台北一日遊：";
     el_id("headline_2_name").textContent=data["data"]["attraction"]["name"];
     el("remove_booking").setAttribute("src","icon_delete.png")
