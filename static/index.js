@@ -27,11 +27,34 @@ select = () => {
     }
 };
 
-attractionPage = () =>{                          //==============init attractionPage & right_bottom_botton 的註冊事件
+attractionPage = () =>{                         
     nav_eventListener();
     register_member();
     close_login_box();
-    check_user_status();                    
+    check_user_status();  
+    single_attraction_id();                  
+    price_click_eventListener(); 
+}
+
+bookingPage = () => {
+    nav_eventListener();
+    register_member();
+    close_login_box();
+    check_user_status();
+    check_booking_info();
+}
+
+// =========================================================== nav 的 eventlistener 
+
+nav_eventListener = () =>{
+    el("nav_left").addEventListener("click",go_to_homePage);
+    el("nav_right_item",1).addEventListener("click",login_show);
+    el_id("login_botton").addEventListener("click",dircet_to_login_system);
+} 
+
+// =========================================================== 取得單一景點資訊的 fetch api & right_bottom_botton 的註冊事件
+
+single_attraction_id = () => {
     let id=location.pathname;
     id=id.substring(id.lastIndexOf("/")+1);
     fetch(`/api/attraction/${id}`)
@@ -52,24 +75,8 @@ attractionPage = () =>{                          //==============init attraction
         slider(pic);
     })
     el("right_bottom_botton").addEventListener("click",attraction_reserve); 
-    price_click_eventListener(); 
 }
 
-bookingPage = () => {
-    nav_eventListener();
-    register_member();
-    close_login_box();
-    check_user_status();
-    check_booking_info();
-}
-
-// =========================================================== nav 的 eventlistener 
-
-nav_eventListener = () =>{
-    el("nav_left").addEventListener("click",go_to_homePage);
-    el("nav_right_item",1).addEventListener("click",login_show);
-    el_id("login_botton").addEventListener("click",dircet_to_login_system);
-} 
 
 // =========================================================== 景點的預定行程的 eventlistener & 跳轉到booking頁面
 
@@ -144,14 +151,11 @@ check_booking_info = () => {
     .then(res=>res.json())
     .then((data)=>{
         console.log(data);
-        console.log(data.data);
+        // console.log(data["data"]["attraction"]["id"]);
         if(data["error"]==true){
-            console.log(data["message"])
             go_to_homePage();
-        }else if(data.data==null){
-            no_booking();
-            total=el("nav").offsetHeight+el("headline_main").offsetHeight+el("headline_1").offsetHeight;
-            el("footer").style.height="calc(100vh - "+total+"px)";
+        }else if(data["data"]==null){
+            booking_page_no_info();
         }else{
             let time;
             if (data.data["time"]=="morning"){
@@ -159,20 +163,74 @@ check_booking_info = () => {
             }else{
                 time="下午時段";
             }
-            el("headline_1").style.display="none";
-            el("headline_2_left").setAttribute("src",data.data["attraction"]["image"]);
-            el_id("headline_2_name").textContent=data.data["attraction"]["name"];
-            el_id("headline_2_date").textContent=data.data["date"];
-            el_id("headline_2_time").textContent=time;
-            el_id("headline_2_price").textContent="新台幣 "+data.data["price"]+" 元";
-            el_id("headline_2_address").textContent=data.data["attraction"]["address"];
-            el("confirm_price_inner").textContent="新台幣 "+data.data["price"]+" 元";
-            el("remove_booking").addEventListener("click",remove_booking);
+            booking_page_create_info(data,time);
+            
+            // el("headline_1").style.display="none";
+            // el("headline_2_left").setAttribute("src",data.data["attraction"]["image"]);
+            // el_id("headline_2_name").textContent=data.data["attraction"]["name"];
+            // el_id("headline_2_date").textContent=data.data["date"];
+            // el_id("headline_2_time").textContent=time;
+            // el_id("headline_2_price").textContent="新台幣 "+data.data["price"]+" 元";
+            // el_id("headline_2_address").textContent=data.data["attraction"]["address"];
+            // el("confirm_price_inner").textContent="新台幣 "+data.data["price"]+" 元";
+            // el("remove_booking").addEventListener("click",remove_booking.bind(null,data["data"]["attraction"]["id"]));
         }
     })
 }
 
 
+// =========================================================== 處理 booking頁面 畫面
+booking_page_no_info = () => {
+    // console.log("沒東西");
+    if (el("headline_1") != undefined){
+        el("headline_1").remove();
+    }
+    if(el("headline_2") != undefined){
+        el("headline_2").remove();
+        el("contact").remove();
+        el("payment").remove();
+        el("confirm").remove();
+        hr=document.querySelectorAll(".hr");
+        hr.forEach(elem=>elem.remove());
+    }
+    headline_1=document.createElement("div");
+    headline_1.className="headline_1";
+    headline_1_inner=document.createElement("div");
+    headline_1_inner.className="headline_1_inner";
+    headline_1_inner.textContent="目前沒有任何待預訂的行程";
+    headline_1.appendChild(headline_1_inner);
+    document.body.insertBefore(headline_1,el("footer"));
+    total_height=el("nav").offsetHeight+el("headline_main").offsetHeight+el("headline_1").offsetHeight;
+    el("footer").style.height="calc(100vh - "+total_height+"px)";
+}
+
+booking_page_create_info = (data,time) => {
+    // console.log(data,time)
+    if (el("headline_1") != undefined){
+        el("headline_1").remove();
+    }
+    // if(el("headline_2") != undefined){
+    //     el("headline_2").remove();
+    //     el("contact").remove();
+    //     el("payment").remove();
+    //     el("confirm").remove();
+    //     hr=document.querySelectorAll(".hr");
+    //     hr.forEach(elem=>elem.remove());
+    // }
+    console.log(data["data"]["date"]);
+    // =========================================================== create headline_2
+    el("headline_2_left").setAttribute("src",data["data"]["attraction"]["image"])
+    el("headline_2_right_stitle").textContent="台北一日遊：";
+    el_id("headline_2_name").textContent=data["data"]["attraction"]["name"];
+    el("remove_booking").setAttribute("src","icon_delete.png")
+    el_id("date").innerHTML="日期：<span id='headline_2_date'>"+data["data"]["date"]+"</span>";
+    el_id("time").innerHTML="時間：<span id='headline_2_time'>"+time+"</span>";
+    el_id("price").innerHTML="費用：<span id='headline_2_price'>"+data["data"]["price"]+"</span>";
+    el_id("address").innerHTML="地點：<span id='headline_2_address'>"+data["data"]["attraction"]["address"]+"</span>";
+    hr=document.createElement("hr");
+    hr.className="hr";
+    document.body.insertBefore(hr,el("contact"));
+}
 // =========================================================== 檢查使用者是否登陸 和 登出系統標示 和 nav的預定行程的 eventlistener
 // var user;
 check_user_status = () => {
@@ -205,13 +263,18 @@ update_username_to_page = (data) => {
     el("contact_input",1).value=data.data["email"];
 }
 
-remove_booking = () => {
+remove_booking = (id) => {
+    console.log("我要刪掉",id);
     let url="/api/booking";
-    fetch(url,{method: "DELETE"})
+    fetch(url,{                     // ========================================= fetch
+        method: "DELETE",
+        body: JSON.stringify({"id":id}),
+        headers: new Headers({
+            "content-type": "application/json"
+        })
+    })
     .then(res=>res.json())
     .then((data)=>{
-        console.log(data);
-        console.log(data["ok"]);
         if(data["ok"]==true){
             go_to_bookingPage();
         }

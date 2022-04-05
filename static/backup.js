@@ -27,11 +27,34 @@ select = () => {
     }
 };
 
-attractionPage = () =>{                          //==============init attractionPage & right_bottom_botton 的註冊事件
+attractionPage = () =>{                         
     nav_eventListener();
     register_member();
     close_login_box();
-    check_user_status();                    
+    check_user_status();  
+    single_attraction_id();                  
+    price_click_eventListener(); 
+}
+
+bookingPage = () => {
+    nav_eventListener();
+    register_member();
+    close_login_box();
+    check_user_status();
+    check_booking_info();
+}
+
+// =========================================================== nav 的 eventlistener 
+
+nav_eventListener = () =>{
+    el("nav_left").addEventListener("click",go_to_homePage);
+    el("nav_right_item",1).addEventListener("click",login_show);
+    el_id("login_botton").addEventListener("click",dircet_to_login_system);
+} 
+
+// =========================================================== 取得單一景點資訊的 fetch api & right_bottom_botton 的註冊事件
+
+single_attraction_id = () => {
     let id=location.pathname;
     id=id.substring(id.lastIndexOf("/")+1);
     fetch(`/api/attraction/${id}`)
@@ -52,24 +75,8 @@ attractionPage = () =>{                          //==============init attraction
         slider(pic);
     })
     el("right_bottom_botton").addEventListener("click",attraction_reserve); 
-    price_click_eventListener(); 
 }
 
-bookingPage = () => {
-    nav_eventListener();
-    register_member();
-    close_login_box();
-    check_user_status();
-    check_booking_info();
-}
-
-// =========================================================== nav 的 eventlistener 
-
-nav_eventListener = () =>{
-    el("nav_left").addEventListener("click",go_to_homePage);
-    el("nav_right_item",1).addEventListener("click",login_show);
-    el_id("login_botton").addEventListener("click",dircet_to_login_system);
-} 
 
 // =========================================================== 景點的預定行程的 eventlistener & 跳轉到booking頁面
 
@@ -144,11 +151,10 @@ check_booking_info = () => {
     .then(res=>res.json())
     .then((data)=>{
         console.log(data);
-        console.log(data.data);
+        // console.log(data["data"]["attraction"]["id"]);
         if(data["error"]==true){
-            console.log(data["message"])
             go_to_homePage();
-        }else if(data.data==null){
+        }else if(data["data"]==null){
             no_booking();
             total=el("nav").offsetHeight+el("headline_main").offsetHeight+el("headline_1").offsetHeight;
             el("footer").style.height="calc(100vh - "+total+"px)";
@@ -167,7 +173,7 @@ check_booking_info = () => {
             el_id("headline_2_price").textContent="新台幣 "+data.data["price"]+" 元";
             el_id("headline_2_address").textContent=data.data["attraction"]["address"];
             el("confirm_price_inner").textContent="新台幣 "+data.data["price"]+" 元";
-            el("remove_booking").addEventListener("click",remove_booking);
+            el("remove_booking").addEventListener("click",remove_booking.bind(null,data["data"]["attraction"]["id"]));
         }
     })
 }
@@ -205,13 +211,18 @@ update_username_to_page = (data) => {
     el("contact_input",1).value=data.data["email"];
 }
 
-remove_booking = () => {
+remove_booking = (id) => {
+    console.log("我要刪掉",id);
     let url="/api/booking";
-    fetch(url,{method: "DELETE"})
+    fetch(url,{                     // ========================================= fetch
+        method: "DELETE",
+        body: JSON.stringify({"id":id}),
+        headers: new Headers({
+            "content-type": "application/json"
+        })
+    })
     .then(res=>res.json())
     .then((data)=>{
-        console.log(data);
-        console.log(data["ok"]);
         if(data["ok"]==true){
             go_to_bookingPage();
         }
@@ -638,11 +649,13 @@ get_data_by_id = (data) =>{
 appendElements = (data,url) => {
     let attraction=document.createElement("div");
     attraction.className="attraction";
-    let footer=document.getElementsByClassName("footer")[0];
+    let footer=el("footer");
     // ---------------------------------
     if(url.includes("keyword")&url.includes("page")){
-        if(0<document.getElementsByClassName("attraction")["length"]){
+        if(0<el("attraction",["length"])){
             attraction.style.marginTop="-25px";
+            // console.log("測試測試2");
+            // console.log(el("attraction",["length"]));
         }
         append(data,attraction);
         document.body.insertBefore(attraction,footer);
@@ -660,7 +673,7 @@ appendElements = (data,url) => {
                 document.body.insertBefore(attraction,footer);
             }
     }else{
-        if(0<document.getElementsByClassName("attraction")["length"]){
+        if(0<el("attraction",["length"])){
             attraction.style.marginTop="-25px";
         }
         append(data,attraction);
