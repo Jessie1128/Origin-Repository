@@ -116,7 +116,7 @@ CREATE TABLE `member` (
   `password` varchar(255) NOT NULL,
   `time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -125,8 +125,37 @@ CREATE TABLE `member` (
 
 LOCK TABLES `member` WRITE;
 /*!40000 ALTER TABLE `member` DISABLE KEYS */;
-INSERT INTO `member` VALUES (1,'abc','abc@gmail','abc','2022-03-23 11:34:52'),(2,'jessie','jessie@gmail.com','jessie','2022-03-23 12:42:21'),(3,'amy','amy@gmail.com','amy','2022-03-23 12:42:56'),(4,'cindy','cindy@gmail.com','cindy','2022-03-23 12:58:58'),(5,'jason','jason@gmail.com','jason','2022-03-23 13:00:04'),(6,'alex','alex@gmail.com','alex','2022-03-23 13:46:37'),(7,'alex','alex@gmail.co','alex','2022-03-23 14:02:38'),(8,'hi','hi@gmail.com','hi','2022-03-25 22:09:00'),(9,'hihi','hihi@gmail.com','hihi','2022-03-25 22:10:58'),(10,'hello','hello@gmail.com','hello','2022-03-25 22:17:07'),(11,'aaa','aaa@gmail.com','aaa','2022-03-25 22:30:11'),(12,'ddd','ddd','ddd','2022-03-25 22:41:12'),(13,'ccc','ccc','ccc','2022-03-25 22:42:01'),(14,'aaaaaa','aaaaaa','aaaaaa','2022-03-26 12:29:06'),(15,'d','d','d','2022-03-26 12:32:38'),(16,'qq','qq','qq','2022-03-26 12:33:11'),(17,'tt','tt','tt','2022-03-26 12:33:35'),(18,'j','do','f','2022-03-26 12:34:18'),(19,'r','r','r','2022-03-27 17:43:09');
+INSERT INTO `member` VALUES (1,'abc','abc@gmail','abc','2022-03-23 11:34:52'),(2,'jessie','jessie@gmail.com','jessie','2022-03-23 12:42:21'),(3,'amy','amy@gmail.com','amy','2022-03-23 12:42:56'),(4,'cindy','cindy@gmail.com','cindy','2022-03-23 12:58:58'),(5,'jason','jason@gmail.com','jason','2022-03-23 13:00:04'),(6,'alex','alex@gmail.com','alex','2022-03-23 13:46:37'),(7,'alex','alex@gmail.co','alex','2022-03-23 14:02:38'),(8,'hi','hi@gmail.com','hi','2022-03-25 22:09:00'),(9,'hihi','hihi@gmail.com','hihi','2022-03-25 22:10:58'),(10,'hello','hello@gmail.com','hello','2022-03-25 22:17:07'),(11,'aaa','aaa@gmail.com','aaa','2022-03-25 22:30:11'),(12,'ddd','ddd','ddd','2022-03-25 22:41:12'),(13,'ccc','ccc','ccc','2022-03-25 22:42:01'),(14,'aaaaaa','aaaaaa','aaaaaa','2022-03-26 12:29:06'),(15,'d','d','d','2022-03-26 12:32:38'),(16,'qq','qq','qq','2022-03-26 12:33:11'),(17,'tt','tt','tt','2022-03-26 12:33:35'),(18,'j','do','f','2022-03-26 12:34:18'),(19,'r','r','r','2022-03-27 17:43:09'),(20,'qwer','qwer@gmail.com','qwer','2022-03-27 21:59:03'),(21,'qwere','qwer@gmail.come','qwere','2022-03-27 22:00:45'),(22,'jjj','kkk','jjj','2022-03-27 22:01:38'),(23,'jjj','kkkf','jjj','2022-03-27 22:05:26'),(24,'jjj','kkkfd','jjj','2022-03-27 22:06:06'),(25,'ws','ws','ws','2022-03-27 22:08:37'),(26,'ws','wss','ws','2022-03-27 22:09:54'),(27,'ads','ads','ads','2022-03-27 22:10:47'),(28,'agg','agg','agg','2022-03-27 22:13:21'),(29,'gdg','gdg','gdg','2022-03-27 22:14:01'),(30,'yyh','yyh','yyh','2022-03-27 22:23:54'),(31,'yyh','yyhf','yyh','2022-03-27 22:28:28'),(32,'ttt','ttt','ttt','2022-03-27 22:34:22'),(33,'ttt','ttta','ttt','2022-03-27 22:37:46');
 /*!40000 ALTER TABLE `member` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `pending-order`
+--
+
+DROP TABLE IF EXISTS `pending-order`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `pending-order` (
+  `num` bigint NOT NULL AUTO_INCREMENT,
+  `email` varchar(255) NOT NULL,
+  `attraction-id` int NOT NULL,
+  `date` datetime NOT NULL,
+  `price` int NOT NULL,
+  `time` varchar(255) NOT NULL,
+  `reserve-time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`num`)
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `pending-order`
+--
+
+LOCK TABLES `pending-order` WRITE;
+/*!40000 ALTER TABLE `pending-order` DISABLE KEYS */;
+INSERT INTO `pending-order` VALUES (16,'r',12,'2022-05-07 00:00:00',2500,'afternoon','2022-04-06 04:18:24');
+/*!40000 ALTER TABLE `pending-order` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -138,4 +167,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-03-27 20:50:54
+-- Dump completed on 2022-04-06 20:38:03
