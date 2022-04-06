@@ -170,9 +170,6 @@ check_booking_info = () => {
 // =========================================================== 處理 booking頁面 畫面
 
 booking_page_no_info = () => {
-    // if (el("headline_1") != undefined){
-    //     el("headline_1").remove();
-    // }
     if(el("headline_2") != undefined){
         el("headline_2").remove();
         el("contact").remove();
@@ -191,19 +188,18 @@ booking_page_no_info = () => {
     document.body.insertBefore(headline_1,el("footer"));
     total_height=el("nav").offsetHeight+el("headline_main").offsetHeight+el("headline_1").offsetHeight;
     el("footer").style.height="calc(100vh - "+total_height+"px)";
-    return "ok";
+    let url="/api/user";
+    fetch(url,{method: "GET"})
+    .then(res=>res.json())
+    .then((data)=>{
+        el("headline_main_name").textContent=data["data"]["name"]+'，';
+    })
 }
 
 
 booking_page_create_info = (data,time) => {
-    // if (el("headline_1") != undefined){
-    //     el("headline_1").remove();
-    // }
-    // if (el("headline_2_left")!= undefined){
-    //     el("headline_2_left").remove();
-    //     console.log("刪掉img");
-    // }
     // =========================================================== create headline_2
+    el("headline_main_top").innerHTML="您好，<span class='headline_main_name'></span>待預定的行程如下：";
     img=document.createElement("img");
     img.className="headline_2_left";
     img.setAttribute("src",data["data"]["attraction"]["image"]);
@@ -245,7 +241,14 @@ booking_page_create_info = (data,time) => {
     // =========================================================== remove_booking addEventListener
     el("remove_booking").addEventListener("click",remove_booking.bind(null,data["data"]["attraction"]["id"]));
     // =========================================================== booking頁面 '自動填入使用者資料'
-    // update_user_info_for_payment();
+    let url="/api/user";
+    fetch(url,{method: "GET"})
+    .then(res=>res.json())
+    .then((data)=>{
+        el("headline_main_name").textContent=data["data"]["name"]+'，';
+        el("contact_input").value=data["data"]["name"];
+        el("contact_input",1).value=data["data"]["email"];
+    })
 }
 
 
@@ -257,7 +260,6 @@ check_user_status = () => {
     fetch(url,{method: "GET"})
     .then(res=>res.json())
     .then((data)=>{
-        console.log(data);
         if (data["data"]==null){
             console.log("還沒登陸或是token錯誤")
             el("nav_right_item").addEventListener("click",login_show);    // ================ for 預定行程
@@ -265,50 +267,17 @@ check_user_status = () => {
             el("nav_right_item",1).textContent="登出系統";        // ================ for 登入登出
             el("login_box").style.display="none";
             el("nav_right_item").addEventListener("click",go_to_bookingPage);     // ================ for 預定行程
-            if (current_page.endsWith("/booking")){
-                update_username_to_page(data);
-            }
         }
     })
 }
 
 
-// =========================================================== booking頁面 '自動填入使用者資料' 和 '垃圾桶的 eventlistener'
-
-async function update_username_to_page (info) {
-    console.log(info);
-    res_no_info=await booking_page_no_info();
-    console.log("沒資料",res_no_info);
-    if (res_no_info=="ok"){
-        el("headline_main_name").textContent=info["data"]["name"];
-        console.log("沒資料",info["data"]["name"]);
-    }
-    
-    // res_create_info=await booking_page_create_info();
-    // console.log("有資料",res_create_info);
-    // el("headline_main_name").textContent=data["data"]["name"];
-    // el("contact_input").value=data["data"]["name"];
-    // el("contact_input",1).value=data["data"]["email"];
-}
-// update_user_info_for_payment = () => {
-//     // console.log(data["data"]);
-//     check_user_status();
-//     res=await booking_page_create_info();
-//     console.log(res);
-//     // info=await res.stringify();
-//     // console.log(info);
-//     // el("contact_input").value=data["data"]["name"];
-//     // el("contact_input",1).value=data["data"]["email"];
-// }
-
-
-// ===========================================================
-
+// =========================================================== 刪除預定的點擊鈕
 
 remove_booking = (id) => {
     console.log("我要刪掉",id);
     let url="/api/booking";
-    fetch(url,{                     // ========================================= fetch
+    fetch(url,{                    
         method: "DELETE",
         body: JSON.stringify({"id":id}),
         headers: new Headers({
