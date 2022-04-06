@@ -150,8 +150,6 @@ check_booking_info = () => {
     fetch(url,{method: "GET"})
     .then(res=>res.json())
     .then((data)=>{
-        console.log(data);
-        // console.log(data["data"]["attraction"]["id"]);
         if(data["error"]==true){
             go_to_homePage();
         }else if(data["data"]==null){
@@ -164,27 +162,17 @@ check_booking_info = () => {
                 time="下午時段";
             }
             booking_page_create_info(data,time);
-            
-            // el("headline_1").style.display="none";
-            // el("headline_2_left").setAttribute("src",data.data["attraction"]["image"]);
-            // el_id("headline_2_name").textContent=data.data["attraction"]["name"];
-            // el_id("headline_2_date").textContent=data.data["date"];
-            // el_id("headline_2_time").textContent=time;
-            // el_id("headline_2_price").textContent="新台幣 "+data.data["price"]+" 元";
-            // el_id("headline_2_address").textContent=data.data["attraction"]["address"];
-            // el("confirm_price_inner").textContent="新台幣 "+data.data["price"]+" 元";
-            // el("remove_booking").addEventListener("click",remove_booking.bind(null,data["data"]["attraction"]["id"]));
         }
     })
 }
 
 
 // =========================================================== 處理 booking頁面 畫面
+
 booking_page_no_info = () => {
-    // console.log("沒東西");
-    if (el("headline_1") != undefined){
-        el("headline_1").remove();
-    }
+    // if (el("headline_1") != undefined){
+    //     el("headline_1").remove();
+    // }
     if(el("headline_2") != undefined){
         el("headline_2").remove();
         el("contact").remove();
@@ -193,6 +181,7 @@ booking_page_no_info = () => {
         hr=document.querySelectorAll(".hr");
         hr.forEach(elem=>elem.remove());
     }
+    el("headline_main_top").innerHTML="您好，<span class='headline_main_name'></span>待預定的行程如下：";
     headline_1=document.createElement("div");
     headline_1.className="headline_1";
     headline_1_inner=document.createElement("div");
@@ -202,18 +191,18 @@ booking_page_no_info = () => {
     document.body.insertBefore(headline_1,el("footer"));
     total_height=el("nav").offsetHeight+el("headline_main").offsetHeight+el("headline_1").offsetHeight;
     el("footer").style.height="calc(100vh - "+total_height+"px)";
+    return "ok";
 }
 
+
 booking_page_create_info = (data,time) => {
-    // console.log(data,time)
-    if (el("headline_1") != undefined){
-        el("headline_1").remove();
-    }
-    if (el("headline_2_left")!= undefined){
-        el("headline_2_left").remove();
-        console.log("刪掉img");
-    }
-    console.log(data["data"]["date"]);
+    // if (el("headline_1") != undefined){
+    //     el("headline_1").remove();
+    // }
+    // if (el("headline_2_left")!= undefined){
+    //     el("headline_2_left").remove();
+    //     console.log("刪掉img");
+    // }
     // =========================================================== create headline_2
     img=document.createElement("img");
     img.className="headline_2_left";
@@ -253,7 +242,13 @@ booking_page_create_info = (data,time) => {
     botton.className="confirm_botton";
     botton.textContent="確認訂購並付款";
     el("confirm").appendChild(botton);
+    // =========================================================== remove_booking addEventListener
+    el("remove_booking").addEventListener("click",remove_booking.bind(null,data["data"]["attraction"]["id"]));
+    // =========================================================== booking頁面 '自動填入使用者資料'
+    // update_user_info_for_payment();
 }
+
+
 // =========================================================== 檢查使用者是否登陸 和 登出系統標示 和 nav的預定行程的 eventlistener
 // var user;
 check_user_status = () => {
@@ -280,11 +275,35 @@ check_user_status = () => {
 
 // =========================================================== booking頁面 '自動填入使用者資料' 和 '垃圾桶的 eventlistener'
 
-update_username_to_page = (data) => {
-    el("headline_main_name").textContent=data.data["name"];
-    el("contact_input").value=data.data["name"];
-    el("contact_input",1).value=data.data["email"];
+async function update_username_to_page (info) {
+    console.log(info);
+    res_no_info=await booking_page_no_info();
+    console.log("沒資料",res_no_info);
+    if (res_no_info=="ok"){
+        el("headline_main_name").textContent=info["data"]["name"];
+        console.log("沒資料",info["data"]["name"]);
+    }
+    
+    // res_create_info=await booking_page_create_info();
+    // console.log("有資料",res_create_info);
+    // el("headline_main_name").textContent=data["data"]["name"];
+    // el("contact_input").value=data["data"]["name"];
+    // el("contact_input",1).value=data["data"]["email"];
 }
+// update_user_info_for_payment = () => {
+//     // console.log(data["data"]);
+//     check_user_status();
+//     res=await booking_page_create_info();
+//     console.log(res);
+//     // info=await res.stringify();
+//     // console.log(info);
+//     // el("contact_input").value=data["data"]["name"];
+//     // el("contact_input",1).value=data["data"]["email"];
+// }
+
+
+// ===========================================================
+
 
 remove_booking = (id) => {
     console.log("我要刪掉",id);
