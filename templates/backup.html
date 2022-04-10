@@ -7,10 +7,6 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='booking.css')}}">
         <a href="attraction.html"></a>
         <script type="text/javascript" src="{{url_for('static', filename='index.js')}}"></script> 
-        <script src="https://js.tappaysdk.com/tpdirect/v5.8.0"></script>
-        <script>
-            TPDirect.setupSDK(124049, 'app_YXKSihcTzl6Imnn3yLA8FJpLYUHgbPZiUN7CSaNl6Otf4O1Jn8KZ9txsaZoh', 'sandbox')
-        </script>
     </head>
     <body  onload="bookingPage()">
         <!-- ========================================================= body cover-->
@@ -32,17 +28,6 @@
                 </div>
             </form>    
         </div>
-        <!-- ========================================================= error_message-->
-        <div class="error_box">
-            <div class="error_box_border">
-                <div class="error_box_inner">
-                    <div>
-                        <div class="error_box_inner_stitle"></div><img id="close_error_box"/>
-                    </div>
-                    <div class="error_box_inner_text"></div>
-                </div> 
-            </div>
-        </div>
         <!-- ========================================================= nav-->
         <div class="nav">
             <div class="nav_bar">
@@ -55,69 +40,65 @@
         </div>
         <!-- ========================================================= headline-->
         <div class="headline_main">
-            <div class="headline_main_top"></div>
+            <div class="headline_main_top">您好，<span class="headline_main_name"></span>，待預定的行程如下：</div>
         </div>
         <!-- <div class="headline_1">
             <div class="headline_1_inner">目前沒有任何待預訂的行程</div>
         </div> -->
         <div class="headline_2">
             <div class="headline_2_inner">
-                <!-- <img class="headline_2_left"></img> -->
+                <img class="headline_2_left"></img>
                 <div class="headline_2_right">
                     <div class="headline_2_right_first">
-                        <div class="headline_2_right_stitle"></div>
+                        <div class="headline_2_right_stitle">台北一日遊：</div>
                         <div id="headline_2_name"></div> 
-                        <div class="remove"><img class="remove_booking"/></div>
+                        <div class="remove"><img class="remove_booking" src="icon_delete.png"/></div>
                     </div>
-                    <div id="date"></div>
-                    <div id="time"></div>
-                    <div id="price"></div>
-                    <div id="address"></div>
+                    <div>日期：<span id="headline_2_date"></span></div>
+                    <div>時間：<span id="headline_2_time"></span></div>
+                    <div>費用：<span id="headline_2_price"></span></div>
+                    <div>地點：<span id="headline_2_address"></span></div>
                 </div>
             </div>
         </div>
-        <!-- <hr class="hr"/> -->
+        <hr class="hr"/>
         <!-- ========================================================= contact-->
         <div class="contact">
-            <div id="contact_stitle"></div>
-            <div id="contact_name">
-                <!-- <input class="contact_input" type="text" name="contact_name"> -->
+            <div>您的聯絡資訊</div>
+            <div>聯絡姓名：
+                <input class="contact_input" type="text" name="contact_name">
             </div>
-            <div id="contact_email">
-                <!-- <input class="contact_input" type="text" name="contact_mail"> -->
+            <div>聯絡信箱：
+                <input class="contact_input" type="text" name="contact_mail">
             </div>
-            <div id="contact_phone">
-                <!-- <input class="contact_input" type="text" name="contact_phone"> -->
+            <div>手機號碼：
+                <input class="contact_input" type="text" name="contact_phone">
             </div>
-            <div id="contact_notice"></div>
+            <div>請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。</div>
         </div>
-        <!-- <hr class="hr"/> -->
+        <hr class="hr"/>
         <!-- ========================================================= payment-->
         <div class="payment">
-            <div id="payment_stitle"></div>
-            <div id="payment_1" class="payment_tp">
-                <!-- <input class="payment_input" placeholder="**** **** **** ****" type="text" name="contact_name"> -->
+            <div>信用卡付款資訊</div>
+            <div>卡片號碼：
+                <input class="payment_input" placeholder="**** **** **** ****" type="text" name="contact_name">
             </div>
-            <div id="payment_2" class="payment_tp">
-                <!-- <input class="payment_input" placeholder="MM / YY" type="text" name="contact_mail"> -->
+            <div>過期時間：
+                <input class="payment_input" placeholder="MM / YY" type="text" name="contact_mail">
             </div>
-            <div id="payment_3" class="payment_tp">
-                <!-- <input class="payment_input" placeholder="CVV" type="text" name="contact_phone"> -->
+            <div>驗證密碼：
+                <input class="payment_input" placeholder="CVV" type="text" name="contact_phone">
             </div>
         </div>
-        <!-- <hr class="hr"/> -->
+        <hr class="hr"/>
         <!-- ========================================================= confirm-->
         <div class="confirm">
-            <div class="confirm_price">
-                <!-- <div class="confirm_price_inner"></div> -->
+            <div class="confirm_price">總價：
+                <div class="confirm_price_inner"></div>
             </div>
-            <!-- <botton class="confirm_botton">確認訂購並付款</botton> -->
+            <botton class="confirm_botton">確認訂購並付款</botton>
         </div>
         <!-- ========================================================= footer-->
-        <!-- <div class="tpfield" id="card-number"></div>
-        <div class="tpfield" id="card-expiration-date"></div>
-        <div class="tpfield" id="card-ccv"></div> -->
         <div class="footer"><span>COPYRIGHT © 2021台北一日遊<span></div>
     </body>
 </html>
-        

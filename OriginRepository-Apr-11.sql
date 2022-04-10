@@ -103,6 +103,75 @@ LOCK TABLES `backup` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `confirm-order`
+--
+
+DROP TABLE IF EXISTS `confirm-order`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `confirm-order` (
+  `num` bigint NOT NULL AUTO_INCREMENT,
+  `user_email` varchar(255) NOT NULL,
+  `attraction_name` varchar(255) NOT NULL,
+  `attraction_address` varchar(255) NOT NULL,
+  `attraction_image` varchar(510) NOT NULL,
+  `price` int NOT NULL,
+  `order_number` varchar(255) NOT NULL,
+  `booking_phone` varchar(255) NOT NULL,
+  `booking_name` varchar(255) NOT NULL,
+  `booking_email` varchar(255) NOT NULL,
+  `booked_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `attraction_id` int NOT NULL,
+  `attraction_date` datetime NOT NULL,
+  `attraction_time` varchar(255) NOT NULL,
+  `payment_status` varchar(255) NOT NULL,
+  PRIMARY KEY (`order_number`),
+  UNIQUE KEY `num` (`num`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `confirm-order`
+--
+
+LOCK TABLES `confirm-order` WRITE;
+/*!40000 ALTER TABLE `confirm-order` DISABLE KEYS */;
+INSERT INTO `confirm-order` VALUES (1,'amy@gmail.com','北投圖書館','臺北市  北投區光明路251號','https://www.travel.taipei/d_upload_ttn/sceneadmin/image/a0/b0/c1/d878/e726/f304/2d6e8b50-76ce-4b7e-a795-0357cd6f2b3e.jpg',2500,'20220411-04524686-193794','0912123123','amy','amy@gmail.com','2022-04-11 04:52:46',5,'2022-05-06 00:00:00','afternoon','已付款'),(2,'amy@gmail.com','陽明山溫泉區','臺北市  北投區竹子湖路1之20號','https://www.travel.taipei/d_upload_ttn/sceneadmin/pic/11000985.jpg',2000,'20220411-04532122-549354','0912123123','amy','amy@gmail.com','2022-04-11 04:53:21',6,'2022-05-07 00:00:00','morning','未付款'),(3,'amy@gmail.com','陽明山溫泉區','臺北市  北投區竹子湖路1之20號','https://www.travel.taipei/d_upload_ttn/sceneadmin/pic/11000985.jpg',2000,'20220411-04550191-415430','0912123123','amy','amy@gmail.com','2022-04-11 04:55:01',6,'2022-05-07 00:00:00','morning','已付款');
+/*!40000 ALTER TABLE `confirm-order` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `failed-tran`
+--
+
+DROP TABLE IF EXISTS `failed-tran`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `failed-tran` (
+  `num` bigint NOT NULL AUTO_INCREMENT,
+  `prime` varchar(255) NOT NULL,
+  `status` varchar(255) NOT NULL,
+  `msg` varchar(510) NOT NULL,
+  `rec_trade_id` varchar(255) NOT NULL,
+  `bank_result_code` bigint DEFAULT NULL,
+  `order_number` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`num`),
+  KEY `order_number` (`order_number`),
+  CONSTRAINT `failed-tran_ibfk_1` FOREIGN KEY (`order_number`) REFERENCES `confirm-order` (`order_number`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `failed-tran`
+--
+
+LOCK TABLES `failed-tran` WRITE;
+/*!40000 ALTER TABLE `failed-tran` DISABLE KEYS */;
+INSERT INTO `failed-tran` VALUES (1,'36478363e987d78790ca518d19ddadffa8fc3b43cba2f56fcae8a49c106d5a27','10003','Card error, please ask for issuer','D202204100Y83BO',10003,'20220411-04532122-549354');
+/*!40000 ALTER TABLE `failed-tran` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `member`
 --
 
@@ -116,7 +185,7 @@ CREATE TABLE `member` (
   `password` varchar(255) NOT NULL,
   `time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -125,8 +194,73 @@ CREATE TABLE `member` (
 
 LOCK TABLES `member` WRITE;
 /*!40000 ALTER TABLE `member` DISABLE KEYS */;
-INSERT INTO `member` VALUES (1,'abc','abc@gmail','abc','2022-03-23 11:34:52'),(2,'jessie','jessie@gmail.com','jessie','2022-03-23 12:42:21'),(3,'amy','amy@gmail.com','amy','2022-03-23 12:42:56'),(4,'cindy','cindy@gmail.com','cindy','2022-03-23 12:58:58'),(5,'jason','jason@gmail.com','jason','2022-03-23 13:00:04'),(6,'alex','alex@gmail.com','alex','2022-03-23 13:46:37'),(7,'alex','alex@gmail.co','alex','2022-03-23 14:02:38'),(8,'hi','hi@gmail.com','hi','2022-03-25 22:09:00'),(9,'hihi','hihi@gmail.com','hihi','2022-03-25 22:10:58'),(10,'hello','hello@gmail.com','hello','2022-03-25 22:17:07'),(11,'aaa','aaa@gmail.com','aaa','2022-03-25 22:30:11'),(12,'ddd','ddd','ddd','2022-03-25 22:41:12'),(13,'ccc','ccc','ccc','2022-03-25 22:42:01'),(14,'aaaaaa','aaaaaa','aaaaaa','2022-03-26 12:29:06'),(15,'d','d','d','2022-03-26 12:32:38'),(16,'qq','qq','qq','2022-03-26 12:33:11'),(17,'tt','tt','tt','2022-03-26 12:33:35'),(18,'j','do','f','2022-03-26 12:34:18'),(19,'r','r','r','2022-03-27 17:43:09');
+INSERT INTO `member` VALUES (1,'abc','abc@gmail','abc','2022-03-23 11:34:52'),(2,'jessie','jessie@gmail.com','jessie','2022-03-23 12:42:21'),(3,'amy','amy@gmail.com','amy','2022-03-23 12:42:56'),(4,'cindy','cindy@gmail.com','cindy','2022-03-23 12:58:58'),(5,'jason','jason@gmail.com','jason','2022-03-23 13:00:04'),(6,'alex','alex@gmail.com','alex','2022-03-23 13:46:37'),(7,'alex','alex@gmail.co','alex','2022-03-23 14:02:38'),(8,'hi','hi@gmail.com','hi','2022-03-25 22:09:00'),(9,'hihi','hihi@gmail.com','hihi','2022-03-25 22:10:58'),(10,'hello','hello@gmail.com','hello','2022-03-25 22:17:07'),(11,'aaa','aaa@gmail.com','aaa','2022-03-25 22:30:11'),(12,'ddd','ddd','ddd','2022-03-25 22:41:12'),(13,'ccc','ccc','ccc','2022-03-25 22:42:01'),(14,'aaaaaa','aaaaaa','aaaaaa','2022-03-26 12:29:06'),(15,'d','d','d','2022-03-26 12:32:38'),(16,'qq','qq','qq','2022-03-26 12:33:11'),(17,'tt','tt','tt','2022-03-26 12:33:35'),(18,'j','do','f','2022-03-26 12:34:18'),(19,'r','r','r','2022-03-27 17:43:09'),(20,'qwer','qwer@gmail.com','qwer','2022-03-27 21:59:03'),(21,'qwere','qwer@gmail.come','qwere','2022-03-27 22:00:45'),(22,'jjj','kkk','jjj','2022-03-27 22:01:38'),(23,'jjj','kkkf','jjj','2022-03-27 22:05:26'),(24,'jjj','kkkfd','jjj','2022-03-27 22:06:06'),(25,'ws','ws','ws','2022-03-27 22:08:37'),(26,'ws','wss','ws','2022-03-27 22:09:54'),(27,'ads','ads','ads','2022-03-27 22:10:47'),(28,'agg','agg','agg','2022-03-27 22:13:21'),(29,'gdg','gdg','gdg','2022-03-27 22:14:01'),(30,'yyh','yyh','yyh','2022-03-27 22:23:54'),(31,'yyh','yyhf','yyh','2022-03-27 22:28:28'),(32,'ttt','ttt','ttt','2022-03-27 22:34:22'),(33,'ttt','ttta','ttt','2022-03-27 22:37:46');
 /*!40000 ALTER TABLE `member` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `pending-order`
+--
+
+DROP TABLE IF EXISTS `pending-order`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `pending-order` (
+  `num` bigint NOT NULL AUTO_INCREMENT,
+  `email` varchar(255) NOT NULL,
+  `attraction-id` int NOT NULL,
+  `date` datetime NOT NULL,
+  `price` int NOT NULL,
+  `time` varchar(255) NOT NULL,
+  `reserve-time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`num`)
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `pending-order`
+--
+
+LOCK TABLES `pending-order` WRITE;
+/*!40000 ALTER TABLE `pending-order` DISABLE KEYS */;
+INSERT INTO `pending-order` VALUES (27,'hello@gmail.com',6,'2022-05-06 00:00:00',2000,'morning','2022-04-10 05:56:48');
+/*!40000 ALTER TABLE `pending-order` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `successful-tran`
+--
+
+DROP TABLE IF EXISTS `successful-tran`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `successful-tran` (
+  `num` bigint NOT NULL AUTO_INCREMENT,
+  `prime` varchar(255) NOT NULL,
+  `status` varchar(255) NOT NULL,
+  `msg` varchar(510) NOT NULL,
+  `amount` bigint NOT NULL,
+  `card_token` varchar(255) NOT NULL,
+  `card_key` varchar(255) NOT NULL,
+  `rec_trade_id` varchar(255) NOT NULL,
+  `bank_transaction_id` varchar(255) NOT NULL,
+  `order_number` varchar(255) DEFAULT NULL,
+  `auth_code` bigint NOT NULL,
+  `transaction_time_millis` varchar(255) NOT NULL,
+  PRIMARY KEY (`num`),
+  KEY `order_number` (`order_number`),
+  CONSTRAINT `successful-tran_ibfk_1` FOREIGN KEY (`order_number`) REFERENCES `confirm-order` (`order_number`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `successful-tran`
+--
+
+LOCK TABLES `successful-tran` WRITE;
+/*!40000 ALTER TABLE `successful-tran` DISABLE KEYS */;
+INSERT INTO `successful-tran` VALUES (1,'48ee5d1516b212046ba8bd3dc4e6cea0a9189191f60bfc9e4be93f7d156e75ca','0','Success',2500,'48ee5d1516b212046ba8bd3dc4e6cea0a9189191f60bfc9e4be93f7d156e75ca','c08ccd892a9f08e4d7a23b6db5b5c86372636433818a910ba89df93f009676fb','D20220410HbyZBb','TP20220410HbyZBb','20220411-04524686-193794',98804,'1649623967393'),(2,'b4342d94a4c998e97c3b5583ddcdabf61e3c0432438fa89c92f6beaaaacb3049','0','Success',2000,'b4342d94a4c998e97c3b5583ddcdabf61e3c0432438fa89c92f6beaaaacb3049','5d875f3f1cd99d31d593492fafa76fbaf1c88e3ed4ebc4e1b0b7efee7a5bb461','D20220410DgLrcR','TP20220410DgLrcR','20220411-04550191-415430',336778,'1649624102553');
+/*!40000 ALTER TABLE `successful-tran` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -138,4 +272,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-03-27 20:50:54
+-- Dump completed on 2022-04-11  4:56:59
