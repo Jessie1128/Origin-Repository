@@ -35,7 +35,7 @@ def loginPage():
             else:
                 try:
                     cookie_token = cookie_token.replace('"user_token"=', "")
-                    # print(cookie_token)
+                    print(cookie_token)
                     jwt_decode = jwt.decode(
                         cookie_token, os.getenv("key"), algorithms=["HS256"])
                     # print(jwt_decode)

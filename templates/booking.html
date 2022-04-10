@@ -7,6 +7,10 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='booking.css')}}">
         <a href="attraction.html"></a>
         <script type="text/javascript" src="{{url_for('static', filename='index.js')}}"></script> 
+        <script src="https://js.tappaysdk.com/tpdirect/v5.8.0"></script>
+        <script>
+            TPDirect.setupSDK(124049, 'app_YXKSihcTzl6Imnn3yLA8FJpLYUHgbPZiUN7CSaNl6Otf4O1Jn8KZ9txsaZoh', 'sandbox')
+        </script>
     </head>
     <body  onload="bookingPage()">
         <!-- ========================================================= body cover-->
@@ -27,6 +31,17 @@
                     <div id="register_member">還沒有帳戶？點此註冊</div>
                 </div>
             </form>    
+        </div>
+        <!-- ========================================================= error_message-->
+        <div class="error_box">
+            <div class="error_box_border">
+                <div class="error_box_inner">
+                    <div>
+                        <div class="error_box_inner_stitle"></div><img id="close_error_box"/>
+                    </div>
+                    <div class="error_box_inner_text"></div>
+                </div> 
+            </div>
         </div>
         <!-- ========================================================= nav-->
         <div class="nav">
@@ -80,13 +95,13 @@
         <!-- ========================================================= payment-->
         <div class="payment">
             <div id="payment_stitle"></div>
-            <div id="payment_num">
+            <div id="payment_1" class="payment_tp">
                 <!-- <input class="payment_input" placeholder="**** **** **** ****" type="text" name="contact_name"> -->
             </div>
-            <div id="payment_expire_date">
+            <div id="payment_2" class="payment_tp">
                 <!-- <input class="payment_input" placeholder="MM / YY" type="text" name="contact_mail"> -->
             </div>
-            <div id="payment_cvv">
+            <div id="payment_3" class="payment_tp">
                 <!-- <input class="payment_input" placeholder="CVV" type="text" name="contact_phone"> -->
             </div>
         </div>
@@ -99,6 +114,9 @@
             <!-- <botton class="confirm_botton">確認訂購並付款</botton> -->
         </div>
         <!-- ========================================================= footer-->
+        <!-- <div class="tpfield" id="card-number"></div>
+        <div class="tpfield" id="card-expiration-date"></div>
+        <div class="tpfield" id="card-ccv"></div> -->
         <div class="footer"><span>COPYRIGHT © 2021台北一日遊<span></div>
     </body>
 </html>

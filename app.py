@@ -5,11 +5,13 @@ from flask import *
 import jwt
 from login import login
 from booking import booking
+from orders import orders
 load_dotenv("mydb.evn")
 # ========================================================================== blue print
 app = Flask(__name__, static_folder="static", static_url_path="/")
 app.register_blueprint(login, url_prefix="/api")
 app.register_blueprint(booking, url_prefix="/api")
+app.register_blueprint(orders, url_prefix="/api")
 # ========================================================================== mydb connection
 mydb = mysql.connector.connect(
     host="127.0.0.1", user=os.getenv("user"), password=os.getenv("password"), database="OriginRepository")
@@ -147,4 +149,4 @@ def attractions():
     # app.add_url_rule('/api/attractions', endpoint="attractions",
     #                  view_func=attractions)
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=3000)
+    app.run(host='0.0.0.0', port=3000, debug=True)

@@ -7,6 +7,15 @@ el_id = (idName) => {
     return document.getElementById(idName);
 }
 
+// =========================================================== 重新導向到首頁
+
+go_to_homePage = () => {
+    window.location.href="/";
+}
+
+go_to_bookingPage = () => {
+    window.location.href="/booking";
+}
 // =========================================================== 
 indexPage = (page) => {
     nav_eventListener();
@@ -42,6 +51,14 @@ bookingPage = () => {
     close_login_box();
     check_user_status();
     check_booking_info();
+}
+
+thank_you_page = () => {
+    nav_eventListener();
+    register_member();
+    close_login_box();
+    check_user_status();
+    check_order_info();
 }
 
 // =========================================================== nav 的 eventlistener 
@@ -119,9 +136,7 @@ booking = () => {
     .then((data)=>{
         console.log(data)
         if (data["error"]==true & data["message"]=="建立失敗，輸入不正確或其他原因"){
-            el("body_cover").style.display="flex";
-            el("error_box").style.display="flex";
-            el("nav").style.filter="brightness(0.75)";
+            error_box_show();
             el("error_box_inner_stitle").textContent="'選擇日期' 欄位輸入不正確";
             //==================================================================== 取得今天日期
             let today=new Date().toISOString().split('T')[0];    
@@ -132,11 +147,7 @@ booking = () => {
                 el("error_box_inner_text").textContent="'選擇日期' 欄位，\n請選擇今天以後的日期";
                 el("error_box").style.height="116px";
             }
-            el_id("close_error_box").addEventListener("click",()=>{
-                el("body_cover").style.display="none";
-                el("error_box").style.display="none";
-                el("nav").style.filter="brightness(1.0)";
-            })
+            error_box_close();           
         }else{
             go_to_bookingPage();
         }
@@ -166,7 +177,34 @@ check_booking_info = () => {
     })
 }
 
+// =========================================================== thankyouPage 載入後的 訂單確認 api
 
+check_order_info = () => {
+    let order_num=location.href;
+    order_num=order_num.substring(order_num.lastIndexOf("=")+1);
+    let url=`/api/orders?number=${order_num}`;
+    fetch(url,{method: "GET"})
+    .then(res=>res.json())
+    .then((data)=>{
+        if(data["error"]==true){
+            go_to_homePage();
+        }else if(data["data"]==null){
+            go_to_homePage();
+        }else{  
+            console.log(data);
+            thankyou_page_inner(data);
+        }
+    })
+}
+
+thankyou_page_inner = (data) => {
+    el("main_inner_text_head").textContent="行程預定成功";
+    el("main_inner_text_head",1).textContent="您的訂單您的訂單編號如下：";
+    el("booking_order_num").innerHTML="訂單編號：<div class='booking_order_num_div'>"+data["data"]["number"]+"</div>";
+    el("main_inner_text_ps").textContent="請記住此編號，或到會員中心查詢歷史訂單";
+    total_height=el("nav").offsetHeight+el("main_inner").offsetHeight;
+    el("footer").style.height="calc(100vh - "+total_height+"px)";
+}
 // =========================================================== 處理 booking頁面 畫面
 
 booking_page_no_info = () => {
@@ -225,9 +263,13 @@ booking_page_create_info = (data,time) => {
     document.body.insertBefore(hr,el("payment"));
     // =========================================================== create payment
     el_id("payment_stitle").textContent="信用卡付款資訊";
-    el_id("payment_num").innerHTML="卡片號碼：<input class='payment_input' placeholder='**** **** **** ****' type='text' name='contact_name'>";
-    el_id("payment_expire_date").innerHTML="過期時間：<input class='payment_input' placeholder='MM / YY' type='text' name='contact_mail'>";
-    el_id("payment_cvv").innerHTML="驗證密碼：<input class='payment_input' placeholder='CVV' type='text' name='contact_phone'>";
+    // el_id("payment_num").innerHTML="卡片號碼：<input class='payment_input' placeholder='**** **** **** ****' type='text' name='contact_name'>";
+    // el_id("payment_expire_date").innerHTML="過期時間：<input class='payment_input' placeholder='MM / YY' type='text' name='contact_mail'>";
+    // el_id("payment_cvv").innerHTML="驗證密碼：<input class='payment_input' placeholder='CVV' type='text' name='contact_phone'>";
+    el_id("payment_1").innerHTML="卡片號碼：<div class='payment_input' id='card-number'></div>";
+    el_id("payment_2").innerHTML="過期時間：<div class='payment_input' id='card-expiration-date'></div>";
+    el_id("payment_3").innerHTML="驗證密碼：<div class='payment_input' id='card-ccv'></div>";
+    for_TapPay();
     hr=document.createElement("hr");
     hr.className="hr";
     document.body.insertBefore(hr,el("confirm"));
@@ -238,8 +280,10 @@ booking_page_create_info = (data,time) => {
     botton.className="confirm_botton";
     botton.textContent="確認訂購並付款";
     el("confirm").appendChild(botton);
-    // =========================================================== remove_booking addEventListener
+    // =========================================================== remove_booking & confirm botton addEventListener
     el("remove_booking").addEventListener("click",remove_booking.bind(null,data["data"]["attraction"]["id"]));
+    // el("confirm_botton").addEventListener("click",confirm_order.bind(null,data));
+    el("confirm_botton").addEventListener("click",TPDirect_card_getPrime.bind(null,data));
     // =========================================================== booking頁面 '自動填入使用者資料'
     let url="/api/user";
     fetch(url,{method: "GET"})
@@ -262,19 +306,36 @@ check_user_status = () => {
     .then((data)=>{
         if (data["data"]==null){
             console.log("還沒登陸或是token錯誤")
-            el("nav_right_item").addEventListener("click",login_show);    // ================ for 預定行程
+            // ================ for 預定行程
+            el("nav_right_item").addEventListener("click",login_show);   
+            // ================ for thankyou Page
+            // if (current_page.substring(current_page.lastIndexOf("/")+1)=="thankyou"){
+            //     go_to_homePage(); 
+            // }else if (current_page.substring(current_page.lastIndexOf("/")+1,current_page.indexOf('?'))=="thankyou"){
+            //     go_to_homePage(); 
+            // }
+            // ================ for thankyou Page
         }else if(data.data["id"]!=null & data.data["name"]!=null & data.data["email"]!=null){
-            el("nav_right_item",1).textContent="登出系統";        // ================ for 登入登出
+            // ================ for 登入登出
+            el("nav_right_item",1).textContent="登出系統";        
             el("login_box").style.display="none";
-            el("nav_right_item").addEventListener("click",go_to_bookingPage);     // ================ for 預定行程
+             // ================ for 預定行程
+            el("nav_right_item").addEventListener("click",go_to_bookingPage);    
+            // ================ for thankyou Page
+            // if (current_page.substring(current_page.lastIndexOf("/")+1)=="thankyou"){
+            //     go_to_homePage(); 
+            // }else if (current_page.substring(current_page.lastIndexOf("/")+1,current_page.indexOf('?'))=="thankyou"){
+            //     el("nav_right_item").addEventListener("click",go_to_bookingPage);  
+            // }
+            // ================ for thankyou Page
         }
     })
 }
 
-
 // =========================================================== 刪除預定的點擊鈕
 
-remove_booking = (id) => {
+remove_booking = (id,click) => {
+    console.log(click);
     console.log("我要刪掉",id);
     let url="/api/booking";
     fetch(url,{                    
@@ -286,7 +347,11 @@ remove_booking = (id) => {
     })
     .then(res=>res.json())
     .then((data)=>{
-        if(data["ok"]==true){
+        //======================= for 付款完成刪掉購物車
+        if(data["ok"]==true & click===undefined){
+            return;
+        //======================= for 刪除預定行程按鈕
+        }else{
             go_to_bookingPage();
         }
     })
@@ -303,14 +368,193 @@ no_booking = () =>{
     hr.forEach(elem=>elem.style.display="none");
 };
 
-// =========================================================== 重新導向到首頁
+// =========================================================== 錯誤框 跳出 關閉
 
-go_to_homePage = () => {
-    window.location.href="/";
+error_box_show = () =>{
+    el("body_cover").style.display="flex";
+    el("error_box").style.display="flex";
+    el("nav").style.filter="brightness(0.75)";
 }
 
-go_to_bookingPage = () => {
-    window.location.href="/booking";
+error_box_close = () => {
+    el_id("close_error_box").addEventListener("click",()=>{
+        el("body_cover").style.display="none";
+        el("error_box").style.display="none";
+        el("nav").style.filter="brightness(1.0)";
+    })
+}
+
+
+// =========================================================== TapPay
+
+
+for_TapPay = () =>{
+    let fields = {
+        number: {
+            element: '#card-number',
+            placeholder: '**** **** **** ****'
+        },
+        expirationDate: {
+            element: '#card-expiration-date',
+            placeholder: 'MM / YY'
+        },
+        ccv: {
+            element: '#card-ccv',
+            placeholder: 'ccv'
+        }
+    }
+    
+    TPDirect.card.setup({
+        fields: fields,
+        styles: {
+            'input': {
+                'color': 'gray'
+            },
+            ':focus': {
+                'color': 'black'
+            },
+            '.valid': {
+                'color': 'rgba(96, 149, 78, 0.904)'
+            },
+            '.invalid': {
+                'color': 'rgba(197, 83, 38, 0.904)'
+            },
+        }
+    })
+    
+    TPDirect.card.onUpdate(function (update) {
+        console.log(update.canGetPrime);
+        if (update.canGetPrime) {
+            console.log("資料完整,Enable submit Button to get prime");
+        } else {
+            console.log("資料尚未填完整,Disable submit Button to get prime");
+        }
+        if (update.status.number === 2) {
+            console.log("number 欄位有錯誤，此時在 CardView 裡面會用顯示 errorColor");
+        } else if (update.status.number === 0) {
+            console.log("not ok 0");
+            console.log("number 欄位已填好，並且沒有問題")
+        } else {
+            console.log("not ok ?? ");
+        }
+    
+        if (update.status.expiry === 2) {
+            console.log("expiry 欄位有錯誤，此時在 CardView 裡面會用顯示 errorColor");
+        } else if (update.status.expiry === 0) {
+            console.log("expiry 欄位已填好，並且沒有問題")
+        } else {
+            // setNumberFormGroupToNormal()
+        }
+    
+        if (update.status.ccv === 2) {
+            console.log("ccv 欄位有錯誤，此時在 CardView 裡面會用顯示 errorColor");
+        } else if (update.status.ccv === 0) {
+            console.log("ccv 欄位已填好，並且沒有問題")
+            // setNumberFormGroupToSuccess()
+        } else {
+            // setNumberFormGroupToNormal()
+        }
+    })
+}
+
+TPDirect_card_getPrime = (data) => {
+    // =========================================================== 聯絡資訊不完整
+    if(el("contact_input").value=="" | el("contact_input",1).value=="" | el("contact_input",2).value==""){
+        error_box_show();
+        // ======================
+        el("error_box").style.boxShadow="0px 4px 60px #aaaaaa";
+        el("error_box_border").style.background="linear-gradient(270deg, #337788 0%, #66aabb 100%)";
+        el_id("close_error_box").setAttribute("src","/icon_close.png");
+        el("error_box_inner_stitle").textContent="'您的聯絡資訊' 輸入不完整";
+        el("error_box_inner_text").textContent="請確認 '您的聯絡資訊' 是否輸入完整";
+        // ======================
+        error_box_close(); 
+        return;
+    }
+    let tappayStatus = TPDirect.card.getTappayFieldsStatus();
+    console.log(tappayStatus);
+    if (tappayStatus.canGetPrime === false) {
+        console.log(tappayStatus["status"]);
+        error_box_show();
+        // ======================
+        el("error_box").style.boxShadow="0px 4px 60px #aaaaaa";
+        el("error_box_border").style.background="linear-gradient(270deg, #337788 0%, #66aabb 100%)";
+        el_id("close_error_box").setAttribute("src","/icon_close.png");
+        el("error_box_inner_stitle").textContent="'信用卡付款資訊' 輸入不完整";
+        el("error_box_inner_text").textContent="請確認 '信用卡付款資訊' 是否輸入完整";
+        // ======================
+        error_box_close(); 
+        return "appayStatus error,資料不完整"
+    }
+
+    TPDirect.card.getPrime((result) => {
+        if (result.status !== 0) {
+            console.log(result.msg);
+            // alert('get prime error ' + result.msg)
+            return result.msg
+        }
+        let prime=result.card.prime;
+        confirm_order(prime,data);
+    })
+}  
+
+// ============================================================= confirm_order
+
+confirm_order = (prime,data) =>{
+    console.log(data);
+    order={
+        "prime": prime,
+        "order": {
+            "price": data["data"]["price"],
+            "trip": {
+                "attraction": {
+                "id": data["data"]["attraction"]["id"],
+                "name": data["data"]["attraction"]["name"],
+                "address": data["data"]["attraction"]["address"],
+                "image": data["data"]["attraction"]["image"]
+                },
+                "date": data["data"]["date"],
+                "time": data["data"]["time"]
+            },
+            "contact": {
+                "name": el("contact_input").value,
+                "email": el("contact_input",1).value,
+                "phone": el("contact_input",2).value
+            }
+        }
+    }
+    console.log(order);
+    let url="api/orders";
+    fetch(url,{                     // ========================================= fetch
+        method: "POST",
+        body: JSON.stringify(order),
+        headers: new Headers({
+            "content-type": "application/json"
+          })
+    })
+    .then(res=>res.json())
+    .then((data)=>{
+        console.log(data);
+        if (data["error"]==true){
+            error_msg=data["message"];
+            error_box_show();
+            // ======================
+            el("error_box").style.boxShadow="0px 4px 60px #aaaaaa";
+            el("error_box_border").style.background="linear-gradient(270deg, #337788 0%, #66aabb 100%)";
+            el_id("close_error_box").setAttribute("src","/icon_close.png");
+            el("error_box_inner_stitle").textContent="'訂單建立失敗'";
+            el("error_box_inner_text").textContent=error_msg;
+            // ======================
+            error_box_close(); 
+            return;
+        }else{
+            order_number=data["data"]["number"];
+            console.log(order_number);
+            id=order["order"]["trip"]["attraction"]["id"];
+            remove_booking(id);
+            window.location.href="/thankyou"+"?number="+order_number;
+        }
+    })
 }
 
 // ============================================================= (還沒有帳戶？點此註冊) (已經有帳戶了？點此登入) 的 eventListener
@@ -451,6 +695,7 @@ login_show = () => {
 async function user_logout(current_page){
     let res = await fetch("/api/user",{method: "DELETE"});
     data = await res.json();
+    console.log(data);
     el("nav_right_item",1).textContent="登陸/註冊";
     location.href=current_page;
     booking_data_remove();
