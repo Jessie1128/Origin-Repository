@@ -29,9 +29,11 @@ def bookingPage():
                 jwt_decode = jwt.decode(
                     cookie_token, os.getenv("key"), algorithms=["HS256"])
                 email = jwt_decode["email"]
+                print("這邊拉幹", email)
                 mycursor.execute(
                     """SELECT `attraction-id`,`date`,`price`,`time` FROM `pending-order` WHERE `EMAIL`=%s""", (email,))
                 sqlResult = mycursor.fetchone()
+                print("這邊拉幹", sqlResult)
                 if sqlResult == None:
                     return jsonify({"data": None}), 200
                 else:
@@ -89,20 +91,20 @@ def bookingPage():
             return jsonify({"error": True, "message": "伺服器內部錯誤"}), 500
     # ================================================================================= PATCH
     if request.method == 'DELETE':
-        try:
-            cookie_token = request.cookies.get("user_token")
-            req = request.get_json()
-            print(req["id"])
-            if cookie_token == None:
-                return jsonify({"error": True, "message": "未登入系統，拒絕存取"}), 403
-            else:
-                cookie_token = cookie_token.replace('"user_token"=', "")
-                jwt_decode = jwt.decode(
-                    cookie_token, os.getenv("key"), algorithms=["HS256"])
-                email = jwt_decode["email"]
-                mycursor.execute(
-                    """DELETE FROM `pending-order` WHERE `email` = %s and `attraction-id` = %s""", (email, req["id"],))
-                mydb.commit()
-                return jsonify({"ok": True}), 200
-        except:
-            return jsonify({"error": True, "message": "伺服器內部錯誤"}), 500
+        # try:
+        cookie_token = request.cookies.get("user_token")
+        req = request.get_json()
+        print(req["id"])
+        if cookie_token == None:
+            return jsonify({"error": True, "message": "未登入系統，拒絕存取"}), 403
+        else:
+            cookie_token = cookie_token.replace('"user_token"=', "")
+            jwt_decode = jwt.decode(
+                cookie_token, os.getenv("key"), algorithms=["HS256"])
+            email = jwt_decode["email"]
+            mycursor.execute(
+                """DELETE FROM `pending-order` WHERE `email` = %s and `attraction-id` = %s""", (email, req["id"],))
+            mydb.commit()
+            return jsonify({"ok": True}), 200
+        # except:
+        #     return jsonify({"error": True, "message": "伺服器內部錯誤"}), 500

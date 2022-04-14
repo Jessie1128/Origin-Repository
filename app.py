@@ -76,6 +76,8 @@ def attraction_id(id):
 def attractions():
     page = request.args.get("page", 0, type=int)
     keyword = request.args.get("keyword", None)
+    print(page)
+    print(keyword)
     ValuesKeys = "id, name, category, description, address, transport, mrt, latitude, longitude, images"
     # -------------
 
@@ -119,15 +121,16 @@ def attractions():
             mycursor.execute(sqlSelect, (page*12, (page+1)*13))
             myresult = mycursor.fetchall()
             myresult = list(myresult)
-            # print(myresult)
+            print(myresult)
             values = howManyData(myresult)
-            # print("values", values)
+            print("values", values)
             # --------------
             response = {}
             if myresult == []:
+                print("這邊")
                 error = {}
                 error["error"] = True
-                error["message"] = "超過總頁數"
+                error["message"] = "超過總頁數 或是 查無資料"
                 return (error, 400)
             elif len(myresult) < 13:
                 response["nextPage"] = "null"
@@ -151,4 +154,4 @@ def attractions():
 
 # ===================================================
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=3000)
+    app.run(host='0.0.0.0', port=3000, debug=True)
