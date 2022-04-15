@@ -15,12 +15,8 @@ fetch_url = (url, method, options) => {
 
 async function fetch_attraction (url,method) {
     let data = await fetch_url(url,method);
-    console.log(data);
-    // console.log(el("loading"));
-    console.log(el("loading_img"));
     if(el("loading_img") != undefined){
-        console.log("現在有喔");
-        console.log(el("loading_img"));
+        console.log("有loading_img");
         elems = document.querySelectorAll('div.loading_img');
         elems.forEach((ele)=>ele.style.display="none");
     }
@@ -346,10 +342,8 @@ show_next_page_info = (nextPage,url) => {
             observer.unobserve(newTarget);
             url=`${url}&page=${nextPage}`;
             fetch_attraction(url,"GET");
-            // console.log(nextPage);
         }
         else if (entry[0].isIntersecting ) {
-            // console.log("entry",entry[0]["target"]);
             loading_effect(entry[0]["target"]);
             observer.unobserve(newTarget);
             indexPage(nextPage); 
@@ -387,12 +381,16 @@ async function get_attraction_info_by_id () {
     }else{
         mrt=data.data["mrt"];
     }
+    el("section_right_bottom").style.display="block";
     el("attraction_name").textContent=data.data["name"];
     el("attraction_loca").textContent=`${data.data["category"]} at ${mrt}`;
     el_tag("p",5).textContent=data.data["description"];
+    el_tag("p",6).textContent="景點地址 :";  
     el_tag("p",7).textContent=data.data["address"];
+    el_tag("p",8).textContent="交通方式 :";
     el_tag("p",9).textContent=data.data["transport"];
     create_slider_box(data.data["images"]);
+    el("infors").style.borderTop="#e8e8e8 1px solid";
 }
 
 create_home_page_elements = (data,url) => {
@@ -767,6 +765,7 @@ attractionPage = () =>{
     member_eventListener();
     close_login_box_eventListener();
     check_user_status();     
+    el("section_right_bottom").style.display="none";
     get_attraction_info_by_id();                  
     choose_AM_PM_eventListener(); 
     reserve_attraction();
