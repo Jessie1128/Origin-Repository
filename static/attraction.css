@@ -417,7 +417,7 @@ body {
 }
 
 .section_right_bottom :nth-child(2) {
-  font-weight: 400;
+  font-weight: normal;
 }
 
 .section_right_bottom :nth-child(5) {
@@ -602,7 +602,6 @@ body {
 
 @media screen and (max-width: 900px) {
   .section {
-
     grid-auto-flow: row;
     height: 100%;
     display: grid;
@@ -662,10 +661,23 @@ body {
     font-size: 16px;
     cursor: pointer;
   }
+
+  #section_left{
+    border-radius: 0;
+   }
 }
 
 @media screen and (max-width: 465px){
  #section_left{
-  height:380px;
+  height:390px;
+  /* width:99%;
+  display: grid;
+  justify-content: center;
+  align-items: center; */
+  border-radius: 0;
  }
+
+ .section_right_bottom p:nth-child(2){
+  width:220px;
+  }
 }

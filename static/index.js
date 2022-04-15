@@ -16,9 +16,15 @@ fetch_url = (url, method, options) => {
 async function fetch_attraction (url,method) {
     let data = await fetch_url(url,method);
     console.log(data);
+    if(el("loading_img") != undefined){
+        console.log("現在有喔");
+        elems = document.querySelectorAll('div.loading_img');
+        console.log(elems);
+        elems.forEach((ele)=>ele.style.display="none");
+    }
     if(data["error"]){
         create_home_page_elements(data,url);     
-    }else{
+    }else{       
         create_home_page_elements(data,url);
         show_next_page_info(data["nextPage"],url);
     }
@@ -172,6 +178,32 @@ go_to_bookingPage = () => {
 
 // ============================
 
+loading_effect = (elem) =>{
+    console.log(elem);
+    console.log("offsetWidth",elem.offsetWidth); 
+    console.log("offsetHeight",elem.offsetHeight);
+    console.log("clientWidth",elem.clientWidth);
+    console.log("clientHeight",elem.clientHeight);
+    console.log("scrollWidth",elem.scrollWidth);
+    console.log("scrollHeight",elem.scrollHeight);
+    // offsetWidth/offsetHeight)
+    height=elem.offsetHeight;
+    height=height+100;
+    loading_img=document.createElement("div");
+    loading_img.className="loading_img";
+    loading_img.style.height="100px";
+    loading_img.appendChild(el("loading"));
+    // body.insertBefore()
+    document.body.insertBefore(loading_img,el("footer"));
+    el("loading").style.display="flex";
+    // el("loading").style.postion="absolute";
+    // el("loading").style.postion="relative";
+    // el("loading").style.top=height+"px";
+    // el("loading").style.left="-50%";
+    // el("loading").style.right="-50%";
+    console.log(el("loading").clientHeight);
+}
+
 error_box_show = () =>{
     el("body_cover").style.display="flex";
     el("error_box").style.display="flex";
@@ -311,7 +343,6 @@ user_status_response_nav = (info) =>{
 }
 
 show_next_page_info = (nextPage,url) => {
-    console.log(nextPage);
     callback = (entry) => { 
         if(nextPage=="null"){
             observer.unobserve(newTarget);
@@ -320,8 +351,11 @@ show_next_page_info = (nextPage,url) => {
             observer.unobserve(newTarget);
             url=`${url}&page=${nextPage}`;
             fetch_attraction(url,"GET");
+            // console.log(nextPage);
         }
         else if (entry[0].isIntersecting ) {
+            // console.log("entry",entry[0]["target"]);
+            loading_effect(entry[0]["target"]);
             observer.unobserve(newTarget);
             indexPage(nextPage); 
         }
@@ -505,9 +539,11 @@ slider_arrow_click_eventListener = (click) => {
 var pic_num=[];
 slider_change_img_by_arrow = (click) => {
     let img_width=el_id("section_left").offsetWidth;
+    let client_width=document.body.clientWidth ;
     let botton=document.querySelectorAll(".manual_label");
     botton.forEach((ele)=>ele.style.backgroundColor="transparent");
     console.log("圖片這格大小現在",img_width);
+    console.log("使用者螢幕大小",client_width);
     // =============================================================================arrow botton effect
     if(click=="right"){
 
@@ -521,7 +557,10 @@ slider_change_img_by_arrow = (click) => {
             manual_label=el("manual_label",[pic]);
         }
         manual_label.style.backgroundColor="#ffffff";
-        el("slides_img").style.marginLeft=`-${pic*img_width}px`;
+        move=pic*img_width;
+        console.log(-(move));
+        console.log(typeof(move));
+        el("slides_img").style.marginLeft=(-(move))+"px";
         pic_num["num"]=pic+1;
         return;
 

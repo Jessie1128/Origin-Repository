@@ -6,6 +6,7 @@ import jwt
 from login import login
 from booking import booking
 from orders import orders
+from mysql.connector import pooling
 load_dotenv("mydb.evn")
 # ========================================================================== blue print
 app = Flask(__name__, static_folder="static", static_url_path="/")
@@ -15,6 +16,9 @@ app.register_blueprint(orders, url_prefix="/api")
 # ========================================================================== mydb connection
 mydb = mysql.connector.connect(
     host="127.0.0.1", user=os.getenv("user"), password=os.getenv("password"), database="OriginRepository")
+# con = pool.get_connection()
+# cursor = con.cursor(dictionary=True)
+
 mycursor = mydb.cursor()
 # ========================================================================== jwt token
 encoded_jwt = jwt.encode(
@@ -23,6 +27,14 @@ print("JWT", encoded_jwt)
 print(jwt.decode(encoded_jwt, "secret", algorithms=["HS256"]))
 # ==========================================================================render_template
 app.config["TEMPLATES_AUTO_RELOAD"] = True
+
+connection_pool = pooling.MySQLConnectionPool(pool_name="name",
+                                              pool_size=10,
+                                              pool_reset_session=True,
+                                              host="127.0.0.1",
+                                              database="OriginRepository",
+                                              user=os.getenv("user"),
+                                              password=os.getenv("password"))
 
 
 @ app.route("/")
@@ -50,6 +62,8 @@ def thankyou():
 
 @ app.route("/api/attraction/<id>")
 def attraction_id(id):
+    # con = pool.get_connection()
+    # cursor = con.cursor(dictionary=True)
     ValuesKeys = "id, name, category, description, address, transport, mrt, latitude, longitude, images"
     sqlSelect = "SELECT "+ValuesKeys+" FROM Attractions WHERE id= %s;"
     mycursor.execute(sqlSelect, (id,))
