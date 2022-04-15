@@ -238,7 +238,6 @@ close_member_login_box = () => {
     el("body_cover").style.display="none";
     el("nav").style.filter="brightness(1.0)";
     el("login_box").style.display="none";
-    // nav_eventListener();
 }
 
 login_show = () => {
@@ -259,6 +258,7 @@ login_show = () => {
 
 async function login_or_register_box (click) {
     let login_text=click.target.innerText;
+    console.log(login_text);
     let name=el_id("login_1").value;
     let email=el_id("login_2").value;
     let password=el_id("login_3").value;
@@ -287,10 +287,14 @@ async function login_or_register_box (click) {
 }
 
 render_login_or_register_box = (info,data) => {
+    // let name=el_id("login_1").value;
+    // let email=el_id("login_2").value;
+    // let password=el_id("login_3").value;
     let current_page=location.href;
     // ============================== 登入的畫面處理
     if(info["name"]==''){
-        if(data["ok"]){                     
+        remove_login_info();
+        if(data["ok"]){                    
             el("nav_right_item",1).textContent="登出系統";
             el("login_box").style.display="none";
             el("body_cover").style.display="none";
@@ -305,11 +309,9 @@ render_login_or_register_box = (info,data) => {
     }else{
     // ============================== 註冊的畫面處理
         el("login_box").style.height="370px";
+        remove_login_info();
         if(data["ok"]){
             el_id("message").textContent="註冊成功，請重新登入會員";
-            el_id("login_1").value="";
-            el_id("login_2").value="";
-            el_id("login_3").value="";
             fetch_url("/api/user","DELETE");
         }else if(data["error"]){
             el_id("message").textContent=data.message;
@@ -317,6 +319,12 @@ render_login_or_register_box = (info,data) => {
             el_id("message").textContent=data.message;
         }
     }
+}
+
+remove_login_info = () => {
+    el_id("login_2").value="";
+    el_id("login_1").value="";
+    el_id("login_3").value="";
 }
 
 user_status_response_nav = (info) =>{
@@ -486,8 +494,6 @@ click_AM_PM = (click) => {
 }
 
 create_slider_box = (pic) => {
-    console.log(pic);
-    console.log(pic.length);
     // =============================================================create img
     let slides=document.createElement("div");
     for (num=0;num<pic.length;num++) {
@@ -724,10 +730,20 @@ booking_page_create_info = (data,time) => {
     })
 }
 
+transaction_in_progress = () => {
+    el("body_cover").style.display="block";
+    el("nav").style.filter="brightness(0.75)";
+    el("tran_status").textContent="交易進行中，請稍候...";
+    el("loading_img").style.display="flex";
+    el("loading").style.position="fixed";
+    return "ok";
+}
+
 render_confirm_order = (data,order) => {
     console.log(data);
     if (data["error"]==true){
         error_msg=data["message"];
+        el("loading_img",0).style.display="none";
         error_box_show();
         el("error_box").style.boxShadow="0px 4px 60px #aaaaaa";
         el("error_box_border").style.background="linear-gradient(270deg, #337788 0%, #66aabb 100%)";
@@ -751,11 +767,6 @@ thankyou_page_inner = (data) => {
     total_height=el("nav").offsetHeight+el("main_inner").offsetHeight;
     el("footer").style.height="calc(100vh - "+total_height+"px)";
 }
-
-
-
-
-
 
 // ==========================================   controller   =======================================
 
@@ -824,13 +835,7 @@ reserve_attraction = () => {
     el("right_bottom_botton").addEventListener("click",reserve_a_trip); 
 }
 
-
-
-
-
-
 // =========================================================== for TapPay 
-
 
 for_TapPay = () =>{
     let fields = {
@@ -949,11 +954,13 @@ TPDirect_card_getPrime = (data) => {
                 }
             }
         }
-        fetch_confirm_order(order);
+        let res = transaction_in_progress();
+        console.log(res);
+        if(res=="ok"){
+            fetch_confirm_order(order);
+        }
     })
 }  
-
-
 
 
 

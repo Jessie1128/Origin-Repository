@@ -83,6 +83,28 @@ body {
   animation: loading-circle-ani 1.5s 1.2s infinite;
 }
 
+.tran{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  width:200px;
+}
+
+.tran_status{
+  position: fixed;
+  margin: 0 auto;
+  top:160px;
+  /* left:50%;
+  right:50%;  */
+  width:200px;
+  font-size: 20px;
+  font-weight: bold;
+  color:#448899;
+  /* text-shadow: 0 0 0.2em #8F7; */
+  /* text-shadow: 0.1em 0.1em 0.2em; */
+}
+
 /* ===========================================login box start */
 
 .body_cover {
