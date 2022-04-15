@@ -16,10 +16,12 @@ fetch_url = (url, method, options) => {
 async function fetch_attraction (url,method) {
     let data = await fetch_url(url,method);
     console.log(data);
+    // console.log(el("loading"));
+    console.log(el("loading_img"));
     if(el("loading_img") != undefined){
         console.log("現在有喔");
+        console.log(el("loading_img"));
         elems = document.querySelectorAll('div.loading_img');
-        console.log(elems);
         elems.forEach((ele)=>ele.style.display="none");
     }
     if(data["error"]){
@@ -187,21 +189,14 @@ loading_effect = (elem) =>{
     console.log("scrollWidth",elem.scrollWidth);
     console.log("scrollHeight",elem.scrollHeight);
     // offsetWidth/offsetHeight)
-    height=elem.offsetHeight;
-    height=height+100;
+    // height=elem.offsetHeight;
+    // height=height+100;
     loading_img=document.createElement("div");
     loading_img.className="loading_img";
     loading_img.style.height="100px";
     loading_img.appendChild(el("loading"));
-    // body.insertBefore()
     document.body.insertBefore(loading_img,el("footer"));
     el("loading").style.display="flex";
-    // el("loading").style.postion="absolute";
-    // el("loading").style.postion="relative";
-    // el("loading").style.top=height+"px";
-    // el("loading").style.left="-50%";
-    // el("loading").style.right="-50%";
-    console.log(el("loading").clientHeight);
 }
 
 error_box_show = () =>{

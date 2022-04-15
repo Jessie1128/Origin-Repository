@@ -16,15 +16,16 @@ body {
 /* ===========================================login box start */
 
 .loading{
-  display: none;
+  display: flex;
   height:100px;
   width:200px;
   margin: 0 auto;
   justify-content: center;
   align-items: center;
-  position: absolute;
+  z-index: 100;
+  /* position: absolute;
   left:-50%;
-  right:-50%;
+  right:-50%; */
 }
 
 .loading-circle{
