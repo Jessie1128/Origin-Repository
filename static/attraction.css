@@ -12,6 +12,77 @@ body {
   height: 100%;
 }
 
+/* ===========================================loading effect start */
+
+.loading{
+  display: flex;
+  height:100px;
+  width:200px;
+  margin: 0 auto;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  position: absolute;
+  top:180px;
+  left:-50%;
+  right:-50%; 
+}
+
+.loading-circle{
+  background-color: #448899;
+  padding: 5px;
+  margin:3px;
+  height:5px;
+  width:5px;
+  border-radius: 100%;
+}
+
+@keyframes loading-circle-ani{
+ 0%{
+  transform: translateY(0);
+  opacity: 1;
+ }
+ 30%{
+  transform: translateY(0);
+  opacity: 0.3;
+ }
+ 50%{
+  transform: translateY(-15px);
+  opacity: 0.8;
+ }
+ 70%{
+  transform: translateY(px);
+  opacity: 0.8;
+ }
+ 85%{
+  transform: translateY(px);
+ }
+ 100%{
+  transform: translateY(0);
+  opacity: 1;
+ }
+}
+
+.loading-circle-ani-1{
+  animation: loading-circle-ani 1.5s 0s infinite;
+}
+
+.loading-circle-ani-2{
+  animation: loading-circle-ani 1.5s 0.3s infinite;
+}
+
+.loading-circle-ani-3{
+  animation: loading-circle-ani 1.5s 0.6s infinite;
+}
+
+.loading-circle-ani-4{
+  animation: loading-circle-ani 1.5s 0.9s infinite;
+}
+
+.loading-circle-ani-5{
+  animation: loading-circle-ani 1.5s 1.2s infinite;
+}
+
 /* ===========================================login box start */
 
 .body_cover {

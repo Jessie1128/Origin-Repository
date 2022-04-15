@@ -15,11 +15,7 @@ fetch_url = (url, method, options) => {
 
 async function fetch_attraction (url,method) {
     let data = await fetch_url(url,method);
-    if(el("loading_img") != undefined){
-        console.log("有loading_img");
-        elems = document.querySelectorAll('div.loading_img');
-        elems.forEach((ele)=>ele.style.display="none");
-    }
+    await remove_loading();
     if(data["error"]){
         create_home_page_elements(data,url);     
     }else{       
@@ -63,6 +59,14 @@ async function user_logout(current_page){
     }
 }
 
+async function get_attraction_info_by_id () {
+    let path=location.pathname;
+    let id=path.substring(path.lastIndexOf("/")+1);
+    let data = await fetch_url(`/api/attraction/${id}`,"GET","");
+    await remove_loading();
+    create_attraction_page_elements(data);
+}
+
 fetch_reserved_trip_info = (info) => {    
     return fetch("/api/booking",{                   
         method: "POST",
@@ -81,6 +85,7 @@ async function check_order_info () {
     let order_num=location.href;
     order_num=order_num.substring(order_num.lastIndexOf("=")+1);
     let data = await fetch_url(`/api/orders?number=${order_num}`,"GET");
+    await remove_loading();
     if(data["error"]==true){
         go_to_homePage();
     }else if(data["data"]==null){
@@ -90,25 +95,23 @@ async function check_order_info () {
     }   
 }
 
-check_booking_info = () => {
-    fetch("/api/booking",{method:"GET"})
-    .then(res=>res.json())
-    .then((data)=>{
-        console.log(data);
-        if(data["error"]==true){
-            go_to_homePage();
-        }else if(data["data"]==null){
-            booking_page_no_info();
+async function check_booking_info () {
+    let data = await fetch_url("/api/booking","GET");
+    console.log(data);
+    await remove_loading();
+    if(data["error"]==true){
+        go_to_homePage();
+    }else if(data["data"]==null){
+        booking_page_no_info();
+    }else{
+        let time;
+        if (data.data["time"]=="morning"){
+            time="上午時段";
         }else{
-            let time;
-            if (data.data["time"]=="morning"){
-                time="上午時段";
-            }else{
-                time="下午時段";
-            }
-            booking_page_create_info(data,time);
+            time="下午時段";
         }
-    })
+        booking_page_create_info(data,time);
+    }
 }
 
 fetch_confirm_order = (order) => {
@@ -174,19 +177,17 @@ go_to_bookingPage = () => {
     window.location.href="/booking";
 }
 
+remove_loading = () => {
+    if(el("loading_img") != undefined){
+        console.log("有loading_img");
+        elems = document.querySelectorAll('div.loading_img');
+        elems.forEach((ele)=>ele.style.display="none");
+    }
+}
+
 // ============================
 
 loading_effect = (elem) =>{
-    console.log(elem);
-    console.log("offsetWidth",elem.offsetWidth); 
-    console.log("offsetHeight",elem.offsetHeight);
-    console.log("clientWidth",elem.clientWidth);
-    console.log("clientHeight",elem.clientHeight);
-    console.log("scrollWidth",elem.scrollWidth);
-    console.log("scrollHeight",elem.scrollHeight);
-    // offsetWidth/offsetHeight)
-    // height=elem.offsetHeight;
-    // height=height+100;
     loading_img=document.createElement("div");
     loading_img.className="loading_img";
     loading_img.style.height="100px";
@@ -371,37 +372,6 @@ search_attraction_by_keyword = () => {
     }
 };
 
-async function get_attraction_info_by_id () {
-    let path=location.pathname;
-    let id=path.substring(path.lastIndexOf("/")+1);
-    let data = await fetch_url(`/api/attraction/${id}`,"GET","");
-    let mrt;
-    if(data.data["mrt"]==null){
-        mrt="劍潭";
-    }else{
-        mrt=data.data["mrt"];
-    }
-    el("section_right_bottom").style.background="#e8e8e8";
-    el("attraction_name").textContent=data.data["name"];
-    el("attraction_loca").textContent=`${data.data["category"]} at ${mrt}`;
-    el_tag("p",2).textContent="訂購導覽行程";
-    el_tag("p",3).textContent="以此景點為中心的一日行程，帶您探索城市角落故事";
-    el_tag("p",4).innerHTML="選擇日期 : <input type='date' id='date'>";
-    el("choose_time_click").textContent="選擇時間 :";
-    el("circle_word").textContent="上半天";
-    el("circle_word",1).textContent="下半天";
-    el("right_bottom_span1").textContent="導覽費用 :";
-    el("right_bottom_span2").textContent="新台幣 2000 元";
-    el("right_bottom_botton").textContent="開始預定行程";
-    el("right_bottom_botton").style.background="#448899";
-    el_tag("p",5).textContent=data.data["description"];
-    el_tag("p",6).textContent="景點地址 :";  
-    el_tag("p",7).textContent=data.data["address"];
-    el_tag("p",8).textContent="交通方式 :";
-    el_tag("p",9).textContent=data.data["transport"];
-    create_slider_box(data.data["images"]);
-    el("infors").style.borderTop="#e8e8e8 1px solid";
-}
 
 create_home_page_elements = (data,url) => {
     let attraction=document.createElement("div");
@@ -472,6 +442,35 @@ create_home_page_elements_inner = (data,attraction) => {
     }
     document.body.insertBefore(attraction,el("footer"));
 };
+
+create_attraction_page_elements = (data) => {
+    if(data.data["mrt"]==null){
+        mrt="劍潭";
+    }else{
+        mrt=data.data["mrt"];
+    }
+    el("section_right_bottom").style.background="#e8e8e8";
+    el("attraction_name").textContent=data.data["name"];
+    el("attraction_loca").textContent=`${data.data["category"]} at ${mrt}`;
+    el_tag("p",2).textContent="訂購導覽行程";
+    el_tag("p",3).textContent="以此景點為中心的一日行程，帶您探索城市角落故事";
+    el_tag("p",4).innerHTML="選擇日期 : <input type='date' id='date'>";
+    el("choose_time_click").textContent="選擇時間 :";
+    el("blue_circle").style.background="#448899";
+    el("circle_word").textContent="上半天";
+    el("circle_word",1).textContent="下半天";
+    el("right_bottom_span1").textContent="導覽費用 :";
+    el("right_bottom_span2").textContent="新台幣 2000 元";
+    el("right_bottom_botton").textContent="開始預定行程";
+    el("right_bottom_botton").style.background="#448899";
+    el_tag("p",5).textContent=data.data["description"];
+    el_tag("p",6).textContent="景點地址 :";  
+    el_tag("p",7).textContent=data.data["address"];
+    el_tag("p",8).textContent="交通方式 :";
+    el_tag("p",9).textContent=data.data["transport"];
+    create_slider_box(data.data["images"]);
+    el("infors").style.borderTop="#e8e8e8 1px solid";
+}
 
 click_AM_PM = (click) => {
     right_botton=el("right_bottom_span2");
@@ -817,7 +816,6 @@ search_bar_eventListener = () => {
 }
 
 choose_AM_PM_eventListener = () => {
-    el("blue_circle").style.background="#448899";
     el("blue_circle").addEventListener("click",click_AM_PM,false);
     el("blue_circle",1).addEventListener("click",click_AM_PM,false); 
 }

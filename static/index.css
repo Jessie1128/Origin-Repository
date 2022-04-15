@@ -13,7 +13,7 @@ body {
   height: 100%;
 }
 
-/* ===========================================login box start */
+/* ===========================================loading effect start */
 
 .loading{
   display: flex;
@@ -83,8 +83,7 @@ body {
   animation: loading-circle-ani 1.5s 1.2s infinite;
 }
 
-
-
+/* ===========================================login box start */
 
 .body_cover {
   position: absolute;
