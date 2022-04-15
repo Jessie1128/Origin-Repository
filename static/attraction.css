@@ -407,7 +407,7 @@ body {
 }
 
 .section_right_bottom {
-  background: #e8e8e8;
+  /* background: #e8e8e8; */
   color: #666666;
   border-radius: 5px;
   height: 302px;
@@ -424,31 +424,26 @@ body {
   padding-top: 15px;
 }
 
-.section_right_bottom :nth-child(6) {
+.right_bottom_botton {
   margin-top: 35px;
   width: 154px;
   height: 36px;
   font-size: 19px;
   border-radius: 5px;
-  background-color: #448899;
+  /* background-color: #448899; */
   display: grid;
   align-items: center;
   justify-items: center;
+  font-weight: bold;
+  color: #ffffff;
 }
 
 .right_bottom_sapn1 {
   font-weight: bold;
 }
 
-.right_bottom_botton {
-  color: #ffffff;
-  width: 114px;
-  font-weight: bold;
-}
-
 .right_bottom_botton:hover {
   font-size: 20px;
-  width: 120px;
   cursor: pointer;
 }
 

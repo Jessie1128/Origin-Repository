@@ -381,9 +381,19 @@ async function get_attraction_info_by_id () {
     }else{
         mrt=data.data["mrt"];
     }
-    el("section_right_bottom").style.display="block";
+    el("section_right_bottom").style.background="#e8e8e8";
     el("attraction_name").textContent=data.data["name"];
     el("attraction_loca").textContent=`${data.data["category"]} at ${mrt}`;
+    el_tag("p",2).textContent="訂購導覽行程";
+    el_tag("p",3).textContent="以此景點為中心的一日行程，帶您探索城市角落故事";
+    el_tag("p",4).innerHTML="選擇日期 : <input type='date' id='date'>";
+    el("choose_time_click").textContent="選擇時間 :";
+    el("circle_word").textContent="上半天";
+    el("circle_word",1).textContent="下半天";
+    el("right_bottom_span1").textContent="導覽費用 :";
+    el("right_bottom_span2").textContent="新台幣 2000 元";
+    el("right_bottom_botton").textContent="開始預定行程";
+    el("right_bottom_botton").style.background="#448899";
     el_tag("p",5).textContent=data.data["description"];
     el_tag("p",6).textContent="景點地址 :";  
     el_tag("p",7).textContent=data.data["address"];
@@ -765,7 +775,6 @@ attractionPage = () =>{
     member_eventListener();
     close_login_box_eventListener();
     check_user_status();     
-    el("section_right_bottom").style.display="none";
     get_attraction_info_by_id();                  
     choose_AM_PM_eventListener(); 
     reserve_attraction();
