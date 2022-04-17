@@ -280,6 +280,7 @@ async function login_or_register_box (click) {
             el("login_box").style.height="370px";
             el_id("message").textContent="信箱、帳號或密碼，不得為空";
         }else{
+            el("nav").style.filter="brightness(1.0)";
             let data= await fetch_info_by_login_box(info,"POST");
             render_login_or_register_box(info,data);
         }    
