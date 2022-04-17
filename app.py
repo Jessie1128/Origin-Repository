@@ -47,7 +47,7 @@ try:
         record = mycursor.fetchone()
         print("Your connected to - ", record)
         print(mysql.connector.pooling.PooledMySQLConnection)
-        print(pooling.PooledMySQLConnection(connection_pool, connection_objt))
+        # print(pooling.PooledMySQLConnection(connection_pool, connection_objt))
         # pooled_connection = mysql.connector.pooling.PooledMySQLConnection(
         #     "Origin-pool", connection_objt)
         # print(pooled_connection)
