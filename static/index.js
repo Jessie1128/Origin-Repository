@@ -808,6 +808,7 @@ thank_you_page = () => {
 // ======================== init end
 
 nav_eventListener = () =>{
+    el("nav").style.filter="brightness(1.0)";
     el("nav_left").addEventListener("click",go_to_homePage);
     el("nav_right_item",1).addEventListener("click",login_show);
     el_id("login_botton").addEventListener("click",login_or_register_box);
