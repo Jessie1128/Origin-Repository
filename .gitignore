@@ -1,3 +1,5 @@
+#Added manually
+/key.evn
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -105,7 +107,6 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-key.env
 .env
 .venv
 env/
