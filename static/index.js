@@ -186,12 +186,6 @@ remove_loading = () => {
 }
 
 // ============================
-loading_effect_for_main_page = () => {
-    el("loading").style.position="fixed";
-    el("loading").style.top="480px";
-    el("loading").style.left="-50%";
-    el("loading").style.right="-50%";
-}
 
 loading_effect = (elem) =>{
     loading_img=document.createElement("div");
@@ -779,8 +773,6 @@ thankyou_page_inner = (data) => {
 
 // ======================== init
 indexPage = (page) => {
-    // weather();
-    loading_effect_for_main_page();
     nav_eventListener();
     member_eventListener();
     close_login_box_eventListener();
@@ -788,15 +780,6 @@ indexPage = (page) => {
     fetch_attraction(`/api/attractions?page=${page}`,"GET");
     search_bar_eventListener();
 }
-
-// weather = () => {
-//     fetch("https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=CWB-C9F2411B-BC72-4DB3-9E35-C56D57874366&format=JSON&sort=time")
-//     .then(res=>res.json())
-//     .then((data)=>{
-//         console.log(data)
-//     })
-// }
-
 
 attractionPage = () =>{                         
     nav_eventListener();
