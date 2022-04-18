@@ -20,7 +20,7 @@ connection_pool = pooling.MySQLConnectionPool(pool_name="Origin-pool",
                                                   "user"),
                                               password=os.getenv("password"))
 
-load_dotenv("mydb.evn")
+load_dotenv("key.evn")
 # ========================================================================== blue print
 orders = Blueprint("orders", __name__)
 # ========================================================================== mydb connection

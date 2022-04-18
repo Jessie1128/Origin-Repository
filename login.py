@@ -8,7 +8,7 @@ from mysql.connector import pooling
 from mysql.connector import Error
 # app.config['PROPAGATE_EXCEPTIONS'] = True
 
-load_dotenv("mydb.evn")
+load_dotenv("key.evn")
 # ========================================================================== blue print
 login = Blueprint("login", __name__)
 # ========================================================================== mydb connection

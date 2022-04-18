@@ -9,8 +9,9 @@ from booking import booking
 from orders import orders
 from mysql.connector import pooling
 from mysql.connector import Error
+
 # from connection_pool import connect_start
-load_dotenv("mydb.evn")
+load_dotenv("key.evn")
 # ========================================================================== blue print
 app = Flask(__name__, static_folder="static", static_url_path="/")
 app.register_blueprint(login, url_prefix="/api")
