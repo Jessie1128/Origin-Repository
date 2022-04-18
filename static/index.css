@@ -17,7 +17,7 @@ body {
 
 .loading{
   display: flex;
-  height:100px;
+  height:180px;
   width:200px;
   margin: 0 auto;
   justify-content: center;
