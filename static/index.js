@@ -334,13 +334,17 @@ user_status_response_nav = (info) =>{
         el("nav_right_item").addEventListener("click",login_show);   
     }else{
         el("nav_login_logo").style.padding="10px";
-        el("nav_login_logo").style.marginRight="5px";
         el("nav_login_logo").style.height="18px";
         el("nav_login_logo").style.width="18px";
         el("nav_login_logo").textContent=info["data"]["name"].substr(0, 1);
         el("nav_right_item",1).textContent="登出系統";        
         el("login_box").style.display="none";
-        el("nav_right_item").addEventListener("click",go_to_bookingPage);    
+        el("nav_right_item").addEventListener("click",go_to_bookingPage); 
+        if(document.body.clientWidth <= 600){
+            el("nav_login_logo").style.marginRight="5px";
+        }else if(document.body.clientWidth > 600){
+            el("nav_login_logo").style.marginRight="10px";
+        }
     }
 }
 
