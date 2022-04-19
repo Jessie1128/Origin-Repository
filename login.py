@@ -11,7 +11,7 @@ from mysql.connector import Error
 load_dotenv("key.evn")
 # ========================================================================== blue print
 login = Blueprint("login", __name__)
-# ========================================================================== mydb connection
+# ========================================================================== connection pool
 connection_pool = pooling.MySQLConnectionPool(pool_name="Origin-pool",
                                               pool_size=5,
                                               pool_reset_session=True,
@@ -20,10 +20,6 @@ connection_pool = pooling.MySQLConnectionPool(pool_name="Origin-pool",
                                               user=os.getenv(
                                                   "user"),
                                               password=os.getenv("password"))
-# mydb = mysql.connector.connect(
-#     host="127.0.0.1", user=os.getenv("user"), password=os.getenv("password"), database="OriginRepository")
-# mycursor = mydb.cursor()
-# ========================================================================== jwt token
 
 
 @login.route("/user", methods=['GET', 'POST', 'PATCH', 'DELETE'])

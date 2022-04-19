@@ -17,20 +17,7 @@ app = Flask(__name__, static_folder="static", static_url_path="/")
 app.register_blueprint(login, url_prefix="/api")
 app.register_blueprint(booking, url_prefix="/api")
 app.register_blueprint(orders, url_prefix="/api")
-# ========================================================================== mydb connection
-# mydb = mysql.connector.connect(
-#     host="127.0.0.1", user=os.getenv("user"), password=os.getenv("password"), database="OriginRepository")
-# con = pool.get_connection()
-# cursor = con.cursor(dictionary=True)
-
-# mycursor = mydb.cursor()
-# ========================================================================== jwt token
-encoded_jwt = jwt.encode(
-    {"myproject": "Origin-RepositoryByJessie"}, "secret", algorithm="HS256")
-print("JWT", encoded_jwt)
-print(jwt.decode(encoded_jwt, "secret", algorithms=["HS256"]))
-# ==========================================================================render_template
-app.config["TEMPLATES_AUTO_RELOAD"] = True
+# ========================================================================== connection pool
 connection_pool = pooling.MySQLConnectionPool(pool_name="Origin-pool",
                                               pool_size=5,
                                               pool_reset_session=True,
@@ -39,14 +26,13 @@ connection_pool = pooling.MySQLConnectionPool(pool_name="Origin-pool",
                                               user=os.getenv(
                                                   "user"),
                                               password=os.getenv("password"))
-# connection_objt = connection_pool.get_connection()
-# if connection_objt.is_connected():
-#     db_Info = connection_objt.get_server_info()
-#     print(
-#         "Connected to MySQL database using connection pool ... MySQL Server version on ", db_Info)
-#     mycursor = connection_objt.cursor()
-# else:
-#     print("Error")
+# ========================================================================== jwt token
+encoded_jwt = jwt.encode(
+    {"myproject": "Origin-RepositoryByJessie"}, "secret", algorithm="HS256")
+print("JWT", encoded_jwt)
+print(jwt.decode(encoded_jwt, "secret", algorithms=["HS256"]))
+# ==========================================================================render_template
+app.config["TEMPLATES_AUTO_RELOAD"] = True
 
 
 @ app.route("/")

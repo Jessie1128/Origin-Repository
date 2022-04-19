@@ -15,6 +15,7 @@ fetch_url = (url, method, options) => {
 
 async function fetch_attraction (url,method) {
     let data = await fetch_url(url,method);
+    await remove_no_more_info();
     await remove_loading();
     if(data["error"]){
         create_home_page_elements(data,url);     
@@ -179,12 +180,18 @@ go_to_bookingPage = () => {
 
 remove_loading = () => {
     if(el("loading_img") != undefined){
-        console.log("有loading_img");
         elems = document.querySelectorAll('div.loading_img');
         elems.forEach((ele)=>ele.style.display="none");
     }
 }
 
+remove_no_more_info = () =>{
+    if(el("no_more_info") != undefined){
+        elems = document.querySelectorAll('div.no_more_info');
+        elems.forEach((ele)=>ele.remove());
+    }
+}
+           
 // ============================
 
 loading_effect = (elem) =>{
@@ -194,6 +201,13 @@ loading_effect = (elem) =>{
     loading_img.appendChild(el("loading"));
     document.body.insertBefore(loading_img,el("footer"));
     el("loading").style.display="flex";
+}
+
+no_more_info = () =>{
+    no_info=document.createElement("div");
+    no_info.className="no_more_info";
+    no_info.textContent="—— 目前已顯示全部搜尋結果 ——";
+    document.body.insertBefore(no_info,el("footer"));
 }
 
 error_box_show = () =>{
@@ -351,9 +365,11 @@ user_status_response_nav = (info) =>{
 show_next_page_info = (nextPage,url) => {
     callback = (entry) => { 
         if(nextPage=="null"){
+            no_more_info();
             observer.unobserve(newTarget);
         }
         else if (entry[0].isIntersecting & url.includes("keyword")){
+            loading_effect(entry[0]["target"]);
             observer.unobserve(newTarget);
             url=`${url}&page=${nextPage}`;
             fetch_attraction(url,"GET");
@@ -791,7 +807,6 @@ thankyou_page_inner = (data) => {
 
 // ======================== init
 indexPage = (page) => {
-    // weather();
     nav_eventListener();
     member_eventListener();
     close_login_box_eventListener();
@@ -799,14 +814,6 @@ indexPage = (page) => {
     fetch_attraction(`/api/attractions?page=${page}`,"GET");
     search_bar_eventListener();
 }
-
-// weather = () => {
-//     fetch("https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=CWB-C9F2411B-BC72-4DB3-9E35-C56D57874366&format=JSON&sort=time")
-//     .then(res=>res.json())
-//     .then((data)=>{
-//         console.log(data)
-//     })
-// }
 
 attractionPage = () =>{                        
     nav_eventListener();

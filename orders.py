@@ -11,6 +11,9 @@ import datetime
 import random
 from mysql.connector import pooling
 from mysql.connector import Error
+
+load_dotenv("key.evn")
+# ========================================================================== connection pool
 connection_pool = pooling.MySQLConnectionPool(pool_name="Origin-pool",
                                               pool_size=5,
                                               pool_reset_session=True,
@@ -19,19 +22,9 @@ connection_pool = pooling.MySQLConnectionPool(pool_name="Origin-pool",
                                               user=os.getenv(
                                                   "user"),
                                               password=os.getenv("password"))
-
-load_dotenv("key.evn")
 # ========================================================================== blue print
 orders = Blueprint("orders", __name__)
 # ========================================================================== mydb connection
-# mydb = mysql.connector.connect(
-#     host="127.0.0.1", user=os.getenv("user"), password=os.getenv("password"), database="OriginRepository")
-# mycursor = mydb.cursor()
-
-# connection_objt = connection_pool.get_connection()
-# mycursor = connection_objt.cursor()
-# finally:
-#     connection_objt.close()
 
 
 @orders.route("/orders", methods=['GET', 'POST'])
