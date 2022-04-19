@@ -431,6 +431,8 @@ body {
   border-bottom-right-radius: 0.5em;
   justify-content: center;
   align-items: center;
+  position: relative;
+  left:-3px;
 }
 
 #search:hover {
