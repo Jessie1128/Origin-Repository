@@ -438,7 +438,7 @@ body {
   grid-column: 2 / 3;
   background-color: #448899;
   width: 60px;
-  height: 48px;
+  height: 47.5px;
   border-top-right-radius: 0.5em;
   border-bottom-right-radius: 0.5em;
   justify-items: center;
@@ -554,6 +554,7 @@ body {
 @media screen and (max-width: 1200px) {
   .nav_left {
     font-size: 28px;
+    padding-left: 10px;
   }
 
   #header_input {
@@ -587,6 +588,11 @@ body {
 @media screen and (max-width: 600px) {
   .nav_left {
     font-size: 26px;
+    padding-left: 5px;
+  }
+
+  .nav_right{
+    padding-right: 5px;
   }
 
   .nav_right_item {

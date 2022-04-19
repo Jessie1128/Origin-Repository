@@ -332,11 +332,23 @@ body {
 
 /* ===========================================RWD 600px */
 
+@media screen and (max-width: 1200px) {
+  .nav_left {
+    font-size: 28px;
+    padding-left: 10px;
+  }
+}
+
 @media screen and (max-width: 600px) {
     /* ==========================nav*/
 
     .nav_left {
-        font-size: 26px;
+      font-size: 26px;
+      padding-left: 5px;
+    }
+  
+    .nav_right{
+      padding-right: 5px;
     }
 
     .nav_right_item {
