@@ -673,4 +673,9 @@ body {
   #header_input {
     width: 220px;
   }
+
+  .no_more_info{
+    width:250px;
+    font-size: 14px;
+  }
 }
