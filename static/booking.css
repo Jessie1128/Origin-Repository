@@ -730,4 +730,8 @@ body {
   .remove {
     top: 586px;
   }
+
+  .error_box {
+    width: 300px;
+  }
 }

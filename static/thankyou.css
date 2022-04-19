@@ -375,6 +375,9 @@ body {
         cursor: pointer;
     }
 
+    .error_box {
+      width: 300px;
+    }
     /* ==========================main*/
 
     .main_inner_text_head{

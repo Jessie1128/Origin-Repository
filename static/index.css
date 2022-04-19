@@ -420,9 +420,9 @@ body {
   /* outline: medium; */
 }
 
-.header_input_class{
+/* .header_input_class{
   height:46px;
-}
+} */
 
 #header_input:focus {
   border-color: #448899;
@@ -650,5 +650,9 @@ body {
   .login_box_inner botton:hover {
     font-size: 16px;
     cursor: pointer;
+  }
+
+  .error_box {
+    width: 300px;
   }
 }
