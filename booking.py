@@ -39,10 +39,11 @@ def bookingPage():
                 jwt_decode = jwt.decode(
                     cookie_token, os.getenv("key"), algorithms=["HS256"])
                 email = jwt_decode["email"]
+                print("email", email)
                 mycursor.execute(
                     """SELECT `attraction-id`,`date`,`price`,`time` FROM `pending-order` WHERE `EMAIL`=%s""", (email,))
                 sqlResult = mycursor.fetchone()
-                print("這邊拉幹", sqlResult)
+                print("我要檢查這邊", sqlResult)
                 if sqlResult == None:
                     return jsonify({"data": None}), 200
                 else:

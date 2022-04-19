@@ -142,11 +142,12 @@ remove_booking = (id,click) => {
     })
     .then(res=>res.json())
     .then((data)=>{
-        if(data["ok"]==true & click===undefined){   //======================= for 付款完成刪掉購物車
-            window.location.href="/thankyou"+"?number="+order_number;
-        }else{                                      //======================= for 刪除預定行程按鈕
-            go_to_bookingPage();
-        }
+        go_to_bookingPage();
+        // if(data["ok"]==true & click===undefined){   //======================= for 付款完成刪掉購物車
+        //     window.location.href="/thankyou"+"?number="+order_number;
+        // }else{                                      //======================= for 刪除預定行程按鈕
+        //     go_to_bookingPage();
+        // }
     })
 }
 
@@ -790,7 +791,6 @@ render_confirm_order = (data,order) => {
         order_number=data["data"]["number"];
         location.href="/thankyou"+"?number="+order_number;
         id=order["order"]["trip"]["attraction"]["id"];
-        remove_booking(id);
     }
 }
 
@@ -842,9 +842,9 @@ bookingPage = () => {
 }
 
 thank_you_page = () => {
-    nav_eventListener();
-    member_eventListener();
-    close_login_box_eventListener();
+    nav_eventListener(); 
+    member_eventListener(); 
+    close_login_box_eventListener(); //ok
     check_user_status();   
     check_order_info();
 }

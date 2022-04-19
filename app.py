@@ -17,7 +17,7 @@ app = Flask(__name__, static_folder="static", static_url_path="/")
 app.register_blueprint(login, url_prefix="/api")
 app.register_blueprint(booking, url_prefix="/api")
 app.register_blueprint(orders, url_prefix="/api")
-# ========================================================================== connection pool
+# ========================================================================== connection pol
 connection_pool = pooling.MySQLConnectionPool(pool_name="Origin-pool",
                                               pool_size=5,
                                               pool_reset_session=True,
@@ -157,4 +157,4 @@ def attractions():
 
 # ===================================================
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=3000, debug=True)
+    app.run(host='0.0.0.0', port=3000)

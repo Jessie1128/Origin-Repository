@@ -39,13 +39,10 @@ def ordersPage():
                 return jsonify({"data": None}), 403
             else:
                 order_number = request.args.get("number")
-                print("order_number", order_number)
                 cookie_token = cookie_token.replace('"user_token"=', "")
                 jwt_decode = jwt.decode(
                     cookie_token, os.getenv("key"), algorithms=["HS256"])
                 email = jwt_decode["email"]
-                print(email)
-
                 mycursor.execute("""SELECT * FROM `confirm-order` join `successful-tran` on `confirm-order`.`order_number` = `successful-tran`.`order_number` where `confirm-order`.`user_email`=%s and `successful-tran`.`order_number` = %s;""",
                                  (email, order_number,))
                 sqlResult = mycursor.fetchone()
@@ -131,8 +128,8 @@ def ordersPage():
                 print(tap_pay_res["status"])
                 if tap_pay_res["status"] == 0:
                     print("付款成功")
-                    # mycursor.execute("""DELETE FROM `pending-order` WHERE `email` = %s and `attraction-id` = %s""",
-                    #                  (email, req["order"]["trip"]["attraction"]["id"],))
+                    mycursor.execute("""DELETE FROM `pending-order` WHERE `email` = %s and `attraction-id` = %s""",
+                                     (email, req["order"]["trip"]["attraction"]["id"],))
                     mycursor.execute("""INSERT INTO `successful-tran` ( `prime`, `status`, `msg`, `amount`, `card_token`, `card_key`, `rec_trade_id`,`bank_transaction_id`, `order_number`,`auth_code`,`transaction_time_millis`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
                                      (req["prime"], tap_pay_res["status"], tap_pay_res["msg"], tap_pay_res["amount"], tap_pay_res["card_secret"]["card_token"], tap_pay_res["card_secret"]["card_key"],
                                       tap_pay_res["rec_trade_id"], tap_pay_res["bank_transaction_id"], tap_pay_res["order_number"], tap_pay_res["auth_code"], tap_pay_res["transaction_time_millis"]))
@@ -155,7 +152,9 @@ def ordersPage():
                                      (req["prime"], tap_pay_res["status"], tap_pay_res["msg"], tap_pay_res["rec_trade_id"], tap_pay_res["bank_result_code"], booked_num))
                     connection_objt.commit()
                     return jsonify({"error": True, "message": "訂單建立失敗，輸入不正確或其他原因", "number": booked_num}), 400
-        except:
+        except Exception as e:
+            print("error message", e)
+            error_message = '{}'.format(e)
             return jsonify({"error": True, "message": "伺服器內部錯誤"}), 500
         finally:
             connection_objt.close()
