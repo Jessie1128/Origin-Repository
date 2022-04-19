@@ -333,10 +333,8 @@ user_status_response_nav = (info) =>{
     if (info["data"]==null){       
         el("nav_right_item").addEventListener("click",login_show);   
     }else{
-        let nav_login_logo=document.createElement("span");
-        nav_login_logo.className="nav_login_logo";
-        el("nav_right").appendChild(nav_login_logo);
         el("nav_login_logo").style.padding="10px";
+        el("nav_login_logo").style.marginRight="5px";
         el("nav_login_logo").style.height="18px";
         el("nav_login_logo").style.width="18px";
         el("nav_login_logo").textContent=info["data"]["name"].substr(0, 1);
