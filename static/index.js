@@ -800,7 +800,16 @@ thankyou_page_inner = (data) => {
     el("booking_order_num").innerHTML="訂單編號：<div class='booking_order_num_div'>"+data["data"]["number"]+"</div>";
     el("main_inner_text_ps").textContent="請記住此編號，或到會員中心查詢歷史訂單";
     total_height=el("nav").offsetHeight+el("main_inner").offsetHeight;
-    el("footer").style.height="calc(100vh - "+total_height+"px)";
+    console.log(total_height);
+    let vh = window.innerHeight * 0.01;
+    let footer_height=(vh*100)-total_height;
+    // console.log("footer_height",footer_height);
+    if (footer_height <= 104){
+        footer_height=104;
+    }
+    // console.log(vh*100);
+    // console.log("乘以100",(vh*100)-total_height);
+    el("footer").style.height=footer_height+"px";
 }
 
 // ==========================================   controller   =======================================
