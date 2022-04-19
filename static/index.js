@@ -207,7 +207,12 @@ loading_effect = (elem) =>{
 no_more_info = () =>{
     no_info=document.createElement("div");
     no_info.className="no_more_info";
-    no_info.textContent="—— 目前已顯示全部搜尋結果 ——";
+    let len=document.querySelectorAll('div.attraction')["length"];
+    if(len<5){
+        no_info.textContent="—— 已顯示全部搜尋結果 ——";
+    }else{
+        no_info.textContent="—— 已顯示所有的景點資料 ——";
+    }
     document.body.insertBefore(no_info,el("footer"));
 }
 
@@ -575,7 +580,7 @@ create_slider_box = (pic) => {
     el("arrow_left",1).className="arrow_right";
     // ============================================================= for RWD <= 500
     if (document.body.clientWidth <= 500){
-        el("manual").style.marginTop="-80px";
+        el("manual").style.marginTop="-90px";
         el("change_icon").style.top="-164px";
     }
 }

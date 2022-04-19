@@ -450,10 +450,8 @@ body {
 #payment_2_status,
 #payment_3_status{
  height: 24px;
- width: 24px;
  font-size: 18px;
  margin-left: 10px;
- /* color: #448899; */
 }
 
 .payment {

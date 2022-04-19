@@ -340,11 +340,11 @@ body {
   display: grid;
   grid-auto-flow: column;
   height: 406px;
-  grid-gap: 25px;
   max-width: 1180px;
   width: 100%;
   margin: 0 auto;
   margin-top: 45px;
+  grid-column-gap:25px;
 }
 
 #section_left {
@@ -366,7 +366,6 @@ body {
 .slides_img {
   height: 406px;
   min-width: 100%;
-  /* max-width: 100%; */
   object-fit: cover;
   transition: 1s;
 }
@@ -595,6 +594,7 @@ body {
   color: #666666;
   padding-left: 10px;
   padding-right: 10px;
+  text-align: justify; /*!!!*/
 }
 
 .infors :nth-child(2n) {
@@ -627,19 +627,34 @@ body {
 }
 
 /* ================================================== */
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: 1280px) {
   .nav_left {
     font-size: 28px;
     padding-left: 10px;
   }
 
   .section {
-    grid-gap: 20px;
     max-width: 90%;
+    display: flex;
+  }
+
+  #section_left {
+    flex:none;
+    width:540px;
   }
 
   .section_right {
-    width: 100%;
+    flex:auto;
+    width:auto;
+  }
+
+  .attraction_name,
+  .section_right_bottom p:nth-child(2){
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical; 
   }
 
   .infors {
@@ -648,10 +663,10 @@ body {
   }
 }
 
-@media screen and (max-width: 970px) {
+@media screen and (max-width: 1080px) {
   .change_icon,
   #section_left {
-    width: 440px;
+    width: 500px;
   }
 
   .manual {
@@ -667,11 +682,16 @@ body {
 
 @media screen and (max-width: 900px) {
   .section {
-    grid-auto-flow: row;
-    height: 100%;
-    display: grid;
-    align-items: center;
+    display:flex;
     justify-content: center;
+    flex-wrap: wrap;
+    height: 100%;
+    min-width:100%
+  }
+
+  #section_left {
+    flex:auto;
+    max-width:90%;
   }
 
   .change_icon {
@@ -679,7 +699,7 @@ body {
   }
 
   .section_right {
-    width: 100%;
+    max-width: 90%;
   }
 }
 
@@ -721,20 +741,19 @@ body {
 }
 
 @media screen and (max-width: 500px){
- #section_left{
-  height:360px;
-  border-radius: 0;
- }
-
- .section_right {
-  display: grid;
-  justify-self: center;
-  max-width: 95%;
-}
-
- .section_right_bottom p:nth-child(2){
-  width:220px;
+  #section_left{
+    min-width:100%;
+    height:360px;
+    border-radius: 0;
   }
+
+  .section_right {
+    min-width: 95%;
+  }
+
+  /* .section_right_bottom p:nth-child(2){
+    width:220px;
+  } */
 }
 
 @media screen and (max-width: 420px){
