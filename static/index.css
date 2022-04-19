@@ -437,6 +437,9 @@ body {
   cursor: pointer;
 }
 
+#search :nth-child(1):hover{
+  width:60%;
+}
 /* ====================== for header input 的外層 div end */
 /* ====================== for header 背景圖片 */
 .header :nth-child(4) { 
@@ -457,6 +460,7 @@ body {
   vertical-align: bottom;
   align-items: end;
 }
+
 /* ====================== for header 背景圖片 end */
 
 /* -------------- */
