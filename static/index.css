@@ -264,7 +264,7 @@ body {
 
 .error_box_inner_text {
   font-size: 16px;
-  color: rgba(197, 83, 38, 0.904);
+  color: #c55326e7;
   white-space: pre;
   text-align: center;
   text-decoration:underline;

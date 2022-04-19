@@ -494,7 +494,26 @@ click_AM_PM = (click) => {
     }
 }
 
+slider_arrow_click_eventListener = (click) => {
+    click=click.target["className"];
+    if(click=="arrow_right"){
+        console.log("右邊的鍵");
+        slider_change_img_by_arrow("right");
+    }else if(click=="arrow_left"){
+        console.log("左邊的鍵");
+        slider_change_img_by_arrow("left");
+    }
+}
+
 create_slider_box = (pic) => {
+    // ============================================================= for slider frame which screen <= 900px
+    if (document.body.clientWidth <= 500){
+        let slide_frame=document.body.clientWidth ;
+        el_id("section_left").style.width=(slide_frame+1)+"px";
+    }else if(document.body.clientWidth <= 900){
+        let slide_frame=el("section").getBoundingClientRect();
+        el_id("section_left").style.width=Math.trunc(slide_frame["width"])+"px";
+    }
     // =============================================================create img
     let slides=document.createElement("div");
     for (num=0;num<pic.length;num++) {
@@ -532,16 +551,10 @@ create_slider_box = (pic) => {
     }
     section_left.appendChild(change_icon);
     el("arrow_left",1).className="arrow_right";
-}
-
-slider_arrow_click_eventListener = (click) => {
-    click=click.target["className"];
-    if(click=="arrow_right"){
-        console.log("右邊的鍵");
-        slider_change_img_by_arrow("right");
-    }else if(click=="arrow_left"){
-        console.log("左邊的鍵");
-        slider_change_img_by_arrow("left");
+    // ============================================================= for RWD <= 500
+    if (document.body.clientWidth <= 500){
+        el("manual").style.marginTop="-80px";
+        el("change_icon").style.top="-164px";
     }
 }
 
@@ -773,6 +786,7 @@ thankyou_page_inner = (data) => {
 
 // ======================== init
 indexPage = (page) => {
+    // weather();
     nav_eventListener();
     member_eventListener();
     close_login_box_eventListener();
@@ -781,7 +795,15 @@ indexPage = (page) => {
     search_bar_eventListener();
 }
 
-attractionPage = () =>{                         
+// weather = () => {
+//     fetch("https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=CWB-C9F2411B-BC72-4DB3-9E35-C56D57874366&format=JSON&sort=time")
+//     .then(res=>res.json())
+//     .then((data)=>{
+//         console.log(data)
+//     })
+// }
+
+attractionPage = () =>{                        
     nav_eventListener();
     member_eventListener();
     close_login_box_eventListener();
