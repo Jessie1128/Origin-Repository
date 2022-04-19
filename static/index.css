@@ -420,6 +420,10 @@ body {
   /* outline: medium; */
 }
 
+.header_input_class{
+  height:46px;
+}
+
 #header_input:focus {
   border-color: #448899;
   /* border:2px; */
@@ -438,7 +442,7 @@ body {
   grid-column: 2 / 3;
   background-color: #448899;
   width: 60px;
-  height: 47.5px;
+  height: 48px;
   border-top-right-radius: 0.5em;
   border-bottom-right-radius: 0.5em;
   justify-items: center;
@@ -600,7 +604,7 @@ body {
   }
 
   #header_input {
-    width: 230px;
+    width: 250px;
   }
 
   #search {
