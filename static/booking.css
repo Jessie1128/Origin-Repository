@@ -732,3 +732,16 @@ body {
     width: 300px;
   }
 }
+
+/* ===================================RWD 420px */
+
+/* @media screen and (max-width: 420px) {
+  .headline_2_right_first{
+    display: block;
+  }
+
+  #headline_2_name{
+    padding-top: 0px;
+    margin-left: 0px;
+  }
+} */

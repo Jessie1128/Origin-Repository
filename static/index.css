@@ -576,7 +576,7 @@ body {
   #header_input {
     width: 315px;
   }
-
+  
   /* #search {
     position: absolute;
     left: 339px;
@@ -584,6 +584,7 @@ body {
 
   .header_inner {
     font-size: 28px;
+    padding-left: 35px;
   }
 
   .attraction {

@@ -648,7 +648,7 @@ body {
     width:auto;
   }
 
-  .attraction_name,
+  /* .attraction_name, */
   .section_right_bottom p:nth-child(2){
     overflow: hidden;
     text-overflow: ellipsis;
