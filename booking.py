@@ -5,15 +5,22 @@ from flask import *
 from datetime import datetime, timedelta
 import jwt
 import datetime
+from mysql.connector import pooling
+from mysql.connector import Error
 # app.config['PROPAGATE_EXCEPTIONS'] = True
 
-load_dotenv("mydb.evn")
+load_dotenv("key.evn")
 # ========================================================================== blue print
 booking = Blueprint("booking", __name__)
-# ========================================================================== mydb connection
-mydb = mysql.connector.connect(
-    host="127.0.0.1", user=os.getenv("user"), password=os.getenv("password"), database="OriginRepository")
-mycursor = mydb.cursor()
+# ========================================================================== connection pool
+connection_pool = pooling.MySQLConnectionPool(pool_name="Origin-pool",
+                                              pool_size=5,
+                                              pool_reset_session=True,
+                                              host="127.0.0.1",
+                                              database="OriginRepository",
+                                              user=os.getenv(
+                                                  "user"),
+                                              password=os.getenv("password"))
 
 
 @booking.route("/booking", methods=['GET', 'POST', 'DELETE'])
@@ -21,6 +28,9 @@ def bookingPage():
     # ================================================================================= GET
     if request.method == 'GET':
         try:
+            connection_objt = connection_pool.get_connection()
+            mycursor = connection_objt.cursor()
+            # =======================================================
             cookie_token = request.cookies.get("user_token")
             if cookie_token == None:
                 return jsonify({"error": True, "message": "未登入系統，拒絕存取"}), 403
@@ -29,9 +39,11 @@ def bookingPage():
                 jwt_decode = jwt.decode(
                     cookie_token, os.getenv("key"), algorithms=["HS256"])
                 email = jwt_decode["email"]
+                print("email", email)
                 mycursor.execute(
                     """SELECT `attraction-id`,`date`,`price`,`time` FROM `pending-order` WHERE `EMAIL`=%s""", (email,))
                 sqlResult = mycursor.fetchone()
+                print("我要檢查這邊", sqlResult)
                 if sqlResult == None:
                     return jsonify({"data": None}), 200
                 else:
@@ -54,9 +66,14 @@ def bookingPage():
                     ), 200
         except:
             return jsonify({"error": True, "message": "伺服器內部錯誤"}), 500
+        finally:
+            connection_objt.close()
     # ================================================================================= POST
     if request.method == 'POST':
         try:
+            connection_objt = connection_pool.get_connection()
+            mycursor = connection_objt.cursor()
+            # =======================================================
             cookie_token = request.cookies.get("user_token")
             req = request.get_json()
             attractionId = req["attractionId"]
@@ -83,13 +100,18 @@ def bookingPage():
                 sqlInsert = "INSERT INTO `pending-order` (`email`,`attraction-id`,`date`,`price`,`time`) VALUES (%s,%s,%s,%s,%s)"
                 mycursor.execute(
                     sqlInsert, (email, attractionId, date, price, time,))
-                mydb.commit()
+                connection_objt.commit()
                 return jsonify({"ok": True}), 200
         except:
             return jsonify({"error": True, "message": "伺服器內部錯誤"}), 500
+        finally:
+            connection_objt.close()
     # ================================================================================= PATCH
     if request.method == 'DELETE':
         try:
+            connection_objt = connection_pool.get_connection()
+            mycursor = connection_objt.cursor()
+            # =======================================================
             cookie_token = request.cookies.get("user_token")
             req = request.get_json()
             print(req["id"])
@@ -102,7 +124,9 @@ def bookingPage():
                 email = jwt_decode["email"]
                 mycursor.execute(
                     """DELETE FROM `pending-order` WHERE `email` = %s and `attraction-id` = %s""", (email, req["id"],))
-                mydb.commit()
+                connection_objt.commit()
                 return jsonify({"ok": True}), 200
         except:
             return jsonify({"error": True, "message": "伺服器內部錯誤"}), 500
+        finally:
+            connection_objt.close()

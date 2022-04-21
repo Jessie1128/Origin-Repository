@@ -1,131 +1,75 @@
-// =========================================================== getElementsBy ClassName & Id function
-el = (className,num=0) => { 
-    return document.getElementsByClassName(className)[num];
+// ============================================   model   ==========================================
+
+fetch_url = (url, method, options) => {
+    return fetch( url,{                     
+        method: method,
+        options
+    })
+    .then(res=>res.json())
+    .then((info)=>{
+        data=info;
+        console.log(data);
+        return data;
+    })
 }
 
-el_id = (idName) => {
-    return document.getElementById(idName);
-}
-
-// =========================================================== 重新導向到首頁
-
-go_to_homePage = () => {
-    window.location.href="/";
-}
-
-go_to_bookingPage = () => {
-    window.location.href="/booking";
-}
-// =========================================================== 
-indexPage = (page) => {
-    nav_eventListener();
-    register_member();
-    close_login_box();
-    check_user_status();
-    let url=`/api/attractions?page=${page}`;
-    fetchUrl(url);
-};
-
-select = () => {
-    textInput = document.getElementById("header_input").value;
-    if (textInput==''){
-        alert("請輸入文字");
-    }else{
-        let url=`/api/attractions?keyword=${textInput}`;
-        fetchUrl(url);
+async function fetch_attraction (url,method) {
+    let data = await fetch_url(url,method);
+    await remove_no_more_info();
+    await remove_loading();
+    if(data["error"]){
+        create_home_page_elements(data,url);     
+    }else{       
+        create_home_page_elements(data,url);
+        show_next_page_info(data["nextPage"],url);
     }
-};
-
-attractionPage = () =>{                         
-    nav_eventListener();
-    register_member();
-    close_login_box();
-    check_user_status();  
-    single_attraction_id();                  
-    price_click_eventListener(); 
 }
 
-bookingPage = () => {
-    nav_eventListener();
-    register_member();
-    close_login_box();
-    check_user_status();
-    check_booking_info();
+async function check_user_status () {
+    let data = await fetch_url("/api/user","GET","");
+    user_status_response_nav(data);
 }
 
-thank_you_page = () => {
-    nav_eventListener();
-    register_member();
-    close_login_box();
-    check_user_status();
-    check_order_info();
-}
-
-// =========================================================== nav 的 eventlistener 
-
-nav_eventListener = () =>{
-    el("nav_left").addEventListener("click",go_to_homePage);
-    el("nav_right_item",1).addEventListener("click",login_show);
-    el_id("login_botton").addEventListener("click",dircet_to_login_system);
-} 
-
-// =========================================================== 取得單一景點資訊的 fetch api & right_bottom_botton 的註冊事件
-
-single_attraction_id = () => {
-    let id=location.pathname;
-    id=id.substring(id.lastIndexOf("/")+1);
-    fetch(`/api/attraction/${id}`)
+fetch_info_by_login_box = (info,method) => {
+    return fetch("/api/user",{                    
+        method: method,
+        body: JSON.stringify(info),
+        headers: new Headers({
+            "content-type": "application/json"
+          })
+    })
     .then(res=>res.json())
     .then((data)=>{
-        let pic=data.data["images"];
-        let name=data.data["name"];
-        let mrt=data.data["mrt"];
-        let cat=data.data["category"];
-        let des=data.data["description"]
-        let address=data.data["address"];
-        let trans=data.data["transport"];
-        document.getElementsByClassName("attraction_name")[0].textContent=name;
-        document.getElementsByClassName("attraction_loca")[0].textContent=`${cat} at ${mrt}`;
-        document.getElementsByTagName('p')[5].textContent=des;
-        document.getElementsByTagName('p')[7].textContent=address;
-        document.getElementsByTagName('p')[9].textContent=trans;
-        slider(pic);
+        console.log(data);
+        return data;
     })
-    el("right_bottom_botton").addEventListener("click",attraction_reserve); 
 }
 
+async function every_attraction_click (click) {  
+    let keyword = click.target.parentNode.childNodes[1].innerText;
+    let data= await fetch_url(`api/attractions?keyword=${keyword}`,"GET")
+    id=data.data[0]["id"];
+    window.location.href = `/attraction/${id}`;
+}
 
-// =========================================================== 景點的預定行程的 eventlistener & 跳轉到booking頁面
-
-attraction_reserve = () => {
-    if(el("nav_right_item",1).innerText=="登陸/註冊"){     
-        el("body_cover").style.display="block";
-        el("nav").style.filter="brightness(0.75)";
-        el("login_box").style.display="block";      
-    }else{
-        console.log("登陸了")
-        booking();
+async function user_logout(current_page){
+    let data = await fetch_url("/api/user","DELETE");
+    if (data){
+        el("nav_right_item",1).textContent="登陸/註冊";
+        location.href=current_page;
     }
 }
 
-// =========================================================== 按鈕：開始預定行程 的 api
-booking = () => {
-    let info={};
-    let id=location.pathname;
-    let time;
-    if(el("right_bottom_span2").innerText=="新台幣 2000 元"){
-        price="2000";
-        time="morning";
-    }else{
-        price="2500";
-        time="afternoon";
-    }
-    info["attractionId"]=id.substring(id.lastIndexOf("/")+1);
-    info["date"]=el_id("date").value;
-    info["price"]=price;
-    info["time"]=time;
-    url="/api/booking";
-    fetch(url,{                     // ========================================= fetch
+async function get_attraction_info_by_id () {
+    let path=location.pathname;
+    let id=path.substring(path.lastIndexOf("/")+1);
+    let data = await fetch_url(`/api/attraction/${id}`,"GET","");
+    await remove_loading();
+    create_attraction_page_elements(data);
+}
+
+fetch_reserved_trip_info = (info) => {    
+    return fetch("/api/booking",{                   
         method: "POST",
         body: JSON.stringify(info),
         headers: new Headers({
@@ -134,78 +78,615 @@ booking = () => {
     })
     .then(res=>res.json())
     .then((data)=>{
-        console.log(data)
-        if (data["error"]==true & data["message"]=="建立失敗，輸入不正確或其他原因"){
-            error_box_show();
-            el("error_box_inner_stitle").textContent="'選擇日期' 欄位輸入不正確";
-            //==================================================================== 取得今天日期
-            let today=new Date().toISOString().split('T')[0];    
-            if (info["date"] == ''){
-                el("error_box_inner_text").textContent="日期欄位不得為空";
-                el("error_box").style.height="100px";
-            }else if(info["date"]<=today){
-                el("error_box_inner_text").textContent="'選擇日期' 欄位，\n請選擇今天以後的日期";
-                el("error_box").style.height="116px";
-            }
-            error_box_close();           
-        }else{
-            go_to_bookingPage();
-        }
-    })
-    
+        return data;
+    })  
 }
 
-// =========================================================== bookingPage 載入後的 行程確認 api
-check_booking_info = () => {
-    let url="/api/booking";
-    fetch(url,{method: "GET"})
-    .then(res=>res.json())
-    .then((data)=>{
-        if(data["error"]==true){
-            go_to_homePage();
-        }else if(data["data"]==null){
-            booking_page_no_info();
-        }else{
-            let time;
-            if (data.data["time"]=="morning"){
-                time="上午時段";
-            }else{
-                time="下午時段";
-            }
-            booking_page_create_info(data,time);
-        }
-    })
-}
-
-// =========================================================== thankyouPage 載入後的 訂單確認 api
-
-check_order_info = () => {
+async function check_order_info () {
     let order_num=location.href;
     order_num=order_num.substring(order_num.lastIndexOf("=")+1);
-    let url=`/api/orders?number=${order_num}`;
-    fetch(url,{method: "GET"})
+    let data = await fetch_url(`/api/orders?number=${order_num}`,"GET");
+    await remove_loading();
+    if(data["error"]==true){
+        go_to_homePage();
+    }else if(data["data"]==null){
+        go_to_homePage();
+    }else{  
+        thankyou_page_inner(data);
+    }   
+}
+
+async function check_booking_info () {
+    let data = await fetch_url("/api/booking","GET");
+    console.log(data);
+    await remove_loading();
+    if(data["error"]==true){
+        go_to_homePage();
+    }else if(data["data"]==null){
+        booking_page_no_info();
+    }else{
+        let time;
+        if (data.data["time"]=="morning"){
+            time="上午時段";
+        }else{
+            time="下午時段";
+        }
+        booking_page_create_info(data,time);
+    }
+}
+
+fetch_confirm_order = (order) => {
+    url="api/orders";
+    return fetch(url,{                     // ========================================= fetch
+        method: "POST",
+        body: JSON.stringify(order),
+        headers: new Headers({
+            "content-type": "application/json"
+          })
+    })
     .then(res=>res.json())
     .then((data)=>{
-        if(data["error"]==true){
-            go_to_homePage();
-        }else if(data["data"]==null){
-            go_to_homePage();
-        }else{  
-            console.log(data);
-            thankyou_page_inner(data);
-        }
+        console.log(data);
+        render_confirm_order(data,order);
     })
 }
 
-thankyou_page_inner = (data) => {
-    el("main_inner_text_head").textContent="行程預定成功";
-    el("main_inner_text_head",1).textContent="您的訂單您的訂單編號如下：";
-    el("booking_order_num").innerHTML="訂單編號：<div class='booking_order_num_div'>"+data["data"]["number"]+"</div>";
-    el("main_inner_text_ps").textContent="請記住此編號，或到會員中心查詢歷史訂單";
-    total_height=el("nav").offsetHeight+el("main_inner").offsetHeight;
-    el("footer").style.height="calc(100vh - "+total_height+"px)";
+remove_booking = (id,click) => {
+    let url="/api/booking";
+    fetch(url,{                    
+        method: "DELETE",
+        body: JSON.stringify({"id":id}),
+        headers: new Headers({
+            "content-type": "application/json"
+        })
+    })
+    .then(res=>res.json())
+    .then((data)=>{
+        go_to_bookingPage();
+        // if(data["ok"]==true & click===undefined){   //======================= for 付款完成刪掉購物車
+        //     window.location.href="/thankyou"+"?number="+order_number;
+        // }else{                                      //======================= for 刪除預定行程按鈕
+        //     go_to_bookingPage();
+        // }
+    })
 }
-// =========================================================== 處理 booking頁面 畫面
+
+
+
+
+
+// ============================================   view   ===========================================
+
+el = (className,num=0) => { 
+    return document.getElementsByClassName(className)[num];
+}
+
+el_id = (idName) => {
+    return document.getElementById(idName);
+}
+
+el_tag = (tagName, num=0) =>{
+    return document.getElementsByTagName(tagName)[num];
+}
+
+// ============================
+
+go_to_homePage = () => {
+    window.location.href="/";
+}
+
+go_to_bookingPage = () => {
+    window.location.href="/booking";
+}
+
+remove_loading = () => {
+    if(el("loading_img") != undefined){
+        elems = document.querySelectorAll('div.loading_img');
+        elems.forEach((ele)=>ele.style.display="none");
+    }
+}
+
+remove_no_more_info = () =>{
+    if(el("no_more_info") != undefined){
+        elems = document.querySelectorAll('div.no_more_info');
+        elems.forEach((ele)=>ele.remove());
+    }
+}
+           
+// ============================
+
+loading_effect = (elem) =>{
+    loading_img=document.createElement("div");
+    loading_img.className="loading_img";
+    loading_img.style.height="100px";
+    loading_img.appendChild(el("loading"));
+    document.body.insertBefore(loading_img,el("footer"));
+    el("loading").style.display="flex";
+}
+
+no_more_info = () =>{
+    no_info=document.createElement("div");
+    no_info.className="no_more_info";
+    let len=document.querySelectorAll('div.attraction')["length"];
+    if(len<5){
+        no_info.textContent="—— 已顯示全部搜尋結果 ——";
+    }else{
+        no_info.textContent="—— 已顯示所有的景點資料 ——";
+    }
+    document.body.insertBefore(no_info,el("footer"));
+}
+
+error_box_show = () =>{
+    el("body_cover").style.display="flex";
+    el("error_box").style.display="flex";
+    el("nav").style.filter="brightness(0.75)";
+}
+
+error_box_close = () => {
+    el_id("close_error_box").addEventListener("click",()=>{
+        el("body_cover").style.display="none";
+        el("error_box").style.display="none";
+        el("nav").style.filter="brightness(1.0)";
+    })
+}
+
+// ============================
+
+var flag;
+login_and_register = () => {
+    el_id("message").textContent="";
+    if (flag){
+        el("login_box").style.height="350px";
+        el("login_box_inner_stitle").textContent="註冊會員帳號";
+        el_id("login_1").style.display="block";
+        el_id("login_2").setAttribute("placeholder","輸入電子郵件");
+        el_id("login_botton").textContent="註冊新帳戶";
+        el_id("register_member").textContent="已經有帳戶了？點此登入";
+        flag=false;
+    }else{
+        el("login_box").style.height="290px";
+        el("login_box_inner_stitle").textContent="登入會員帳號";
+        el_id("login_1").style.display="none";
+        el_id("login_2").setAttribute("placeholder","輸入電子信箱");
+        el_id("login_botton").textContent="登入帳戶";
+        el_id("register_member").textContent="還沒有帳戶？點此註冊";
+        flag=true;
+    } 
+}
+
+close_member_login_box = () => {
+    el("body_cover").style.display="none";
+    el("nav").style.filter="brightness(1.0)";
+    el("login_box").style.display="none";
+}
+
+login_show = () => {
+    let current_page=location.href;
+    if (el("nav_right_item",1).innerText=="登陸/註冊"){
+        el("body_cover").style.display="block";
+        el("nav").style.filter="brightness(0.75)";
+        el("login_box").style.display="block";
+    }else{
+        el("login_box").style.display="none";
+        // let exp = new Date();
+        // exp.setTime(exp.getTime() - 1);
+        // document.cookie=document.cookie+';expires='+exp.toGMTString()+';SameSite=Lax ;path=/';
+        // console.log(document.cookie);
+        user_logout(current_page);
+    } 
+}
+
+async function login_or_register_box (click) {
+    let login_text=click.target.innerText;
+    console.log(login_text);
+    let name=el_id("login_1").value;
+    let email=el_id("login_2").value;
+    let password=el_id("login_3").value;
+    let info={
+        "name":name,
+        "email":email,
+        "password":password
+    }
+    if(login_text=="登入帳戶"){      // ========================================= 登入帳戶
+        if( email =='' || password =='' ){
+            el("login_box").style.height="310px";
+            el_id("message").textContent="信箱或密碼，不得為空";
+        }else{
+            let data= await fetch_info_by_login_box(info,"PATCH");
+            render_login_or_register_box(info,data);
+        }    
+    }else{                         // ========================================= 註冊新帳戶
+        if( name=='' | email=='' | password=='' ){
+            el("login_box").style.height="370px";
+            el_id("message").textContent="信箱、帳號或密碼，不得為空";
+        }else{
+            el("nav").style.filter="brightness(1.0)";
+            let data= await fetch_info_by_login_box(info,"POST");
+            render_login_or_register_box(info,data);
+        }    
+    }
+}
+
+render_login_or_register_box = (info,data) => {
+    // let name=el_id("login_1").value;
+    // let email=el_id("login_2").value;
+    // let password=el_id("login_3").value;
+    let current_page=location.href;
+    // ============================== 登入的畫面處理
+    if(info["name"]==''){
+        remove_login_info();
+        if(data["ok"]){                    
+            el("nav_right_item",1).textContent="登出系統";
+            el("login_box").style.display="none";
+            el("body_cover").style.display="none";
+            window.location.href=current_page;
+        }else if(data["error"]){
+            el_id("message").textContent=data.message;
+            el("login_box").style.height="310px";
+        }else{
+            el_id("message").textContent=data.message;
+            el("login_box").style.height="310px";
+        }
+    }else{
+    // ============================== 註冊的畫面處理
+        el("login_box").style.height="370px";
+        remove_login_info();
+        if(data["ok"]){
+            el_id("message").textContent="註冊成功，請重新登入會員";
+            fetch_url("/api/user","DELETE");
+        }else if(data["error"]){
+            el_id("message").textContent=data.message;
+        }else{
+            el_id("message").textContent=data.message;
+        }
+    }
+}
+
+remove_login_info = () => {
+    el_id("login_2").value="";
+    el_id("login_1").value="";
+    el_id("login_3").value="";
+}
+
+user_status_response_nav = (info) =>{
+    console.log(info);
+    if (info["data"]==null){       
+        el("nav_right_item").addEventListener("click",login_show);   
+    }else{
+        el("nav_login_logo").style.padding="10px";
+        el("nav_login_logo").style.height="18px";
+        el("nav_login_logo").style.width="18px";
+        el("nav_login_logo").textContent=info["data"]["name"].substr(0, 1);
+        el("nav_right_item",1).textContent="登出系統";        
+        el("login_box").style.display="none";
+        el("nav_right_item").addEventListener("click",go_to_bookingPage); 
+        if(document.body.clientWidth <= 600){
+            el("nav_login_logo").style.marginRight="5px";
+        }else if(document.body.clientWidth > 600){
+            el("nav_login_logo").style.marginRight="10px";
+        }
+    }
+}
+
+show_next_page_info = (nextPage,url) => {
+    callback = (entry) => { 
+        if(nextPage=="null"){
+            no_more_info();
+            observer.unobserve(newTarget);
+        }
+        else if (entry[0].isIntersecting & url.includes("keyword")){
+            loading_effect(entry[0]["target"]);
+            observer.unobserve(newTarget);
+            url=`${url}&page=${nextPage}`;
+            fetch_attraction(url,"GET");
+        }
+        else if (entry[0].isIntersecting ) {
+            loading_effect(entry[0]["target"]);
+            observer.unobserve(newTarget);
+            indexPage(nextPage); 
+        }
+    };  
+    let target = document.getElementsByClassName('attraction_box');
+    let newTarget = target[target.length-1];
+    let options = { 
+        rootMargin: "155px 0px -155px",
+        threshold: 1.0,
+        };
+    let observer = new IntersectionObserver(callback,options);
+    observer.observe(newTarget);
+}
+
+search_attraction_by_keyword = () => {
+    textInput = el_id("header_input").value;
+    if (textInput==''){
+        error_box_show();
+        el("error_box_inner_stitle").textContent="欄位輸入不正確";
+        el("error_box_inner_text").textContent="'輸入景點名稱查詢' 欄位不得為空";
+        error_box_close(); 
+    }else{
+        fetch_attraction(`/api/attractions?keyword=${textInput}`,"GET");
+    }
+};
+
+
+create_home_page_elements = (data,url) => {
+    let attraction=document.createElement("div");
+    attraction.className="attraction";
+    // ---------------------------------
+    if(url.includes("keyword") & url.includes("page")){
+        if(0<el("attraction",["length"])){
+            attraction.style.marginTop="-25px";
+        }
+        create_home_page_elements_inner(data,attraction);   
+    }else if(url.includes("keyword") | data["error"] ){
+        elems = document.querySelectorAll('div.attraction');
+        while (0<elems["length"]){
+            document.body.removeChild(elems[0]);
+            elems = document.querySelectorAll('div.attraction');
+        }
+        if(data["error"]){
+            keyword=url.substring(url.lastIndexOf("=")+1);
+            attraction.style.gridTemplateColumns="auto";
+            attraction.textContent="搜尋結果：查無與 ' "+keyword+" ' 有關的景點資訊";
+            document.body.insertBefore(attraction,el("footer"));
+        }else{
+            create_home_page_elements_inner(data,attraction);
+        }
+    }else{
+        if(0<el("attraction",["length"])){
+            attraction.style.marginTop="-25px";
+        }
+        create_home_page_elements_inner(data,attraction);       
+    }
+};
+
+create_home_page_elements_inner = (data,attraction) => {
+    num=0;
+    for(num;num<data.data.length;num++){
+        let attraction_box=document.createElement("div");
+        let pic=document.createElement("img");
+        let text=document.createElement("div");
+        let cat=document.createElement("div");
+        let catMrt=document.createElement("span");
+        let catCat=document.createElement("span");
+        // -------------------------------------------
+        attraction_box.className="attraction_box";
+        pic.className="pic";
+        text.className="text";
+        cat.className="cat";
+        catMrt.className="catMrt";
+        catCat.className="catCat";
+         // -------------------------------------------
+        info=data.data[num];
+        pic.setAttribute("src",data.data[num]["images"][0]);
+        text.textContent=info["name"];
+        if(info["mrt"]==null){
+            catMrt.textContent="劍潭";
+        }else{
+            catMrt.textContent=info["mrt"];
+        }
+        catCat.textContent=info["category"];
+        // -------------------------------------------
+        attraction_box.appendChild(pic);
+        attraction_box.appendChild(text);
+        attraction_box.appendChild(cat);
+        cat.appendChild(catMrt);
+        cat.appendChild(catCat);
+        attraction.appendChild(attraction_box);
+        // -------------------------------------------
+        attraction_box.addEventListener("click",every_attraction_click,false);
+    }
+    document.body.insertBefore(attraction,el("footer"));
+};
+
+create_attraction_page_elements = (data) => {
+    if(data.data["mrt"]==null){
+        mrt="劍潭";
+    }else{
+        mrt=data.data["mrt"];
+    }
+    el("section_right_bottom").style.background="#e8e8e8";
+    el("attraction_name").textContent=data.data["name"];
+    el("attraction_loca").textContent=`${data.data["category"]} at ${mrt}`;
+    el_tag("p",2).textContent="訂購導覽行程";
+    el_tag("p",3).textContent="以此景點為中心的一日行程，帶您探索城市角落故事";
+    el_tag("p",4).innerHTML="選擇日期 : <input type='date' id='date'>";
+    el("choose_time_click").textContent="選擇時間 :";
+    el("blue_circle").style.background="#448899";
+    el("circle_word").textContent="上半天";
+    el("circle_word",1).textContent="下半天";
+    el("right_bottom_span1").textContent="導覽費用 :";
+    el("right_bottom_span2").textContent="新台幣 2000 元";
+    el("right_bottom_botton").textContent="開始預定行程";
+    el("right_bottom_botton").style.background="#448899";
+    el_tag("p",5).textContent=data.data["description"];
+    el_tag("p",6).textContent="景點地址 :";  
+    el_tag("p",7).textContent=data.data["address"];
+    el_tag("p",8).textContent="交通方式 :";
+    el_tag("p",9).textContent=data.data["transport"];
+    create_slider_box(data.data["images"]);
+    el("infors").style.borderTop="#e8e8e8 1px solid";
+}
+
+click_AM_PM = (click) => {
+    right_botton=el("right_bottom_span2");
+    el("blue_circle").style.backgroundColor="#ffffff";
+    el("blue_circle",1).style.backgroundColor="#ffffff";
+    if(click.target==el("blue_circle")){
+        right_botton.textContent="新台幣 2000 元";
+        el("blue_circle").style.backgroundColor="#448899";
+    }else{
+        right_botton.textContent="新台幣 2500 元";
+        el("blue_circle",1).style.backgroundColor="#448899";
+    }
+}
+
+slider_arrow_click_eventListener = (click) => {
+    click=click.target["className"];
+    if(click=="arrow_right"){
+        console.log("右邊的鍵");
+        slider_change_img_by_arrow("right");
+    }else if(click=="arrow_left"){
+        console.log("左邊的鍵");
+        slider_change_img_by_arrow("left");
+    }
+}
+
+create_slider_box = (pic) => {
+    // ============================================================= for slider frame which screen <= 900px
+    if (document.body.clientWidth <= 500){
+        let slide_frame=document.body.clientWidth ;
+        el_id("section_left").style.width=(slide_frame+1)+"px";
+    }else if(document.body.clientWidth <= 900){
+        let slide_frame=el("section").getBoundingClientRect();
+        el_id("section_left").style.width=Math.trunc(slide_frame["width"])+"px";
+    }
+    // =============================================================create img
+    let slides=document.createElement("div");
+    for (num=0;num<pic.length;num++) {
+        let slides_img=document.createElement("img");
+        slides.className="slides";
+        slides_img.setAttribute("src",pic[num]);
+        slides_img.className="slides_img";
+        slides.appendChild(slides_img);
+    }
+    section_left.appendChild(slides);
+
+    // =============================================================create manual radio
+    let manual=document.createElement("div");
+    manual.className="manual";
+    for(num=0;num<pic.length;num++) {
+        let manual_label=document.createElement("label");
+        manual_label.htmlFor=`radio${num+1}`;
+        manual_label.className="manual_label";
+        manual.appendChild(manual_label);
+        manual_label.addEventListener("click",slider_change_img_by_arrow);
+    }
+    section_left.appendChild(manual);
+    el("manual_label").style.background="#ffffff";
+    // =============================================================create change pic icon
+    let change_icon=document.createElement("div");
+    change_icon.className="change_icon";
+    for(num=0;num<2;num++){
+        let icon_cursor=document.createElement("div");
+        icon_cursor.className="icon_cursor";
+        let arrows=document.createElement("div");
+        arrows.className="arrow_left";
+        icon_cursor.appendChild(arrows);
+        change_icon.appendChild(icon_cursor);
+        icon_cursor.addEventListener("click",slider_arrow_click_eventListener);
+    }
+    section_left.appendChild(change_icon);
+    el("arrow_left",1).className="arrow_right";
+    // ============================================================= for RWD <= 500
+    if (document.body.clientWidth <= 500){
+        el("manual").style.marginTop="-90px";
+        el("change_icon").style.top="-164px";
+    }
+}
+
+var pic_num=[];
+slider_change_img_by_arrow = (click) => {
+    let img_width=el_id("section_left").offsetWidth;
+    let client_width=document.body.clientWidth ;
+    let botton=document.querySelectorAll(".manual_label");
+    botton.forEach((ele)=>ele.style.backgroundColor="transparent");
+    console.log("圖片這格大小現在",img_width);
+    console.log("使用者螢幕大小",client_width);
+    // =============================================================================arrow botton effect
+    if(click=="right"){
+
+        let pic=pic_num["num"];
+        if(pic===undefined){
+            pic=1;
+        }
+        let manual_label=el("manual_label",[pic]);
+        if(manual_label===undefined){
+            pic-=pic;
+            manual_label=el("manual_label",[pic]);
+        }
+        manual_label.style.backgroundColor="#ffffff";
+        move=pic*img_width;
+        console.log(-(move));
+        console.log(typeof(move));
+        el("slides_img").style.marginLeft=(-(move))+"px";
+        pic_num["num"]=pic+1;
+        return;
+
+    }else if(click=="left"){
+        
+        let pic=pic_num["num"];
+        if(pic===undefined){
+            pic=(botton.length)+1;
+        }
+        manual_label=el("manual_label",[pic-2]);
+        if(manual_label===undefined){
+            pic=botton.length+1;
+            manual_label=el("manual_label",[pic-2]);
+        }
+        manual_label.style.backgroundColor="#ffffff";
+        el("slides_img").style.marginLeft=`-${(pic-2)*img_width}px`;
+        pic_num["num"]=pic-1;
+        return;
+
+    }else if ( click!="left" && click!="right" ) {
+        let num=click.target["attributes"][0]['nodeValue'];
+        click.target.style.backgroundColor="#ffffff";
+        num=Number(num.toString().replace("radio",""));
+        pic_num["num"]=num;
+        // ==========================================
+        if(num==1){
+            el("slides_img").style.marginLeft="0px";
+        }else if(1<num){
+            num=num-1;
+            el("slides_img").style.marginLeft=`-${num*img_width}px`;
+        }
+    }
+}
+
+async function reserve_a_trip ()  {
+    if(el("nav_right_item",1).innerText=="登陸/註冊"){     
+        el("body_cover").style.display="block";
+        el("nav").style.filter="brightness(0.75)";
+        el("login_box").style.display="block";      
+    }else{
+        let info={};
+        let id=location.pathname;
+        info["attractionId"]=id.substring(id.lastIndexOf("/")+1);
+        info["date"]=el_id("date").value;
+        if(el("right_bottom_span2").innerText=="新台幣 2000 元"){
+            info["price"]="2000";
+            info["time"]="morning";
+        }else{
+            info["price"]="2500";
+            info["time"]="afternoon";
+        }
+        let data= await fetch_reserved_trip_info(info);
+        console.log(data);
+        successfully_reserve_a_trip(data,info);
+    }
+}
+
+successfully_reserve_a_trip = (data,info) =>{
+    if (data["error"]==true & data["message"]=="建立失敗，輸入不正確或其他原因"){
+        let today=new Date().toLocaleString('zh', { hour12: false });
+        today=today.replace(/\//g, '-');
+        error_box_show();
+        el("error_box_inner_stitle").textContent="欄位輸入不正確"; 
+        if (info["date"] == ''){
+            el("error_box_inner_text").textContent="'選擇日期' 欄位不得為空";
+            el("error_box").style.height="100px";
+        }else if( info["date"]<today | info["date"]==today){
+            el("error_box_inner_text").textContent="'選擇日期' 欄位，\n請選擇今天以後的日期";
+            el("error_box").style.height="116px";
+        }else{
+            el("error_box_inner_text").textContent="啥";
+        }
+        error_box_close();           
+    }else{
+        go_to_bookingPage();
+    }
+}
 
 booking_page_no_info = () => {
     if(el("headline_2") != undefined){
@@ -225,7 +706,7 @@ booking_page_no_info = () => {
     headline_1.appendChild(headline_1_inner);
     document.body.insertBefore(headline_1,el("footer"));
     total_height=el("nav").offsetHeight+el("headline_main").offsetHeight+el("headline_1").offsetHeight;
-    el("footer").style.height="calc(100vh - "+total_height+"px)";
+    set_footer_height(total_height);
     let url="/api/user";
     fetch(url,{method: "GET"})
     .then(res=>res.json())
@@ -233,7 +714,6 @@ booking_page_no_info = () => {
         el("headline_main_name").textContent=data["data"]["name"]+'，';
     })
 }
-
 
 booking_page_create_info = (data,time) => {
     // =========================================================== create headline_2
@@ -263,9 +743,6 @@ booking_page_create_info = (data,time) => {
     document.body.insertBefore(hr,el("payment"));
     // =========================================================== create payment
     el_id("payment_stitle").textContent="信用卡付款資訊";
-    // el_id("payment_num").innerHTML="卡片號碼：<input class='payment_input' placeholder='**** **** **** ****' type='text' name='contact_name'>";
-    // el_id("payment_expire_date").innerHTML="過期時間：<input class='payment_input' placeholder='MM / YY' type='text' name='contact_mail'>";
-    // el_id("payment_cvv").innerHTML="驗證密碼：<input class='payment_input' placeholder='CVV' type='text' name='contact_phone'>";
     el_id("payment_1").innerHTML="卡片號碼：<div class='payment_input' id='card-number'></div>";
     el_id("payment_2").innerHTML="過期時間：<div class='payment_input' id='card-expiration-date'></div>";
     el_id("payment_3").innerHTML="驗證密碼：<div class='payment_input' id='card-ccv'></div>";
@@ -282,7 +759,6 @@ booking_page_create_info = (data,time) => {
     el("confirm").appendChild(botton);
     // =========================================================== remove_booking & confirm botton addEventListener
     el("remove_booking").addEventListener("click",remove_booking.bind(null,data["data"]["attraction"]["id"]));
-    // el("confirm_botton").addEventListener("click",confirm_order.bind(null,data));
     el("confirm_botton").addEventListener("click",TPDirect_card_getPrime.bind(null,data));
     // =========================================================== booking頁面 '自動填入使用者資料'
     let url="/api/user";
@@ -295,98 +771,120 @@ booking_page_create_info = (data,time) => {
     })
 }
 
-
-// =========================================================== 檢查使用者是否登陸 和 登出系統標示 和 nav的預定行程的 eventlistener
-// var user;
-check_user_status = () => {
-    let current_page=location.href;
-    let url="/api/user";
-    fetch(url,{method: "GET"})
-    .then(res=>res.json())
-    .then((data)=>{
-        if (data["data"]==null){
-            console.log("還沒登陸或是token錯誤")
-            // ================ for 預定行程
-            el("nav_right_item").addEventListener("click",login_show);   
-            // ================ for thankyou Page
-            // if (current_page.substring(current_page.lastIndexOf("/")+1)=="thankyou"){
-            //     go_to_homePage(); 
-            // }else if (current_page.substring(current_page.lastIndexOf("/")+1,current_page.indexOf('?'))=="thankyou"){
-            //     go_to_homePage(); 
-            // }
-            // ================ for thankyou Page
-        }else if(data.data["id"]!=null & data.data["name"]!=null & data.data["email"]!=null){
-            // ================ for 登入登出
-            el("nav_right_item",1).textContent="登出系統";        
-            el("login_box").style.display="none";
-             // ================ for 預定行程
-            el("nav_right_item").addEventListener("click",go_to_bookingPage);    
-            // ================ for thankyou Page
-            // if (current_page.substring(current_page.lastIndexOf("/")+1)=="thankyou"){
-            //     go_to_homePage(); 
-            // }else if (current_page.substring(current_page.lastIndexOf("/")+1,current_page.indexOf('?'))=="thankyou"){
-            //     el("nav_right_item").addEventListener("click",go_to_bookingPage);  
-            // }
-            // ================ for thankyou Page
-        }
-    })
-}
-
-// =========================================================== 刪除預定的點擊鈕
-
-remove_booking = (id,click) => {
-    console.log(click);
-    console.log("我要刪掉",id);
-    let url="/api/booking";
-    fetch(url,{                    
-        method: "DELETE",
-        body: JSON.stringify({"id":id}),
-        headers: new Headers({
-            "content-type": "application/json"
-        })
-    })
-    .then(res=>res.json())
-    .then((data)=>{
-        //======================= for 付款完成刪掉購物車
-        if(data["ok"]==true & click===undefined){
-            return;
-        //======================= for 刪除預定行程按鈕
-        }else{
-            go_to_bookingPage();
-        }
-    })
-}
-
-// =========================================================== booking頁面 沒有預定行程的處理
-
-no_booking = () =>{
-    el("headline_2").style.display="none";
-    el("contact").style.display="none";
-    el("payment").style.display="none";
-    el("confirm").style.display="none";
-    hr=document.querySelectorAll(".hr");
-    hr.forEach(elem=>elem.style.display="none");
-};
-
-// =========================================================== 錯誤框 跳出 關閉
-
-error_box_show = () =>{
-    el("body_cover").style.display="flex";
-    el("error_box").style.display="flex";
+transaction_in_progress = () => {
+    el("body_cover").style.display="block";
     el("nav").style.filter="brightness(0.75)";
+    el("tran_status").textContent="交易進行中，請稍候...";
+    el("loading_img").style.display="flex";
+    el("loading").style.position="fixed";
+    return "ok";
 }
 
-error_box_close = () => {
-    el_id("close_error_box").addEventListener("click",()=>{
-        el("body_cover").style.display="none";
-        el("error_box").style.display="none";
-        el("nav").style.filter="brightness(1.0)";
-    })
+render_confirm_order = (data,order) => {
+    console.log(data);
+    if (data["error"]==true){
+        error_msg=data["message"];
+        el("loading_img",0).style.display="none";
+        error_box_show();
+        el("error_box").style.boxShadow="0px 4px 60px #aaaaaa";
+        el("error_box_border").style.background="linear-gradient(270deg, #337788 0%, #66aabb 100%)";
+        el_id("close_error_box").setAttribute("src","/icon_close.png");
+        el("error_box_inner_stitle").textContent="訂單建立失敗";
+        el("error_box_inner_text").textContent=error_msg;
+        error_box_close(); 
+    }else{
+        order_number=data["data"]["number"];
+        location.href="/thankyou"+"?number="+order_number;
+        id=order["order"]["trip"]["attraction"]["id"];
+    }
 }
 
+thankyou_page_inner = (data) => {
+    el("main_inner_text_head").textContent="行程預定成功";
+    el("main_inner_text_head",1).textContent="您的訂單您的訂單編號如下：";
+    el("booking_order_num").innerHTML="訂單編號：<div class='booking_order_num_div'>"+data["data"]["number"]+"</div>";
+    el("main_inner_text_ps").textContent="請記住此編號，或到會員中心查詢歷史訂單";
+    total_height=el("nav").offsetHeight+el("main_inner").offsetHeight;
+    set_footer_height(total_height);
+}
 
-// =========================================================== TapPay
+set_footer_height = (calc) => {
+    let vh = window.innerHeight * 0.01;
+    let footer_height=(vh*100)-calc;
+    if (footer_height <= 104){
+        footer_height=104;
+    }
+    el("footer").style.height=footer_height+"px";
+}
+// ==========================================   controller   =======================================
 
+// ======================== init
+indexPage = (page) => {
+    nav_eventListener();
+    member_eventListener();
+    close_login_box_eventListener();
+    check_user_status();
+    fetch_attraction(`/api/attractions?page=${page}`,"GET");
+    search_bar_eventListener();
+}
+
+attractionPage = () =>{                        
+    nav_eventListener();
+    member_eventListener();
+    close_login_box_eventListener();
+    check_user_status();     
+    get_attraction_info_by_id();                  
+    choose_AM_PM_eventListener(); 
+    reserve_attraction();
+}
+
+bookingPage = () => {
+    nav_eventListener();
+    member_eventListener();
+    close_login_box_eventListener();
+    check_user_status();  
+    check_booking_info();
+}
+
+thank_you_page = () => {
+    nav_eventListener(); 
+    member_eventListener(); 
+    close_login_box_eventListener(); //ok
+    check_user_status();   
+    check_order_info();
+}
+// ======================== init end
+
+nav_eventListener = () =>{
+    el("nav").style.filter="brightness(1.0)";
+    el("nav_left").addEventListener("click",go_to_homePage);
+    el("nav_right_item",1).addEventListener("click",login_show);
+    el_id("login_botton").addEventListener("click",login_or_register_box);
+} 
+
+member_eventListener = () => {
+    flag=true;
+    el_id("register_member").addEventListener("click",login_and_register);
+}
+
+close_login_box_eventListener = () => {
+    el_id("close_login_box").addEventListener("click",close_member_login_box)
+}
+
+search_bar_eventListener = () => {
+    el_id("search").addEventListener("click",search_attraction_by_keyword);
+}
+
+choose_AM_PM_eventListener = () => {
+    el("blue_circle").addEventListener("click",click_AM_PM,false);
+    el("blue_circle",1).addEventListener("click",click_AM_PM,false); 
+}
+
+reserve_attraction = () => {
+    el("right_bottom_botton").addEventListener("click",reserve_a_trip); 
+}
+
+// =========================================================== for TapPay 
 
 for_TapPay = () =>{
     let fields = {
@@ -402,8 +900,7 @@ for_TapPay = () =>{
             element: '#card-ccv',
             placeholder: 'ccv'
         }
-    }
-    
+    }   
     TPDirect.card.setup({
         fields: fields,
         styles: {
@@ -414,613 +911,105 @@ for_TapPay = () =>{
                 'color': 'black'
             },
             '.valid': {
-                'color': 'rgba(96, 149, 78, 0.904)'
+                'color': ' #448899'
             },
             '.invalid': {
-                'color': 'rgba(197, 83, 38, 0.904)'
+                'color': '#c55326e7'
             },
         }
-    })
-    
+    })    
     TPDirect.card.onUpdate(function (update) {
         console.log(update.canGetPrime);
-        if (update.canGetPrime) {
-            console.log("資料完整,Enable submit Button to get prime");
-        } else {
-            console.log("資料尚未填完整,Disable submit Button to get prime");
-        }
         if (update.status.number === 2) {
-            console.log("number 欄位有錯誤，此時在 CardView 裡面會用顯示 errorColor");
+            el_id("payment_1_status").textContent="✖";
+            el_id("payment_1_status").style.color="#c55326e7";
         } else if (update.status.number === 0) {
-            console.log("not ok 0");
-            console.log("number 欄位已填好，並且沒有問題")
+            el_id("payment_1_status").textContent="✔";
+            el_id("payment_1_status").style.color="#448899";
         } else {
-            console.log("not ok ?? ");
-        }
-    
+            return;
+        }   
         if (update.status.expiry === 2) {
-            console.log("expiry 欄位有錯誤，此時在 CardView 裡面會用顯示 errorColor");
+            el_id("payment_2_status").textContent="✖";
+            el_id("payment_2_status").style.color="#c55326e7";
         } else if (update.status.expiry === 0) {
-            console.log("expiry 欄位已填好，並且沒有問題")
+            el_id("payment_2_status").textContent="✔";
+            el_id("payment_2_status").style.color="#448899";
         } else {
-            // setNumberFormGroupToNormal()
-        }
-    
+            return;
+        }   
         if (update.status.ccv === 2) {
-            console.log("ccv 欄位有錯誤，此時在 CardView 裡面會用顯示 errorColor");
+            el_id("payment_3_status").textContent="✖";
+            el_id("payment_3_status").style.color="#c55326e7";
         } else if (update.status.ccv === 0) {
-            console.log("ccv 欄位已填好，並且沒有問題")
-            // setNumberFormGroupToSuccess()
+            el_id("payment_3_status").textContent="✔";
+            el_id("payment_3_status").style.color="#448899";
         } else {
-            // setNumberFormGroupToNormal()
+           return;
         }
     })
 }
 
 TPDirect_card_getPrime = (data) => {
+    let tappayStatus = TPDirect.card.getTappayFieldsStatus();
+    console.log(tappayStatus);
     // =========================================================== 聯絡資訊不完整
     if(el("contact_input").value=="" | el("contact_input",1).value=="" | el("contact_input",2).value==""){
         error_box_show();
-        // ======================
         el("error_box").style.boxShadow="0px 4px 60px #aaaaaa";
         el("error_box_border").style.background="linear-gradient(270deg, #337788 0%, #66aabb 100%)";
         el_id("close_error_box").setAttribute("src","/icon_close.png");
-        el("error_box_inner_stitle").textContent="'您的聯絡資訊' 輸入不完整";
+        el("error_box_inner_stitle").textContent="欄位輸入不正確";
         el("error_box_inner_text").textContent="請確認 '您的聯絡資訊' 是否輸入完整";
-        // ======================
         error_box_close(); 
         return;
     }
-    let tappayStatus = TPDirect.card.getTappayFieldsStatus();
-    console.log(tappayStatus);
     if (tappayStatus.canGetPrime === false) {
         console.log(tappayStatus["status"]);
         error_box_show();
-        // ======================
         el("error_box").style.boxShadow="0px 4px 60px #aaaaaa";
         el("error_box_border").style.background="linear-gradient(270deg, #337788 0%, #66aabb 100%)";
         el_id("close_error_box").setAttribute("src","/icon_close.png");
-        el("error_box_inner_stitle").textContent="'信用卡付款資訊' 輸入不完整";
+        el("error_box_inner_stitle").textContent="欄位輸入不正確";
         el("error_box_inner_text").textContent="請確認 '信用卡付款資訊' 是否輸入完整";
-        // ======================
         error_box_close(); 
         return "appayStatus error,資料不完整"
     }
-
+     // =========================================================== 
     TPDirect.card.getPrime((result) => {
         if (result.status !== 0) {
             console.log(result.msg);
-            // alert('get prime error ' + result.msg)
             return result.msg
         }
         let prime=result.card.prime;
-        confirm_order(prime,data);
+        let order={
+            "prime": prime,
+            "order": {
+                "price": data["data"]["price"],
+                "trip": {
+                    "attraction": {
+                    "id": data["data"]["attraction"]["id"],
+                    "name": data["data"]["attraction"]["name"],
+                    "address": data["data"]["attraction"]["address"],
+                    "image": data["data"]["attraction"]["image"]
+                    },
+                    "date": data["data"]["date"],
+                    "time": data["data"]["time"]
+                },
+                "contact": {
+                    "name": el("contact_input").value,
+                    "email": el("contact_input",1).value,
+                    "phone": el("contact_input",2).value
+                }
+            }
+        }
+        let res = transaction_in_progress();
+        console.log(res);
+        if(res=="ok"){
+            fetch_confirm_order(order);
+        }
     })
 }  
 
-// ============================================================= confirm_order
 
-confirm_order = (prime,data) =>{
-    console.log(data);
-    order={
-        "prime": prime,
-        "order": {
-            "price": data["data"]["price"],
-            "trip": {
-                "attraction": {
-                "id": data["data"]["attraction"]["id"],
-                "name": data["data"]["attraction"]["name"],
-                "address": data["data"]["attraction"]["address"],
-                "image": data["data"]["attraction"]["image"]
-                },
-                "date": data["data"]["date"],
-                "time": data["data"]["time"]
-            },
-            "contact": {
-                "name": el("contact_input").value,
-                "email": el("contact_input",1).value,
-                "phone": el("contact_input",2).value
-            }
-        }
-    }
-    console.log(order);
-    let url="api/orders";
-    fetch(url,{                     // ========================================= fetch
-        method: "POST",
-        body: JSON.stringify(order),
-        headers: new Headers({
-            "content-type": "application/json"
-          })
-    })
-    .then(res=>res.json())
-    .then((data)=>{
-        console.log(data);
-        if (data["error"]==true){
-            error_msg=data["message"];
-            error_box_show();
-            // ======================
-            el("error_box").style.boxShadow="0px 4px 60px #aaaaaa";
-            el("error_box_border").style.background="linear-gradient(270deg, #337788 0%, #66aabb 100%)";
-            el_id("close_error_box").setAttribute("src","/icon_close.png");
-            el("error_box_inner_stitle").textContent="'訂單建立失敗'";
-            el("error_box_inner_text").textContent=error_msg;
-            // ======================
-            error_box_close(); 
-            return;
-        }else{
-            order_number=data["data"]["number"];
-            console.log(order_number);
-            id=order["order"]["trip"]["attraction"]["id"];
-            remove_booking(id);
-            window.location.href="/thankyou"+"?number="+order_number;
-        }
-    })
-}
 
-// ============================================================= (還沒有帳戶？點此註冊) (已經有帳戶了？點此登入) 的 eventListener
-var flag;
-register_member = () => {
-    let register_member=el_id("register_member");
-    flag=true;
-    register_member.addEventListener("click",create_new_member);
-}
-
-create_new_member = () => {
-    let login_box=el("login_box");
-    let login_0=el("login_box_inner_stitle",0);
-    let login_1=el_id("login_1");
-    let login_2=el_id("login_2");
-    let login_botton=el_id("login_botton");
-    let register_member=el_id("register_member");
-    let message=el_id("message");
-    message.textContent="";
-    if (flag){
-        login_box.style.height="350px";
-        login_0.textContent="註冊會員帳號";
-        login_1.style.display="block";
-        login_2.setAttribute("placeholder","輸入電子郵件");
-        login_botton.textContent="註冊新帳戶";
-        register_member.textContent="已經有帳戶了？點此登入";
-        flag=false;
-    }else{
-        login_box.style.height="290px";
-        login_0.textContent="登入會員帳號";
-        login_1.style.display="none";
-        login_2.setAttribute("placeholder","輸入電子信箱");
-        login_botton.textContent="登入帳戶";
-        register_member.textContent="還沒有帳戶？點此註冊";
-        flag=true;
-    } 
-}
-
-// ============================================================= 註冊 和 登陸 按鈕
-dircet_to_login_system = (click) => {
-    let login_text=click.target.innerText;
-    let login_box=el("login_box");
-    let message=el_id("message");
-    let login_1=el_id("login_1").value;
-    let login_2=el_id("login_2").value;
-    let login_3=el_id("login_3").value;
-    if(login_text=="登入帳戶"){      // ========================================= 登入帳戶
-        if(login_2==''||login_3==''){
-            login_box.style.height="310px";
-            message.textContent="信箱或密碼，不得為空";
-        }else{
-            login_system('',login_2,login_3,message);
-        }    
-    }else{                         // ========================================= 註冊新帳戶
-        if(login_1==''||login_2==''||login_3==''){
-            login_box.style.height="370px";
-            message.textContent="信箱、帳號或密碼，不得為空";
-        }else{
-            login_system(login_1,login_2,login_3,message);
-        }    
-    }
-}
-
-login_system = (name,email,password,message) => {
-    let current_page=location.href;
-    let info={};
-    let url="/api/user"
-    let methods;
-    if (name==''){                  // ========================================= for PATCH 
-        el("login_box").style.height="310px";
-        info["email"]=email;
-        info["password"]=password;
-        methods="PATCH";
-    }else{                          // ========================================= for POST
-        el("login_box").style.height="370px";
-        info["name"]=name;
-        info["email"]=email;
-        info["password"]=password;
-        methods="POST";
-    }
-    fetch(url,{                     // ========================================= fetch
-        method: methods,
-        body: JSON.stringify(info),
-        headers: new Headers({
-            "content-type": "application/json"
-          })
-    })
-    .then(res=>res.json())
-    .then((data)=>{
-        if(methods=="PATCH"){   
-            if(data["ok"]){                     // ============================== fetch PATCH
-                // document.cookie='"user_token"='+data.user_token+';SameSite=Lax';
-                el("nav_right_item",1).textContent="登出系統";
-                el("login_box").style.display="none";
-                el("body_cover").style.display="none";
-                el("nav").style.filter="brightness(1.0)";
-                location.href=current_page;
-                // check_user_status();
-            }else if(data["error"]){
-                message.textContent=data.message;
-            }else{
-                message.textContent=data.message;
-            }
-        }else if(methods="POST"){               // ============================== fetch POST
-            if(data["ok"]){
-                message.textContent="註冊成功";
-                el_id("login_1").value="";
-                el_id("login_2").value="";
-                el_id("login_3").value="";
-                // check_user_status();
-            }else if(data["error"]){
-                message.textContent=data.message;
-            }else{
-                message.textContent=data.message;
-            }
-        }
-    })
-}
-
-// ============================================================= 跳出會員提示框 (按下登出系統)、關閉會員提示框 和 點擊登出系統
-login_show = () => {
-    let current_page=location.href;
-    let nav_login=el("nav_right_item",1);
-    if (nav_login.innerText=="登陸/註冊"){
-        el("body_cover").style.display="block";
-        el("nav").style.filter="brightness(0.75)";
-        el("login_box").style.display="block";
-    }else{
-        el("login_box").style.display="none";
-        // let exp = new Date();
-        // exp.setTime(exp.getTime() - 1);
-        // document.cookie=document.cookie+';expires='+exp.toGMTString()+';SameSite=Lax ;path=/';
-        // console.log(document.cookie);
-        user_logout(current_page);
-    } 
-}
-
-async function user_logout(current_page){
-    let res = await fetch("/api/user",{method: "DELETE"});
-    data = await res.json();
-    console.log(data);
-    el("nav_right_item",1).textContent="登陸/註冊";
-    location.href=current_page;
-    booking_data_remove();
-}
-
-async function  booking_data_remove(){
-    let res = await fetch("/api/booking",{method: "GET"});
-    data = await res.json();
-}
-
-close_login_box = () => {
-    let close_login_box=el_id("close_login_box");
-    close_login_box.addEventListener("click",back_to_og_page)
-}
-
-back_to_og_page = () => {
-    let body_cover=el("body_cover");
-    body_cover.style.display="none";
-    let nav=el("nav");
-    nav.style.filter="brightness(1.0)";
-    let login_box=el("login_box");
-    login_box.style.display="none";
-    nav_eventListener();
-}
-
-// ============================================================= for blue circle 
-
-price_click_eventListener = () => {
-    let circle_first=el("blue_circle");
-    let circle_second=el("blue_circle",1);
-    circle_first.style.background="#448899";
-    circle_first.addEventListener("click",circle_click,false);
-    circle_second.addEventListener("click",circle_click,false); 
-}
-
-circle_click = (click) => {
-    first=el("blue_circle");
-    second=el("blue_circle",1);
-    right_botton=el("right_bottom_span2");
-    first.style.backgroundColor="#ffffff";
-    second.style.backgroundColor="#ffffff";
-    if(click.target==first){
-        right_botton.textContent="新台幣 2000 元";
-        first.style.backgroundColor="#448899";
-    }else{
-        right_botton.textContent="新台幣 2500 元";
-        second.style.backgroundColor="#448899";
-    }
-}
-
-slider = (pic) => {
-    // =============================================================create img
-    let slides=document.createElement("div");
-    for (num=0;num<pic.length;num++) {
-        let slides_img=document.createElement("img");
-        slides.className="slides";
-        slides_img.setAttribute("src",pic[num]);
-        slides_img.className="slides_img";
-        slides.appendChild(slides_img);
-    }
-    section_left.appendChild(slides);
-
-    // =============================================================create manual radio
-    let manual=document.createElement("div");
-    manual.className="manual";
-    for(num=0;num<pic.length;num++) {
-        let manual_label=document.createElement("label");
-        manual_label.htmlFor=`radio${num+1}`;
-        manual_label.className="manual_label";
-        manual.appendChild(manual_label);
-        console.log(manual_label);
-        console.log(manual);
-        manual_label.addEventListener("click",slide_change_img)
-    }
-    section_left.appendChild(manual);
-    old_botton=document.getElementsByClassName("manual_label")[0];
-    old_botton.style.background="#ffffff";
-    // =============================================================create change pic icon
-    let change_icon=document.createElement("div");
-    change_icon.className="change_icon";
-    for(num=0;num<2;num++){
-        let icon_cursor=document.createElement("div");
-        icon_cursor.className="icon_cursor";
-        let arrows=document.createElement("div");
-        arrows.className="arrow_left";
-        icon_cursor.appendChild(arrows);
-        change_icon.appendChild(icon_cursor);
-        icon_cursor.addEventListener("click",arrow_change_icon);
-    }
-    section_left.appendChild(change_icon);
-    document.getElementsByClassName("arrow_left")[1].className="arrow_right";
-}
-// =============================================================silder effect
-
-var pic_num=[];
-slide_change_img = (click) => {
-    let img_width=document.getElementById("section_left").offsetWidth;
-    console.log("圖片這格大小現在",img_width);
-    // =============================================================================img_width
-    let botton=document.querySelectorAll(".manual_label");
-    console.log(botton.length);
-    botton.forEach((ele)=>ele.style.backgroundColor="transparent");
-    // =============================================================================arrow botton effect
-    if(click=="right"){
-            // console.log('pic_num["num"]',pic_num["num"]);
-            // console.log('manual_label',manual_label)
-        if(pic_num["num"]===undefined){
-            pic_num["num"]=1;
-        }
-        n_p=pic_num["num"];
-        manual_label=document.getElementsByClassName("manual_label")[n_p];
-        if(manual_label===undefined){
-            n_p-=n_p;
-            console.log(n_p);
-            manual_label=document.getElementsByClassName("manual_label")[n_p];
-        }
-        manual_label.style.backgroundColor="#ffffff";
-        newSlide=document.getElementsByClassName("slides_img")[0];
-        newSlide.style.marginLeft=`-${n_p*img_width}px`;
-        pic_num["num"]=n_p+1;
-        return;
-    }else if(click=="left"){
-        console.log("left");
-        if(pic_num["num"]===undefined){
-            pic_num["num"]=(botton.length)+1;
-        }
-        n_p=pic_num["num"];
-        console.log(n_p-2);
-        manual_label=document.getElementsByClassName("manual_label")[n_p-2];
-        if(manual_label===undefined){
-            n_p=botton.length+1;
-        }
-        manual_label=document.getElementsByClassName("manual_label")[n_p-2];
-        manual_label.style.backgroundColor="#ffffff";
-        newSlide=document.getElementsByClassName("slides_img")[0];
-        newSlide.style.marginLeft=`-${(n_p-2)*img_width}px`;
-        pic_num["num"]=n_p-1;
-        console.log(pic_num["num"]);
-        return;
-    }
-    // ========================================================================end of arrow botton effect
-    let start_Page=1;
-    let num=click.target["attributes"][0]['nodeValue'];
-    click.target.style.backgroundColor="#ffffff";
-    num=Number(num.toString().replace("radio",""));
-    pic_num["num"]=num;
-    console.log(pic_num);
-    // ==========================================
-    if(num==1){
-        newSlide=document.getElementsByClassName("slides_img")[0];
-        newSlide.style.marginLeft="0px";
-    }else if(start_Page<num){
-        move_page=num-start_Page;
-        newSlide=document.getElementsByClassName("slides_img")[0];
-        newSlide.style.marginLeft=`-${move_page*img_width}px`;
-    }else{
-        return;
-    }
-}
-
-// ============================================================= for slider's arrow botton
-
-arrow_change_icon = (click) => {
-    click=click.target["className"];
-    if(click=="arrow_right"){
-        right="right";
-        slide_change_img(right);
-    }else if(click=="arrow_left"){
-        left="left";
-        slide_change_img(left);
-    }else{
-        return;
-    }
-}
-
-// -----------------------------------------------------------
-
-fetchUrl = (url) => {
-    fetch(url,{method: 'GET'})
-    .then((res)=>{
-        return res.json();
-    })
-    .then((data)=>{
-        if(data["error"]){
-            appendElements(data,url='');
-            return data;          
-        }else{
-            nextPage=data.nextPage;
-            dataLen=data.data.length; 
-            if( 0 < dataLen && dataLen < 12 && data.nextPage=="null"){
-                appendElements(data,url);
-                return nextPage;
-            }else{
-                appendElements(data,url);
-                return nextPage;
-            }
-        }
-    })
-    .then((nextPage)=>{
-        if (nextPage['error']){
-            // console.log("沒找到");
-        }else{
-            callback = (entry) => {               
-                if(nextPage=="null"){
-                    observer.unobserve(newTarget);
-                }
-                else if (entry[0].isIntersecting & url.includes("keyword")){
-                    observer.unobserve(newTarget);
-                    url=`${url}&page=${nextPage}`;
-                    fetchUrl(url);
-                }
-                else if (entry[0].isIntersecting ) {
-                    observer.unobserve(newTarget);
-                    indexPage(nextPage); 
-                }
-            };
-        let target = document.getElementsByClassName('attraction_box');
-        let newTarget = target[target.length-1];
-        let options = { 
-            rootMargin: "155px 0px -155px",
-            threshold: 1.0,
-            };
-        let observer = new IntersectionObserver(callback,options);
-        observer.observe(newTarget);
-        let botton = document.getElementById("search");
-        botton.addEventListener("click",select);
-        // -----------------------------------------------------------
-        }
-    })
-}
-
-// ------回應前端頁面------/attraction/${id}--------------------
-mouseover = (click) => {
-    let keyword = click.target.parentNode.childNodes[1].innerText;
-    get_id_by_keyword(keyword);
-}
-
-async function get_id_by_keyword(keyword){
-    let data = await fetch(`api/attractions?keyword=${keyword}`);
-    data = await data.json();
-    id=data.data[0]["id"];
-    window.location.href = `/attraction/${id}`;
-}
-
-get_data_by_id = (data) =>{
-    let id=data.data[0]["id"];
-    let pic=data.data[0]["images"];
-    let name=data.data[0]["name"];
-    let mrt=data.data[0]["mrt"];
-    let cat=data.data[0]["category"];
-    let des=data.data[0]["description"]
-    let address=data.data[0]["address"];
-    let trans=data.data[0]["transport"];
-    return (id,pic,name,mrt);
-}   
-
-// ============================================================= for index page append and create attraction's pic
-
-appendElements = (data,url) => {
-    let attraction=document.createElement("div");
-    attraction.className="attraction";
-    let footer=el("footer");
-    // ---------------------------------
-    if(url.includes("keyword")&url.includes("page")){
-        if(0<el("attraction",["length"])){
-            attraction.style.marginTop="-25px";
-            // console.log("測試測試2");
-            // console.log(el("attraction",["length"]));
-        }
-        append(data,attraction);
-        document.body.insertBefore(attraction,footer);
-    }else if(url.includes("keyword") | data["error"] ){
-        elems = document.querySelectorAll('div.attraction');
-        while (0<elems["length"]){
-            document.body.removeChild(elems[0]);
-            elems = document.querySelectorAll('div.attraction');
-        }
-            if(data["error"]){
-                attraction.textContent="查無相關資料";
-                document.body.insertBefore(attraction,footer);
-            }else{
-                append(data,attraction);
-                document.body.insertBefore(attraction,footer);
-            }
-    }else{
-        if(0<el("attraction",["length"])){
-            attraction.style.marginTop="-25px";
-        }
-        append(data,attraction);
-        document.body.insertBefore(attraction,footer);
-    }
-};
-
-append = (data,attraction) => {
-    console.log(data);
-    num=0;
-    for(num;num<data.data.length;num++){
-        let attraction_box=document.createElement("div");
-        let pic=document.createElement("img");
-        let text=document.createElement("div");
-        let cat=document.createElement("div");
-        let catMrt=document.createElement("span");
-        let catCat=document.createElement("span");
-        // -------------------------------------------
-        attraction_box.className="attraction_box";
-        pic.className="pic";
-        text.className="text";
-        cat.className="cat";
-        catMrt.className="catMrt";
-        catCat.className="catCat";
-         // -------------------------------------------
-        info=data.data[num];
-        pic.setAttribute("src",data.data[num]["images"][0]);
-        text.textContent=info["name"];
-        catMrt.textContent=info["mrt"];
-        catCat.textContent=info["category"];
-        // -------------------------------------------
-        attraction_box.appendChild(pic);
-        attraction_box.appendChild(text);
-        attraction_box.appendChild(cat);
-        cat.appendChild(catMrt);
-        cat.appendChild(catCat);
-        attraction.appendChild(attraction_box);
-        // -------------------------------------------
-        attraction_box.addEventListener("click",mouseover,false);
-    }
-    return attraction;
-};

@@ -27,6 +27,17 @@
                 </div>
             </form>    
         </div>
+        <!-- ========================================================= error_message-->
+        <div class="error_box">
+            <div class="error_box_border">
+                <div class="error_box_inner">
+                    <div>
+                        <div class="error_box_inner_stitle"></div><img id="close_error_box" src="/icon_close.png"/>
+                    </div>
+                    <div class="error_box_inner_text"></div>
+                </div> 
+            </div>
+        </div>
          <!-- ========================================================= nav-->
         <div class="nav">
             <div class="nav_bar">
@@ -34,25 +45,38 @@
                 <div class="nav_right">
                     <span class="nav_right_item">預定行程</span>
                     <span class="nav_right_item">登陸/註冊</span>
+                    <span class="nav_login_logo"></span>
                 </div>
             </div>
         </div>
-         <!-- ========================================================= header-->
+        <!-- ========================================================= header-->
         <div class="header">
             <p class="header_inner">輕鬆享受台北一日悠閒</p>
             <p class="header_inner">探索每個角落，體驗城市的深度旅遊行程</p>
-            <p class="header_inner">
-                <input id="header_input" placeholder="輸入景點名稱查詢" type="text" name="keyword">
-                    <button id="search" type="submit">
-                        <img src="icon_search.png"/>
-                    </button>
-                </input>
-            </p>
-            <p class="header_inner">
+            <div class="header_inner">
+                <div>
+                    <input id="header_input" placeholder="輸入景點名稱查詢" type="text" name="keyword"></input>
+                </div>
+                <div id="search">
+                    <img src="icon_search.png"/>
+                </div>
+            </div>
+            <div class="header_inner">
                 <img class="header_img" src="welcome1.png"/>
-            </p>
+            </div>
         </div>
-         <!-- ========================================================= footer-->
+        <!-- ========================================================= loading effect box-->
+        <div class="loading_img"> 
+            <div class="loading">
+                <div class="loading-circle loading-circle-ani-1"></div>
+                <div class="loading-circle loading-circle-ani-2"></div>
+                <div class="loading-circle loading-circle-ani-3"></div>
+                <div class="loading-circle loading-circle-ani-4"></div>
+                <div class="loading-circle loading-circle-ani-5"></div>
+            </div>
+        </div> 
+        <!-- <div id="no_more_info"></div> -->
+        <!-- ========================================================= footer-->
         <div class="footer"><span>COPYRIGHT © 2021台北一日遊<span></div>
         <script src="index.js"></script> 
     </body>
