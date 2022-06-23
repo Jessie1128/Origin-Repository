@@ -8,7 +8,7 @@ Follows the UI blueprint and API docs, with the assistant of the WeHelp BootCamp
 
 🔗 http://3.228.79.76:3000/
 
-The testing account and testing password : test@test.co / test 
+The testing account and testing password : test@test.com / test 
 
 ## Frontend Technique
 - HTML5  
