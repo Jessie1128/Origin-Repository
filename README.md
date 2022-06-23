@@ -25,8 +25,11 @@ The testing account and testing password : test@test.com / test
 - Tappay
 
 ## Main Features. 
-Login and signup system.  
-Useing keyword to search for attractions.
-Infinite scroll/lazy load.
-Custom image silder.
-Online payment system with Tappay.
+Login and signup system.   
+Useing keyword to search for attractions.  
+Infinite scroll/lazy load.  
+Custom image silder.  
+Online payment system with Tappay.  
+
+## Contact 
+
