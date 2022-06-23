@@ -26,10 +26,10 @@ The testing account and testing password : test@test.com / test
 
 ## Main Features. 
 - Login and signup system with MySQL database.   
-- Useing keyword to search for attractions.  
+- Using keyword to search for attractions.  
 - Infinite scroll/lazy load.  
 - Custom image silder.  
-- Online payment system with Tappay.  
+- Online payment system with TapPay.  
 
 ## Contact 
 Jessie Lin   
