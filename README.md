@@ -11,13 +11,22 @@ Follows the UI blueprint and API docs, with the assistant of the WeHelp BootCamp
 The testing account and testing password : test@test.com / test 
 
 ## Frontend Technique
-HTML5  
-CSS3  
-Javascript   
+- HTML5  
+- CSS3  
+- Javascript   
 
 ## Backend Technique
-Python (flask)  
-MySQL  
-EC2  
-Git/GitHub  
+- Python (flask)  
+- MySQL  
+- EC2  
+- Git/GitHub  
 
+## Third Paty API
+- Tappay
+
+## Main Features. 
+Login and signup system.  
+Useing keyword to search for attractions.
+Infinite scroll/lazy load.
+Custom image silder.
+Online payment system with Tappay.
