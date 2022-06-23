@@ -4,6 +4,7 @@
 Taipei day trip e-commerce project, providing users to search for and book tours at Taipei attractions.
 
 由UI設計師提供 [Figma 設計稿](https://www.figma.com/file/CeFwqBSbNWZbWz2ih4YS6z/Taipei-Trip-%E5%8F%B0%E5%8C%97%E4%B8%80%E6%97%A5%E9%81%8A?node-id=0%3A1) 及 [指定 API 路由](https://app.swaggerhub.com/apis-docs/padax/taipei-trip/1.0.0)，為 WeHelp BootCamp 指導開發完成的個人專案。
+Follows the UI blueprint and APIs docs, with the assistant of the WeHelp BootCamp.
 
 🔗 http://3.228.79.76:3000/
 
