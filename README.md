@@ -6,6 +6,12 @@ Taipei day trip e-commerce project, providing users to search for and book tours
 由 UI設計師提供 Figma 設計稿 及 指定API路由，
 
 ## Frontend Technique
-HTML5
-CSS3
-Javascript
+HTML5  
+CSS3  
+Javascript   
+
+## Backend Technique
+Python (flask)
+MySQL
+EC2
+Git/GitHub
