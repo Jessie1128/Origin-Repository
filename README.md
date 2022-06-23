@@ -11,7 +11,11 @@ CSS3
 Javascript   
 
 ## Backend Technique
-Python (flask)
-MySQL
-EC2
-Git/GitHub
+Python (flask)  
+MySQL  
+EC2  
+Git/GitHub  
+
+## 
+https://www.figma.com/file/CeFwqBSbNWZbWz2ih4YS6z/Taipei-Trip-%E5%8F%B0%E5%8C%97%E4%B8%80%E6%97%A5%E9%81%8A?node-id=0%3A1   
+https://app.swaggerhub.com/apis-docs/padax/taipei-trip/1.0.0
