@@ -7,6 +7,8 @@ Taipei day trip e-commerce project, providing users to search for and book tours
 
 🔗 http://3.228.79.76:3000/
 
+The testing account and testing password : test@test.com / test 
+
 ## Frontend Technique
 HTML5  
 CSS3  
