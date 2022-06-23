@@ -5,3 +5,7 @@ Taipei day trip e-commerce project, providing users to search for and book tours
 為 WeHelp BootCamp 指導開發個人專案，  
 由 UI設計師提供 Figma 設計稿 及 指定API路由，
 
+## Frontend Technique
+HTML5
+CSS3
+Javascript
