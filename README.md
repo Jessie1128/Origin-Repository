@@ -22,7 +22,7 @@ The testing account and testing password : test@test.com / test
 - Git/GitHub  
 
 ## Third Paty API
-- Tappay
+- TapPay
 
 ## Main Features. 
 - Login and signup system with MySQL database.   
