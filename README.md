@@ -27,9 +27,11 @@ The testing account and testing password : test@test.com / test
 ## Main Features. 
 - Login and signup system with MySQL database.   
 - Using keyword to search for attractions.  
-- Infinite scroll/lazy load.  
-- Custom image silder.  
-- Online payment system with TapPay.  
+- Infinite scroll / lazy load by pure JavaScript without a library.
+- Apply keyword research for attractions.
+- Custom image slider with pure JavaScript.
+- Third Party payment system with TapPay.
+- RESTful API：Interface between Front-End and Back-End.
 
 ## Contact 
 Jessie Lin   
